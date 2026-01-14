@@ -1,5 +1,5 @@
 # Wake word detection
-pvporcupine==3.0.0
+pvporcupine>=3.0.0
 
 # Speech to text
 vosk==0.3.45

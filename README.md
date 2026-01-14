@@ -12,6 +12,18 @@ Phase 0 - Foundation building
 
 ## Setup
 
+### System Dependencies
+```bash
+sudo apt update
+sudo apt install portaudio19-dev python3-pyaudio
+```
+
+### Python Environment
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
 
 ## Documentation
 See full project plan at blog.elevation1505.dev
