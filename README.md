@@ -3,7 +3,7 @@
 Voice-activated AI assistant for workshop environment.
 
 ## Current Status
-Phase 0 - Foundation building
+Phase 1 - Voice Pipeline
 
 ## Prerequisites
 - Raspberry Pi 5 (8GB)
