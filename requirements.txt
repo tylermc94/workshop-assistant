@@ -1,0 +1,13 @@
+# Wake word detection
+pvporcupine==3.0.0
+
+# Speech to text
+vosk==0.3.45
+
+# Text to speech
+pyttsx3==2.90
+
+# Audio handling
+sounddevice==0.4.6
+soundfile==0.12.1
+numpy>=1.26.0
