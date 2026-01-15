@@ -3,6 +3,7 @@
 Voice-activated AI assistant for workshop environment.
 
 ## Current Status
+~~Phase 0 - Foundations~~
 Phase 1 - Voice Pipeline
 
 ## Prerequisites
