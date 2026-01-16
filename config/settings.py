@@ -11,6 +11,7 @@ WAKE_WORD_SENSITIVITY = 0.9  # 0.0 to 1.0, higher = more sensitive
 PORCUPINE_SAMPLE_RATE = 16000  # Required by Porcupine
 
 # Vosk Settings
-RECORDING_DURATION = 5  # seconds to record after wake word detected
+USE_DYNAMIC_RECORDING = False  # If True, use dynamic recording until silence detected. If False, use RECORDING_DURATION to set fixed recording time.
+RECORDING_DURATION = 10  # seconds to record after wake word detected
 SILENCE_DURATION = 0
 SILENCE_THRESHOLD = 1.5  # seconds of silence before stopping

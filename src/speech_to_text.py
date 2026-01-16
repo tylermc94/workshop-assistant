@@ -6,17 +6,20 @@ import json
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from config.settings import AUDIO_DEVICE, SCARLETT_SAMPLE_RATE, RECORDING_DURATION,  VOSK_MODEL, SILENCE_DURATION, SILENCE_THRESHOLD
+from config.settings import AUDIO_DEVICE, SCARLETT_SAMPLE_RATE, RECORDING_DURATION,  VOSK_MODEL, SILENCE_THRESHOLD
+
+SILENCE_DURATION = 0
 
 # Initialize Vosk
 base_dir = os.path.dirname(os.path.dirname(__file__))
 model_file_path = os.path.join(base_dir, VOSK_MODEL)
 model = Model(model_file_path)
-recognizer = KaldiRecognizer(model, SCARLETT_SAMPLE_RATE)  # Scarlett's sample rate
-
 
 def transcribe_speech(device=AUDIO_DEVICE, sample_rate=SCARLETT_SAMPLE_RATE, duration=RECORDING_DURATION):
     """Record audio and transcribe it"""
+
+    global SILENCE_DURATION
+    
     recognizer = KaldiRecognizer(model, sample_rate)
     
     print("Listening...")
@@ -38,6 +41,9 @@ def transcribe_speech(device=AUDIO_DEVICE, sample_rate=SCARLETT_SAMPLE_RATE, dur
 
 def transcribe_speech_dynamic(device=AUDIO_DEVICE, sample_rate=SCARLETT_SAMPLE_RATE):
     """Record until user stops speaking"""
+
+    global SILENCE_DURATION
+
     recognizer = KaldiRecognizer(model, sample_rate)
     
     print("Listening...")
@@ -69,8 +75,3 @@ def transcribe_speech_dynamic(device=AUDIO_DEVICE, sample_rate=SCARLETT_SAMPLE_R
                         # User stopped talking
                         final = json.loads(recognizer.FinalResult())
                         return final.get('text', '')
-
-# Get the result
-result = json.loads(recognizer.Result())
-text = result.get('text', '')
-print(f"You said: {text}")
