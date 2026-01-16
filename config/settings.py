@@ -13,5 +13,7 @@ PORCUPINE_SAMPLE_RATE = 16000  # Required by Porcupine
 # Vosk Settings
 USE_DYNAMIC_RECORDING = False  # If True, use dynamic recording until silence detected. If False, use RECORDING_DURATION to set fixed recording time.
 RECORDING_DURATION = 10  # seconds to record after wake word detected
-SILENCE_DURATION = 0
-SILENCE_THRESHOLD = 1.5  # seconds of silence before stopping
+
+# Vosk Tuning
+CHUNK_SIZE = 4000 #samples per read (~0.1 second at 48000 Hz). More samples = more latency but better accuracy. Should be a multiple of 4000.
+SILENCE_THRESHOLD = 1.5 # seconds of silence before stopping

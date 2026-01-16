@@ -6,7 +6,7 @@ import json
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from config.settings import AUDIO_DEVICE, SCARLETT_SAMPLE_RATE, RECORDING_DURATION,  VOSK_MODEL, SILENCE_THRESHOLD
+from config.settings import AUDIO_DEVICE, SCARLETT_SAMPLE_RATE, RECORDING_DURATION, VOSK_MODEL, SILENCE_THRESHOLD, CHUNK_SIZE
 
 SILENCE_DURATION = 0
 
@@ -52,7 +52,7 @@ def transcribe_speech_dynamic(device=AUDIO_DEVICE, sample_rate=SCARLETT_SAMPLE_R
                         dtype='int16', device=device) as stream:
         
         while True:
-            audio_chunk, overflowed = stream.read(4000)  # ~0.1 second chunks
+            audio_chunk, overflowed = stream.read(CHUNK_SIZE)
             
             if recognizer.AcceptWaveform(audio_chunk.tobytes()):
                 # Got final result - speech segment ended
