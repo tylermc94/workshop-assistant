@@ -26,5 +26,11 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
+### Secrets Setup
+config/secrets.py is required with the following keys:
+```
+PORCUPINE_ACCESS_KEY = "PORCUPINE KEY HERE"
+```
+
 ## Documentation
 See full project plan at blog.elevation1505.dev
