@@ -2,7 +2,7 @@
 pvporcupine>=3.0.0
 
 # Speech to text
-vosk==0.3.45
+vosk>=0.3.45
 
 # Text to speech
 pyttsx3==2.90
@@ -10,7 +10,7 @@ pyttsx3==2.90
 # Audio handling
 sounddevice==0.4.6
 soundfile==0.12.1
+numpy>=1.26.0
 
 # Miscellaneous
-numpy>=1.26.0
 scipy>=1.17.0
