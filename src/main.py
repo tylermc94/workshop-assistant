@@ -6,6 +6,7 @@ while True:
     wake_word.listen_for_wake_word()
     
     print("Wake word detected! Speak now...")
-    text = speech_to_text.transcribe_speech_dynamic()
+    #text = speech_to_text.transcribe_speech() # Use fixed duration transcription
+    text = speech_to_text.transcribe_speech_dynamic() # Use dynamic transcription until silence
     
     print(f"You said: {text}")
