@@ -59,13 +59,13 @@ def transcribe_speech_dynamic(device=AUDIO_DEVICE, sample_rate=SCARLETT_SAMPLE_R
                 partial = json.loads(recognizer.PartialResult())
                 if partial.get('partial'):
                     # User is speaking, reset silence counter
-                    silence_duration = 0
+                    SILENCE_DURATION = 0
                     print(f"Partial: {partial['partial']}")  # Optional: show what you're saying
                 else:
                     # Silence detected
-                    silence_duration += 0.1
+                    SILENCE_DURATION += 0.1
                     
-                    if silence_duration >= silence_threshold:
+                    if SILENCE_DURATION >= SILENCE_THRESHOLD:
                         # User stopped talking
                         final = json.loads(recognizer.FinalResult())
                         return final.get('text', '')
