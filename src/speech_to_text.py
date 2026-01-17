@@ -69,7 +69,8 @@ def transcribe_speech_dynamic(device=AUDIO_DEVICE, sample_rate=SCARLETT_SAMPLE_R
                     print(f"Partial: {partial['partial']}")  # Optional: show what you're saying
                 else:
                     # Silence detected
-                    SILENCE_DURATION += 0.1
+                    chunk_duration = CHUNK_SIZE / sample_rate
+                    SILENCE_DURATION += chunk_duration
                     
                     if SILENCE_DURATION >= SILENCE_THRESHOLD:
                         # User stopped talking

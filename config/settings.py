@@ -14,7 +14,7 @@ WAKE_WORD_SENSITIVITY = 0.9  # 0.0 to 1.0, higher = more sensitive
 
 # Vosk Settings
 USE_DYNAMIC_RECORDING = False  # If True, use dynamic recording until silence detected. If False, use RECORDING_DURATION to set fixed recording time.
-RECORDING_DURATION = 10  # seconds to record after wake word detected
+RECORDING_DURATION = 7  # seconds to record after wake word detected
 
 # Vosk Tuning
 CHUNK_SIZE = 4000 #samples per read (~0.1 second at 48000 Hz). More samples = more latency but better accuracy. Should be a multiple of 4000.
