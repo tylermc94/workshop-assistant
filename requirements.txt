@@ -14,3 +14,4 @@ numpy>=1.26.0
 
 # Miscellaneous
 scipy>=1.17.0
+word2number>=1.1

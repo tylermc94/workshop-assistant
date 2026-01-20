@@ -5,7 +5,6 @@ import intent_recognition
 from config.settings import USE_DYNAMIC_RECORDING
 
 async def main():
-    # Choose STT function
     if USE_DYNAMIC_RECORDING:
         transcribe = speech_to_text.transcribe_speech_dynamic
     else:
@@ -13,11 +12,11 @@ async def main():
     
     while True:
         print("Listening for wake word...")
-        wake_word.listen_for_wake_word()
+        await asyncio.to_thread(wake_word.listen_for_wake_word)
         print("Wake word detected! Speak now...")
-        text = transcribe()
+        text = await asyncio.to_thread(transcribe)
         print(f"You said: {text}")
-        intent = intent_recognition.classify_intent(text)
-        print(f"Classified intent: {intent}")
+        intent = await intent_recognition.classify_intent(text)
+        print(f"Intent: {intent}")
 
 asyncio.run(main())
