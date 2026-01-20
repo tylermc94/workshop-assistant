@@ -2,14 +2,12 @@ import asyncio
 import skills.timer as timer
 import skills.calculator as calculator
 
-async def classify_intent(text):  # Make it async!
-    text_lower = text.lower()
-    
-    CALCULATOR_TRIGGERS = ["what is", "calculate", "how much is"]
-    CALENDAR_TRIGGERS = ["what time is it"]
-    HOME_ASSISTANT_TRIGGERS = ["turn on", "turn off"]
-    TIMER_TRIGGERS = ["set a timer", "timer for", "start a timer"]
-    
+# Define triggers at module level
+CALCULATOR_TRIGGERS = ["what is", "calculate", "how much is"]
+CALENDAR_TRIGGERS = ["what time is it"]
+HOME_ASSISTANT_TRIGGERS = ["turn on", "turn off"]
+TIMER_TRIGGERS = ["set a timer", "timer for", "start a timer"]
+
 def strip_trigger(text, triggers):
     """Remove trigger phrase from text"""
     text_lower = text.lower()
@@ -19,6 +17,9 @@ def strip_trigger(text, triggers):
             break
     return text_lower
 
+async def classify_intent(text):
+    text_lower = text.lower()
+    
     if any(trigger in text_lower for trigger in TIMER_TRIGGERS):
         clean_text = strip_trigger(text, TIMER_TRIGGERS)
         result = await timer.set_timer(clean_text)
