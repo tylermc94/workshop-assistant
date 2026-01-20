@@ -1,15 +1,18 @@
 from word2number import w2n
 
-def parse_calc_expression(expression):
-    """
-    Parses a simple arithmetic expression in natural language and converts it to a mathematical expression.
+def parse_calc_expression(expression): #parses plain English math expressions into evaluable strings
+    # Fix common speech recognition errors for math
+    homophones = {
+        'for': 'four',
+        'to': 'two',
+        'too': 'two',
+        'ate': 'eight',
+        'won': 'one'
+    }
     
-    Args:
-        expression (str): The arithmetic expression in natural language (e.g., "two plus two").
-        
-    Returns:
-        str: The mathematical expression (e.g., "2 + 2").
-    """
+    for wrong, right in homophones.items():
+        expression = expression.replace(wrong, right)
+    
     operators = {
         'plus': '+',
         'minus': '-',

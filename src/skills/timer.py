@@ -3,7 +3,7 @@ from word2number import w2n
 
 async def start_timer(duration_seconds):
     """Run a timer for the specified duration"""
-    print(f"Timer started for {duration_seconds} seconds")
+    #print(f"Timer started for {duration_seconds} seconds")
     await asyncio.sleep(duration_seconds)
     print("Timer finished!")
     # TODO: Play sound or TTS announcement
