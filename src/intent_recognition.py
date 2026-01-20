@@ -3,7 +3,7 @@ import skills.timer as timer
 import skills.calculator as calculator
 
 # Define triggers at module level
-CALCULATOR_TRIGGERS = ["what is", "calculate", "how much is"]
+CALCULATOR_TRIGGERS = ["what is", "calculate", "how much is", "what's"]
 CALENDAR_TRIGGERS = ["what time is it"]
 HOME_ASSISTANT_TRIGGERS = ["turn on", "turn off"]
 TIMER_TRIGGERS = ["set a timer", "timer for", "start a timer"]

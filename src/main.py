@@ -16,7 +16,7 @@ async def main():
         print("Wake word detected! Speak now...")
         text = await asyncio.to_thread(transcribe)
         print(f"You said: {text}")
-        intent = await intent_recognition.classify_intent(text)
-        print(f"Intent: {intent}")
+        result = await intent_recognition.classify_intent(text)
+        print(result)
 
 asyncio.run(main())
