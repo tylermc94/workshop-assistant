@@ -9,6 +9,7 @@ CALENDAR_TRIGGERS = ["what time is it", "what's the time", "what's the date", "w
 CALCULATOR_TRIGGERS = ["what is", "what's", "calculate", "how much is"]
 HOME_ASSISTANT_TRIGGERS = ["turn on", "turn off"]
 TIMER_TRIGGERS = ["set a timer", "timer for", "start a timer"]
+ALARM_TRIGGERS = ["stop alarm", "stop timer", "turn off alarm"]
 
 def strip_trigger(text, triggers):
     """Remove trigger phrase from text"""
@@ -43,5 +44,9 @@ async def classify_intent(text):
 
     if any(trigger in text_lower for trigger in HOME_ASSISTANT_TRIGGERS):
         return "Home Assistant"
+    
+    if any(trigger in text_lower for trigger in ALARM_TRIGGERS):
+        result = timer.stop_alarm()
+        return result
     else:
-        return "unknown"
+        return "Sorry, I didn't understand that."

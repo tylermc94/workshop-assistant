@@ -26,3 +26,6 @@ TTS_MODEL_PATH = "models/piper/en_US-amy-medium.onnx"
 TTS_SPEED = 1.0  # 1.0 = normal, <1 = faster, >1 = slower
 TTS_NOISE_SCALE = 0.667
 TTS_NOISE_W = 0.8
+
+# Timer Settings
+TIMER_ALARM_SOUND = "sounds/timer_alarm.wav"

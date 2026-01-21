@@ -1,12 +1,40 @@
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 import asyncio
 from word2number import w2n
+import subprocess
+from config.settings import TIMER_ALARM_SOUND, AUDIO_OUTPUT_DEVICE
+
+# Global to track alarm process
+alarm_process = None
 
 async def start_timer(duration_seconds):
     """Run a timer for the specified duration"""
+    global alarm_process
+    
     #print(f"Timer started for {duration_seconds} seconds")
     await asyncio.sleep(duration_seconds)
     print("Timer finished!")
-    # TODO: Play sound or TTS announcement
+    
+    # Play alarm on loop to specific device
+    alarm_process = subprocess.Popen([
+        'aplay', 
+        '-D', f'plughw:{AUDIO_OUTPUT_DEVICE},0',
+        '-l',  # Loop forever
+        TIMER_ALARM_SOUND
+    ])
+
+def stop_alarm():
+    """Stop the alarm if it's playing"""
+    global alarm_process
+    
+    if alarm_process is not None:
+        alarm_process.terminate()  # Stop the process
+        alarm_process = None  # Clear it
+        return "Alarm stopped"
+    else:
+        return "No alarm is playing"
 
 def parse_time_expression(expression):
     """
