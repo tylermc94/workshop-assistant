@@ -9,7 +9,7 @@ from scipy import signal
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from config.secrets import PORCUPINE_ACCESS_KEY
-from config.settings import WAKE_WORD_MODEL, WAKE_WORD_SENSITIVITY, AUDIO_DEVICE, SCARLETT_SAMPLE_RATE
+from config.settings import WAKE_WORD_MODEL, WAKE_WORD_SENSITIVITY, AUDIO_INPUT_DEVICE, SCARLETT_SAMPLE_RATE
 
 # Get the absolute path to the model file
 base_dir = os.path.dirname(os.path.dirname(__file__))
@@ -44,7 +44,7 @@ def listen_for_wake_word():
             samplerate=SCARLETT_SAMPLE_RATE,  # Scarlett's native rate
             channels=1,
             dtype='int16',
-            device=AUDIO_DEVICE
+            device=AUDIO_INPUT_DEVICE
         )
         sd.wait()
 

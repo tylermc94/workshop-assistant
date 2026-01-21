@@ -1,6 +1,7 @@
 # Audio Configuration
-AUDIO_DEVICE = 1  # Scarlett 2i4 USB
+AUDIO_INPUT_DEVICE = 1  # Scarlett 2i4 USB
 SCARLETT_SAMPLE_RATE = 48000  # Scarlett's native sample rate
+AUDIO_OUTPUT_DEVICE = 3  # USB Audio Device for output
 
 # Model Paths (relative to project root)
 WAKE_WORD_MODEL = 'models/Hey-Forge_en_raspberry-pi_v4_0_0.ppn' # Porcupine wake word model path

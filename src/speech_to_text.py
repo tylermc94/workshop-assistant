@@ -6,7 +6,7 @@ import json
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from config.settings import AUDIO_DEVICE, SCARLETT_SAMPLE_RATE, RECORDING_DURATION, VOSK_MODEL, SILENCE_THRESHOLD, CHUNK_SIZE
+from config.settings import AUDIO_INPUT_DEVICE, SCARLETT_SAMPLE_RATE, RECORDING_DURATION, VOSK_MODEL, SILENCE_THRESHOLD, CHUNK_SIZE
 
 SILENCE_DURATION = 0
 
@@ -15,7 +15,7 @@ base_dir = os.path.dirname(os.path.dirname(__file__))
 model_file_path = os.path.join(base_dir, VOSK_MODEL)
 model = Model(model_file_path)
 
-def transcribe_speech(device=AUDIO_DEVICE, sample_rate=SCARLETT_SAMPLE_RATE, duration=RECORDING_DURATION):
+def transcribe_speech(device=AUDIO_INPUT_DEVICE, sample_rate=SCARLETT_SAMPLE_RATE, duration=RECORDING_DURATION):
     """Record audio and transcribe it"""
 
     global SILENCE_DURATION
@@ -39,7 +39,7 @@ def transcribe_speech(device=AUDIO_DEVICE, sample_rate=SCARLETT_SAMPLE_RATE, dur
     
     return result.get('text', '')
 
-def transcribe_speech_dynamic(device=AUDIO_DEVICE, sample_rate=SCARLETT_SAMPLE_RATE):
+def transcribe_speech_dynamic(device=AUDIO_INPUT_DEVICE, sample_rate=SCARLETT_SAMPLE_RATE):
     """Record until user stops speaking"""
 
     global SILENCE_DURATION
