@@ -11,6 +11,7 @@ setup_logging()
 import wake_word
 import speech_to_text
 import intent_recognition
+import text_to_speech
 import logging
 from config.settings import USE_DYNAMIC_RECORDING
 
@@ -33,6 +34,8 @@ async def main():
         result = await intent_recognition.classify_intent(text)
         print(result)
         logger.info(f"Intent recognition result: {result}")
+        text_to_speech.speak(result)
+        logger.info("Response spoken")
 
 
 asyncio.run(main())

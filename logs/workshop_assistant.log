@@ -13,3 +13,28 @@
 2026-01-20 19:32:22,945 - __main__ - INFO - Wake word detected
 2026-01-20 19:32:28,819 - __main__ - INFO - Transcribed text: what's the date
 2026-01-20 19:32:28,820 - __main__ - INFO - Intent recognition result: Today's date is January 20, 2026.
+2026-01-20 20:42:24,195 - __main__ - INFO - Wake word detected
+2026-01-20 20:42:30,296 - __main__ - INFO - Transcribed text: what's to
+2026-01-20 20:42:30,297 - __main__ - INFO - Intent recognition result: 2
+2026-01-20 20:43:42,582 - __main__ - INFO - Wake word detected
+2026-01-20 20:43:48,285 - __main__ - INFO - Transcribed text: what's to post to
+2026-01-20 20:43:48,286 - __main__ - INFO - Intent recognition result: Sorry, I couldn't calculate that. Try rephrasing your question.
+2026-01-20 20:44:21,479 - __main__ - INFO - Wake word detected
+2026-01-20 20:44:27,473 - __main__ - INFO - Transcribed text: what's two plus two
+2026-01-20 20:44:27,473 - __main__ - INFO - Intent recognition result: 4
+2026-01-20 20:44:28,424 - __main__ - INFO - Response spoken
+2026-01-20 20:44:47,960 - __main__ - INFO - Wake word detected
+2026-01-20 20:44:53,848 - __main__ - INFO - Transcribed text: what's the date
+2026-01-20 20:44:53,849 - __main__ - INFO - Intent recognition result: Today's date is January 20, 2026.
+2026-01-20 20:44:58,569 - __main__ - INFO - Response spoken
+2026-01-20 20:45:02,153 - __main__ - INFO - Wake word detected
+2026-01-20 20:45:08,021 - __main__ - INFO - Transcribed text: what's the time
+2026-01-20 20:45:08,021 - __main__ - INFO - Intent recognition result: The current time is 08:45 PM.
+2026-01-20 20:45:11,625 - __main__ - INFO - Response spoken
+2026-01-20 20:45:53,195 - __main__ - INFO - Wake word detected
+2026-01-20 20:45:59,174 - __main__ - INFO - Transcribed text: set a timer for ten seconds
+2026-01-20 20:45:59,174 - __main__ - INFO - Intent recognition result: Timer set for 10 seconds.
+2026-01-20 20:46:01,835 - __main__ - INFO - Response spoken
+2026-01-20 20:57:34,633 - __main__ - INFO - Wake word detected
+2026-01-20 20:57:40,586 - __main__ - INFO - Transcribed text: what's the time
+2026-01-20 20:57:40,586 - __main__ - INFO - Intent recognition result: The current time is 08:57 PM.
