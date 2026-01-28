@@ -31,10 +31,19 @@ CHUNK_SIZE = 4000 #samples per read (~0.1 second at 48000 Hz). More samples = mo
 SILENCE_THRESHOLD = 1.5 # seconds of silence before stopping
 
 # Piper TTS Settings
-TTS_MODEL_PATH = "models/piper/en_US-amy-medium.onnx"
+TTS_VOICE = "lessac"  # Options: "amy", "lessac", "alan", "alba"
+# Voice model paths
+TTS_VOICES = {
+    "amy": "models/piper/en_US-amy-medium.onnx",      # US Female
+    "lessac": "models/piper/en_US-lessac-medium.onnx", # US Male
+    "alan": "models/piper/en_GB-alan-medium.onnx",    # UK Male
+    "alba": "models/piper/en_GB-alba-medium.onnx"     # UK Female
+}
+TTS_MODEL_PATH = TTS_VOICES[TTS_VOICE]
 TTS_SPEED = 1.0  # 1.0 = normal, <1 = faster, >1 = slower
 TTS_NOISE_SCALE = 0.667
 TTS_NOISE_W = 0.8
 
 # Timer Settings
-TIMER_ALARM_SOUND = "sounds/timer_alarm.wav"
+TIMER_ALARM_SOUND = "sounds/no-problem.wav"
+TIMER_ALARM_REPEATS = 3  # Play 3 times

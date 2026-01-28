@@ -216,3 +216,136 @@ NameError: name 'logger' is not defined
 2026-01-27 20:51:50,977 - __main__ - INFO - Transcribed text: What's 5 plus 5 times 12 minus 13 plus 4 divided by 6 plus 2
 2026-01-27 20:51:50,977 - __main__ - INFO - Intent recognition result: 54.666666666666664
 2026-01-27 20:51:58,290 - __main__ - INFO - Response spoken
+2026-01-27 21:03:57,276 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-01-27 21:03:57,624 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-01-27 21:03:57,953 - speech_to_text - INFO - Whisper model loaded successfully
+2026-01-27 21:04:01,614 - __main__ - INFO - Wake word detected
+2026-01-27 21:04:01,615 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-27 21:04:07,731 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-01-27 21:04:07,742 - speech_to_text - INFO - Recording complete: 6.10s total, transcribing...
+2026-01-27 21:04:07,872 - faster_whisper - INFO - Processing audio with duration 00:06.100
+2026-01-27 21:04:08,735 - faster_whisper - INFO - Detected language 'en' with probability 0.99
+2026-01-27 21:04:10,487 - speech_to_text - INFO - Whisper transcription: What's 48,000 divided by 1,536
+2026-01-27 21:04:10,487 - __main__ - INFO - Transcribed text: What's 48,000 divided by 1,536
+2026-01-27 21:04:10,487 - __main__ - INFO - Intent recognition result: Sorry, I couldn't calculate that. Try rephrasing your question.
+2026-01-27 21:04:14,542 - __main__ - INFO - Response spoken
+2026-01-27 21:09:08,673 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-01-27 21:09:09,041 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-01-27 21:09:09,332 - speech_to_text - INFO - Whisper model loaded successfully
+2026-01-27 21:09:13,690 - __main__ - INFO - Wake word detected
+2026-01-27 21:09:13,691 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-27 21:09:17,007 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-01-27 21:09:17,017 - speech_to_text - INFO - Recording complete: 3.30s total, transcribing...
+2026-01-27 21:09:17,148 - faster_whisper - INFO - Processing audio with duration 00:03.300
+2026-01-27 21:09:18,005 - faster_whisper - INFO - Detected language 'en' with probability 0.98
+2026-01-27 21:09:19,109 - speech_to_text - INFO - Whisper transcription: Set in alarm for 5 seconds
+2026-01-27 21:09:19,110 - __main__ - INFO - Transcribed text: Set in alarm for 5 seconds
+2026-01-27 21:09:19,110 - __main__ - INFO - Intent recognition result: Sorry, I didn't understand that.
+2026-01-27 21:09:21,594 - __main__ - INFO - Response spoken
+2026-01-27 21:09:23,322 - __main__ - INFO - Wake word detected
+2026-01-27 21:09:23,323 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-27 21:09:26,839 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-01-27 21:09:26,842 - speech_to_text - INFO - Recording complete: 3.50s total, transcribing...
+2026-01-27 21:09:26,950 - faster_whisper - INFO - Processing audio with duration 00:03.500
+2026-01-27 21:09:27,729 - faster_whisper - INFO - Detected language 'en' with probability 0.99
+2026-01-27 21:09:28,897 - speech_to_text - INFO - Whisper transcription: Set a timer for five seconds
+2026-01-27 21:09:28,897 - __main__ - INFO - Transcribed text: Set a timer for five seconds
+2026-01-27 21:09:28,898 - __main__ - INFO - Intent recognition result: Timer set for 5 seconds.
+2026-01-27 21:09:30,939 - __main__ - INFO - Response spoken
+2026-01-27 21:09:30,939 - skills.timer - INFO - Timer started for 5 seconds
+2026-01-27 21:09:35,945 - skills.timer - INFO - Timer finished!
+2026-01-27 21:09:35,946 - asyncio - ERROR - Task exception was never retrieved
+future: <Task finished name='Task-2' coro=<start_timer() done, defined at /home/tyler/projects/workshop-assistant/src/skills/timer.py:17> exception=NameError("name 'TIMER_ALARM_REPEATS' is not defined")>
+Traceback (most recent call last):
+  File "/home/tyler/projects/workshop-assistant/src/skills/timer.py", line 24, in start_timer
+    for _ in range(TIMER_ALARM_REPEATS):
+                   ^^^^^^^^^^^^^^^^^^^
+NameError: name 'TIMER_ALARM_REPEATS' is not defined
+2026-01-27 21:09:57,753 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-01-27 21:09:58,060 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-01-27 21:09:58,356 - speech_to_text - INFO - Whisper model loaded successfully
+2026-01-27 21:10:06,589 - __main__ - INFO - Wake word detected
+2026-01-27 21:10:06,589 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-27 21:10:10,005 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-01-27 21:10:10,011 - speech_to_text - INFO - Recording complete: 3.40s total, transcribing...
+2026-01-27 21:10:10,121 - faster_whisper - INFO - Processing audio with duration 00:03.400
+2026-01-27 21:10:10,916 - faster_whisper - INFO - Detected language 'en' with probability 0.99
+2026-01-27 21:10:11,940 - speech_to_text - INFO - Whisper transcription: Set a timer for 2 seconds
+2026-01-27 21:10:11,941 - __main__ - INFO - Transcribed text: Set a timer for 2 seconds
+2026-01-27 21:10:11,941 - __main__ - INFO - Intent recognition result: Could not parse a valid time duration from the input.
+2026-01-27 21:10:15,516 - __main__ - INFO - Response spoken
+2026-01-27 21:10:17,884 - __main__ - INFO - Wake word detected
+2026-01-27 21:10:17,885 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-27 21:10:21,402 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-01-27 21:10:21,404 - speech_to_text - INFO - Recording complete: 3.50s total, transcribing...
+2026-01-27 21:10:21,494 - faster_whisper - INFO - Processing audio with duration 00:03.500
+2026-01-27 21:10:22,233 - faster_whisper - INFO - Detected language 'en' with probability 0.99
+2026-01-27 21:10:23,361 - speech_to_text - INFO - Whisper transcription: Set a timer for 5 seconds
+2026-01-27 21:10:23,362 - __main__ - INFO - Transcribed text: Set a timer for 5 seconds
+2026-01-27 21:10:23,362 - __main__ - INFO - Intent recognition result: Could not parse a valid time duration from the input.
+2026-01-27 21:10:26,813 - __main__ - INFO - Response spoken
+2026-01-27 21:11:59,006 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-01-27 21:11:59,338 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-01-27 21:11:59,618 - speech_to_text - INFO - Whisper model loaded successfully
+2026-01-27 21:12:05,377 - __main__ - INFO - Wake word detected
+2026-01-27 21:12:05,378 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-27 21:12:08,494 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-01-27 21:12:08,496 - speech_to_text - INFO - Recording complete: 3.10s total, transcribing...
+2026-01-27 21:12:08,619 - faster_whisper - INFO - Processing audio with duration 00:03.100
+2026-01-27 21:12:09,434 - faster_whisper - INFO - Detected language 'en' with probability 0.98
+2026-01-27 21:12:10,665 - speech_to_text - INFO - Whisper transcription: Set a timer for 5 seconds
+2026-01-27 21:12:10,665 - __main__ - INFO - Transcribed text: Set a timer for 5 seconds
+2026-01-27 21:12:10,666 - __main__ - INFO - Intent recognition result: Timer set for 5 seconds.
+2026-01-27 21:12:12,737 - __main__ - INFO - Response spoken
+2026-01-27 21:12:12,737 - skills.timer - INFO - Timer started for 5 seconds
+2026-01-27 21:12:17,742 - skills.timer - INFO - Timer finished!
+2026-01-27 21:19:48,744 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-01-27 21:19:49,069 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-01-27 21:19:49,394 - speech_to_text - INFO - Whisper model loaded successfully
+2026-01-27 21:19:54,547 - __main__ - INFO - Wake word detected
+2026-01-27 21:19:54,547 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-27 21:19:57,663 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-01-27 21:19:57,666 - speech_to_text - INFO - Recording complete: 3.10s total, transcribing...
+2026-01-27 21:19:57,772 - faster_whisper - INFO - Processing audio with duration 00:03.100
+2026-01-27 21:19:58,533 - faster_whisper - INFO - Detected language 'en' with probability 0.95
+2026-01-27 21:19:59,743 - speech_to_text - INFO - Whisper transcription: What's 2 plus 2
+2026-01-27 21:19:59,744 - __main__ - INFO - Transcribed text: What's 2 plus 2
+2026-01-27 21:19:59,744 - __main__ - INFO - Intent recognition result: 4
+2026-01-27 21:20:00,370 - __main__ - INFO - Response spoken
+2026-01-27 21:21:21,395 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-01-27 21:21:21,688 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-01-27 21:21:21,979 - speech_to_text - INFO - Whisper model loaded successfully
+2026-01-27 21:21:26,518 - __main__ - INFO - Wake word detected
+2026-01-27 21:21:26,518 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-27 21:21:29,335 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-01-27 21:21:29,349 - speech_to_text - INFO - Recording complete: 2.80s total, transcribing...
+2026-01-27 21:21:31,257 - speech_to_text - INFO - Whisper transcription: What's 2 plus 2
+2026-01-27 21:21:31,258 - __main__ - INFO - Transcribed text: What's 2 plus 2
+2026-01-27 21:21:31,259 - __main__ - INFO - Intent recognition result: 4
+2026-01-27 21:21:31,862 - __main__ - INFO - Response spoken
+2026-01-27 21:21:46,743 - __main__ - INFO - Wake word detected
+2026-01-27 21:21:46,743 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-27 21:21:48,260 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-01-27 21:21:48,262 - speech_to_text - INFO - Recording complete: 1.50s total, transcribing...
+2026-01-27 21:21:50,007 - speech_to_text - INFO - Whisper transcription: 
+2026-01-27 21:21:50,008 - __main__ - INFO - Transcribed text: 
+2026-01-27 21:21:50,008 - __main__ - INFO - Intent recognition result: Sorry, I didn't understand that.
+2026-01-27 21:21:52,439 - __main__ - INFO - Response spoken
+2026-01-27 21:21:58,007 - __main__ - INFO - Wake word detected
+2026-01-27 21:21:58,007 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-27 21:22:08,625 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-01-27 21:22:08,631 - speech_to_text - INFO - Recording complete: 10.60s total, transcribing...
+2026-01-27 21:22:10,917 - speech_to_text - INFO - Whisper transcription: What's 2 plus 2 times 7 plus 42 times 1,576 plus 1,000 minus 200
+2026-01-27 21:22:10,918 - __main__ - INFO - Transcribed text: What's 2 plus 2 times 7 plus 42 times 1,576 plus 1,000 minus 200
+2026-01-27 21:22:10,918 - __main__ - INFO - Intent recognition result: -8384
+2026-01-27 21:22:13,655 - __main__ - INFO - Response spoken
+2026-01-27 21:24:04,701 - __main__ - INFO - Wake word detected
+2026-01-27 21:24:04,701 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-27 21:24:08,019 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-01-27 21:24:08,029 - speech_to_text - INFO - Recording complete: 3.30s total, transcribing...
+2026-01-27 21:24:10,132 - speech_to_text - INFO - Whisper transcription: set it timer for five seconds
+2026-01-27 21:24:10,132 - __main__ - INFO - Transcribed text: set it timer for five seconds
+2026-01-27 21:24:10,132 - __main__ - INFO - Intent recognition result: Timer set for 5 seconds.
+2026-01-27 21:24:12,318 - __main__ - INFO - Response spoken
+2026-01-27 21:24:12,318 - skills.timer - INFO - Timer started for 5 seconds
+2026-01-27 21:24:17,323 - skills.timer - INFO - Timer finished!

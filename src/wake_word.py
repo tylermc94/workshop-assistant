@@ -29,10 +29,10 @@ FRAME_LENGTH = porcupine.frame_length
 # Scarlett runs at 48000 Hz
 samples_needed = int(FRAME_LENGTH * SCARLETT_SAMPLE_RATE / SAMPLE_RATE)
 
-print(f"Porcupine sample rate: {SAMPLE_RATE}")
-print(f"Frame length: {FRAME_LENGTH}")
-print(f"Scarlett sample rate: {SCARLETT_SAMPLE_RATE}")
-print(f"Samples needed from Scarlett: {samples_needed}")
+#print(f"Porcupine sample rate: {SAMPLE_RATE}")
+#print(f"Frame length: {FRAME_LENGTH}")
+#print(f"Scarlett sample rate: {SCARLETT_SAMPLE_RATE}")
+#print(f"Samples needed from Scarlett: {samples_needed}")
 
 # Capture audio and detect wake word
 def listen_for_wake_word():
@@ -56,5 +56,5 @@ def listen_for_wake_word():
         keyword_index = porcupine.process(audio_list)
     
         if keyword_index >= 0:
-            print("Wake word detected!")
+            #print("Wake word detected!")
             return #exit the function

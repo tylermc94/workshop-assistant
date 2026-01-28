@@ -51,7 +51,7 @@ def transcribe_speech():
     Returns the transcribed text as a string.
     """
     logger.info("Recording audio...")
-    print("Listening...")
+    #print("Listening...")
     
     # Record audio
     audio = sd.rec(
@@ -114,7 +114,7 @@ def transcribe_speech_dynamic():
     Returns the transcribed text as a string.
     """
     logger.info("Starting dynamic recording...")
-    print("Listening...")
+    #print("Listening...")
     
     audio_buffer = []
     silence_duration = 0

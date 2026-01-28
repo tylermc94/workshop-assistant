@@ -8,7 +8,7 @@ import skills.home_assistant as home_assistant
 CALENDAR_TRIGGERS = ["what time is it", "what's the time", "what's the date", "what day is it"]
 CALCULATOR_TRIGGERS = ["what is", "what's", "calculate", "how much is"]
 HOME_ASSISTANT_TRIGGERS = ["turn on", "turn off"]
-TIMER_TRIGGERS = ["set a timer", "timer for", "start a timer"]
+TIMER_TRIGGERS = ["set a timer for", "timer for", "start a timer"]
 ALARM_TRIGGERS = ["stop alarm", "stop timer", "turn off alarm", "stop"]
 
 def strip_trigger(text, triggers):

@@ -4,7 +4,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(
 import asyncio
 from word2number import w2n
 import subprocess
-from config.settings import TIMER_ALARM_SOUND, AUDIO_OUTPUT_DEVICE
+from config.settings import TIMER_ALARM_SOUND, AUDIO_OUTPUT_DEVICE, TIMER_ALARM_REPEATS
 
 from config.logging_config import setup_logging
 setup_logging()
@@ -20,13 +20,14 @@ async def start_timer(duration_seconds):
     await asyncio.sleep(duration_seconds)
     logger.info("Timer finished!")
     
-    # Play alarm once
-    subprocess.run([
-        'aplay', 
-        '-D', f'plughw:{AUDIO_OUTPUT_DEVICE},0',
-        TIMER_ALARM_SOUND
-    ])
-        
+    # Play alarm multiple times (suppress output)
+    for _ in range(TIMER_ALARM_REPEATS):
+        subprocess.run([
+            'aplay', 
+            '-D', f'plughw:{AUDIO_OUTPUT_DEVICE},0',
+            TIMER_ALARM_SOUND
+        ], stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
+
 def stop_alarm():
     """Stop the alarm if it's playing"""
     global alarm_process

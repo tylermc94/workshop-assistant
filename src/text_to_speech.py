@@ -41,8 +41,12 @@ def speak(text):
             wf.setframerate(sample_rate)
             wf.writeframes(audio.tobytes())
         
-        # Play with aplay to specific device
-        subprocess.run(['aplay', '-D', f'plughw:{AUDIO_OUTPUT_DEVICE},0', tmp.name])
+        # Play with aplay to specific device (suppress output)
+        subprocess.run([
+            'aplay', 
+            '-D', f'plughw:{AUDIO_OUTPUT_DEVICE},0',
+            tmp.name
+        ], stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
         
         # Clean up temp file
         os.unlink(tmp.name)
