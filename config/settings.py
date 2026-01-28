@@ -31,7 +31,7 @@ CHUNK_SIZE = 4000 #samples per read (~0.1 second at 48000 Hz). More samples = mo
 SILENCE_THRESHOLD = 1.5 # seconds of silence before stopping
 
 # Piper TTS Settings
-TTS_VOICE = "lessac"  # Options: "amy", "lessac", "alan", "alba"
+TTS_VOICE = "alan"  # Options: "amy", "lessac", "alan", "alba"
 # Voice model paths
 TTS_VOICES = {
     "amy": "models/piper/en_US-amy-medium.onnx",      # US Female

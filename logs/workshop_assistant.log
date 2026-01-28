@@ -349,3 +349,214 @@ NameError: name 'TIMER_ALARM_REPEATS' is not defined
 2026-01-27 21:24:12,318 - __main__ - INFO - Response spoken
 2026-01-27 21:24:12,318 - skills.timer - INFO - Timer started for 5 seconds
 2026-01-27 21:24:17,323 - skills.timer - INFO - Timer finished!
+2026-01-27 21:27:40,735 - __main__ - INFO - Wake word detected
+2026-01-27 21:27:40,735 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-27 21:27:49,952 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-01-27 21:27:49,967 - speech_to_text - INFO - Recording complete: 9.20s total, transcribing...
+2026-01-27 21:27:52,513 - speech_to_text - INFO - Whisper transcription: What's 2 plus 2 times 7 plus 42 times 1,576 plus 1,200
+2026-01-27 21:27:52,513 - __main__ - INFO - Transcribed text: What's 2 plus 2 times 7 plus 42 times 1,576 plus 1,200
+2026-01-27 21:27:52,514 - __main__ - INFO - Intent recognition result: Sorry, I couldn't calculate that. Try rephrasing your question.
+2026-01-27 21:27:56,976 - __main__ - INFO - Response spoken
+2026-01-27 21:28:17,059 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-01-27 21:28:17,364 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-01-27 21:28:17,796 - speech_to_text - INFO - Whisper model loaded successfully
+2026-01-27 21:28:24,066 - __main__ - INFO - Wake word detected
+2026-01-27 21:28:24,066 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-27 21:28:27,383 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-01-27 21:28:27,393 - speech_to_text - INFO - Recording complete: 3.30s total, transcribing...
+2026-01-27 21:28:29,344 - speech_to_text - INFO - Whisper transcription: What's 2 plus 2 too
+2026-01-27 21:28:29,344 - __main__ - INFO - Transcribed text: What's 2 plus 2 too
+2026-01-27 21:28:29,344 - skills.calculator - INFO - Parsing expression: 2 plus 2 too
+2026-01-27 21:28:29,344 - skills.calculator - INFO - Parsed to: 2 + 2
+2026-01-27 21:28:29,344 - skills.calculator - INFO - Evaluated '2 + 2' = 4
+2026-01-27 21:28:29,344 - __main__ - INFO - Intent recognition result: 4
+2026-01-27 21:28:29,970 - __main__ - INFO - Response spoken
+2026-01-27 21:28:34,915 - __main__ - INFO - Wake word detected
+2026-01-27 21:28:34,915 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-27 21:28:44,132 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-01-27 21:28:44,146 - speech_to_text - INFO - Recording complete: 9.20s total, transcribing...
+2026-01-27 21:28:46,389 - speech_to_text - INFO - Whisper transcription: What's 2 plus 2 times 7 plus 42 times 1,576 plus 1,200
+2026-01-27 21:28:46,390 - __main__ - INFO - Transcribed text: What's 2 plus 2 times 7 plus 42 times 1,576 plus 1,200
+2026-01-27 21:28:46,390 - skills.calculator - INFO - Parsing expression: 2 plus 2 times 7 plus 42 times 1,576 plus 1,200
+2026-01-27 21:28:46,390 - skills.calculator - INFO - Parsed to: 2 + 2 * 7 + 42 * +
+2026-01-27 21:28:46,390 - __main__ - INFO - Intent recognition result: Sorry, I couldn't calculate that. Try rephrasing your question.
+2026-01-27 21:28:50,803 - __main__ - INFO - Response spoken
+2026-01-27 21:30:21,876 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-01-27 21:30:22,172 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-01-27 21:30:22,445 - speech_to_text - INFO - Whisper model loaded successfully
+2026-01-27 21:30:25,866 - __main__ - INFO - Wake word detected
+2026-01-27 21:30:25,866 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-27 21:30:33,983 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-01-27 21:30:33,994 - speech_to_text - INFO - Recording complete: 8.10s total, transcribing...
+2026-01-27 21:30:36,199 - speech_to_text - INFO - Whisper transcription: What's 2 plus 2 times 1,576 plus 1,200
+2026-01-27 21:30:36,199 - __main__ - INFO - Transcribed text: What's 2 plus 2 times 1,576 plus 1,200
+2026-01-27 21:30:36,199 - skills.calculator - INFO - Parsing expression: 2 plus 2 times 1,576 plus 1,200
+2026-01-27 21:30:36,200 - skills.calculator - INFO - Parsed to: 2 + 2 * 1576 + 1200
+2026-01-27 21:30:36,200 - skills.calculator - INFO - Evaluated '2 + 2 * 1576 + 1200' = 4354
+2026-01-27 21:30:36,200 - __main__ - INFO - Intent recognition result: 4354
+2026-01-27 21:30:38,523 - __main__ - INFO - Response spoken
+2026-01-27 21:38:22,226 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-01-27 21:38:22,634 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-01-27 21:38:23,251 - speech_to_text - INFO - Whisper model loaded successfully
+2026-01-27 21:38:38,839 - __main__ - INFO - Wake word detected
+2026-01-27 21:38:38,839 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-27 21:38:40,356 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-01-27 21:38:40,358 - speech_to_text - INFO - Recording complete: 1.50s total, transcribing...
+2026-01-27 21:38:42,916 - speech_to_text - INFO - Whisper transcription: 
+2026-01-27 21:38:42,917 - __main__ - INFO - Transcribed text: 
+2026-01-27 21:38:42,918 - __main__ - INFO - Intent recognition result: Sorry, I didn't understand that.
+2026-01-27 21:38:45,719 - __main__ - INFO - Response spoken
+2026-01-27 21:38:48,023 - __main__ - INFO - Wake word detected
+2026-01-27 21:38:48,023 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-27 21:38:55,340 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-01-27 21:38:55,351 - speech_to_text - INFO - Recording complete: 7.30s total, transcribing...
+2026-01-27 21:38:57,635 - speech_to_text - INFO - Whisper transcription: The quick brown fox dumped over the lazy dog in the middle of September while it was  snowing and raining
+2026-01-27 21:38:57,635 - __main__ - INFO - Transcribed text: The quick brown fox dumped over the lazy dog in the middle of September while it was  snowing and raining
+2026-01-27 21:38:57,636 - __main__ - INFO - Intent recognition result: Sorry, I didn't understand that.
+2026-01-27 21:39:00,376 - __main__ - INFO - Response spoken
+2026-01-27 21:39:12,520 - __main__ - INFO - Wake word detected
+2026-01-27 21:39:12,520 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-27 21:39:15,037 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-01-27 21:39:15,048 - speech_to_text - INFO - Recording complete: 2.50s total, transcribing...
+2026-01-27 21:39:17,169 - speech_to_text - INFO - Whisper transcription: What time is it
+2026-01-27 21:39:17,170 - __main__ - INFO - Transcribed text: What time is it
+2026-01-27 21:39:17,170 - __main__ - INFO - Intent recognition result: The current time is 09:39 PM.
+2026-01-27 21:39:20,249 - __main__ - INFO - Response spoken
+2026-01-27 21:39:27,689 - __main__ - INFO - Wake word detected
+2026-01-27 21:39:27,689 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-27 21:39:31,506 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-01-27 21:39:31,513 - speech_to_text - INFO - Recording complete: 3.80s total, transcribing...
+2026-01-27 21:39:33,419 - speech_to_text - INFO - Whisper transcription: Set a timer for five seconds
+2026-01-27 21:39:33,419 - __main__ - INFO - Transcribed text: Set a timer for five seconds
+2026-01-27 21:39:33,420 - __main__ - INFO - Intent recognition result: Timer set for 5 seconds.
+2026-01-27 21:39:35,481 - __main__ - INFO - Response spoken
+2026-01-27 21:39:35,482 - skills.timer - INFO - Timer started for 5 seconds
+2026-01-27 21:39:40,486 - skills.timer - INFO - Timer finished!
+2026-01-27 21:39:46,810 - __main__ - INFO - Wake word detected
+2026-01-27 21:39:46,810 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-27 21:39:50,227 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-01-27 21:39:50,234 - speech_to_text - INFO - Recording complete: 3.40s total, transcribing...
+2026-01-27 21:39:52,131 - speech_to_text - INFO - Whisper transcription: Set it timer for 5 minutes
+2026-01-27 21:39:52,131 - __main__ - INFO - Transcribed text: Set it timer for 5 minutes
+2026-01-27 21:39:52,132 - __main__ - INFO - Intent recognition result: Could not parse a valid time duration from the input.
+2026-01-27 21:39:55,579 - __main__ - INFO - Response spoken
+2026-01-27 21:40:20,947 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-01-27 21:40:21,260 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-01-27 21:40:21,542 - speech_to_text - INFO - Whisper model loaded successfully
+2026-01-27 21:40:43,581 - __main__ - INFO - Wake word detected
+2026-01-27 21:40:43,581 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-27 21:40:47,498 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-01-27 21:40:47,501 - speech_to_text - INFO - Recording complete: 3.90s total, transcribing...
+2026-01-27 21:40:49,308 - speech_to_text - INFO - Whisper transcription: Set a timer for five minutes
+2026-01-27 21:40:49,309 - __main__ - INFO - Transcribed text: Set a timer for five minutes
+2026-01-27 21:40:49,309 - __main__ - INFO - Intent recognition result: Timer set for 5 minutes.
+2026-01-27 21:40:51,325 - __main__ - INFO - Response spoken
+2026-01-27 21:40:51,326 - skills.timer - INFO - Timer started for 300 seconds
+2026-01-27 21:41:01,998 - __main__ - INFO - Wake word detected
+2026-01-27 21:41:01,999 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-27 21:41:05,515 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-01-27 21:41:05,517 - speech_to_text - INFO - Recording complete: 3.50s total, transcribing...
+2026-01-27 21:41:07,355 - speech_to_text - INFO - Whisper transcription: Set a timer for 5 seconds
+2026-01-27 21:41:07,356 - __main__ - INFO - Transcribed text: Set a timer for 5 seconds
+2026-01-27 21:41:07,356 - __main__ - INFO - Intent recognition result: Timer set for 5 seconds.
+2026-01-27 21:41:09,438 - __main__ - INFO - Response spoken
+2026-01-27 21:41:09,438 - skills.timer - INFO - Timer started for 5 seconds
+2026-01-27 21:41:14,444 - skills.timer - INFO - Timer finished!
+2026-01-27 21:41:19,071 - __main__ - INFO - Wake word detected
+2026-01-27 21:41:19,071 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-27 21:41:22,188 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-01-27 21:41:22,190 - speech_to_text - INFO - Recording complete: 3.10s total, transcribing...
+2026-01-27 21:41:24,001 - speech_to_text - INFO - Whisper transcription: What's 5 plus 3
+2026-01-27 21:41:24,002 - __main__ - INFO - Transcribed text: What's 5 plus 3
+2026-01-27 21:41:24,003 - skills.calculator - INFO - Parsing expression: 5 plus 3
+2026-01-27 21:41:24,003 - skills.calculator - INFO - Parsed to: 5 + 3
+2026-01-27 21:41:24,003 - skills.calculator - INFO - Evaluated '5 + 3' = 8
+2026-01-27 21:41:24,003 - __main__ - INFO - Intent recognition result: 8
+2026-01-27 21:41:24,639 - __main__ - INFO - Response spoken
+2026-01-27 21:41:26,130 - __main__ - INFO - Wake word detected
+2026-01-27 21:41:26,130 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-27 21:41:30,144 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-01-27 21:41:30,159 - speech_to_text - INFO - Recording complete: 4.00s total, transcribing...
+2026-01-27 21:41:31,924 - speech_to_text - INFO - Whisper transcription: What's 2 times 4
+2026-01-27 21:41:31,924 - __main__ - INFO - Transcribed text: What's 2 times 4
+2026-01-27 21:41:31,925 - skills.calculator - INFO - Parsing expression: 2 times 4
+2026-01-27 21:41:31,925 - skills.calculator - INFO - Parsed to: 2 * 4
+2026-01-27 21:41:31,925 - skills.calculator - INFO - Evaluated '2 * 4' = 8
+2026-01-27 21:41:31,925 - __main__ - INFO - Intent recognition result: 8
+2026-01-27 21:41:32,735 - __main__ - INFO - Response spoken
+2026-01-27 21:41:34,159 - __main__ - INFO - Wake word detected
+2026-01-27 21:41:34,160 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-27 21:41:37,877 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-01-27 21:41:37,887 - speech_to_text - INFO - Recording complete: 3.70s total, transcribing...
+2026-01-27 21:41:39,774 - speech_to_text - INFO - Whisper transcription: What's 2 plus 2 times 7
+2026-01-27 21:41:39,774 - __main__ - INFO - Transcribed text: What's 2 plus 2 times 7
+2026-01-27 21:41:39,774 - skills.calculator - INFO - Parsing expression: 2 plus 2 times 7
+2026-01-27 21:41:39,774 - skills.calculator - INFO - Parsed to: 2 + 2 * 7
+2026-01-27 21:41:39,775 - skills.calculator - INFO - Evaluated '2 + 2 * 7' = 16
+2026-01-27 21:41:39,775 - __main__ - INFO - Intent recognition result: 16
+2026-01-27 21:41:40,832 - __main__ - INFO - Response spoken
+2026-01-27 21:41:42,304 - __main__ - INFO - Wake word detected
+2026-01-27 21:41:42,304 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-27 21:41:45,921 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-01-27 21:41:45,935 - speech_to_text - INFO - Recording complete: 3.60s total, transcribing...
+2026-01-27 21:41:47,918 - speech_to_text - INFO - Whisper transcription: What's 1,000 plus 200
+2026-01-27 21:41:47,918 - __main__ - INFO - Transcribed text: What's 1,000 plus 200
+2026-01-27 21:41:47,919 - skills.calculator - INFO - Parsing expression: 1,000 plus 200
+2026-01-27 21:41:47,919 - skills.calculator - INFO - Parsed to: 1000 + 200
+2026-01-27 21:41:47,919 - skills.calculator - INFO - Evaluated '1000 + 200' = 1200
+2026-01-27 21:41:47,919 - __main__ - INFO - Intent recognition result: 1200
+2026-01-27 21:41:49,568 - __main__ - INFO - Response spoken
+2026-01-27 21:41:51,424 - __main__ - INFO - Wake word detected
+2026-01-27 21:41:51,425 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-27 21:41:53,942 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-01-27 21:41:53,952 - speech_to_text - INFO - Recording complete: 2.50s total, transcribing...
+2026-01-27 21:41:55,801 - speech_to_text - INFO - Whisper transcription: What time is it
+2026-01-27 21:41:55,801 - __main__ - INFO - Transcribed text: What time is it
+2026-01-27 21:41:55,801 - __main__ - INFO - Intent recognition result: The current time is 09:41 PM.
+2026-01-27 21:41:58,753 - __main__ - INFO - Response spoken
+2026-01-27 21:42:00,625 - __main__ - INFO - Wake word detected
+2026-01-27 21:42:00,625 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-27 21:42:03,342 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-01-27 21:42:03,344 - speech_to_text - INFO - Recording complete: 2.70s total, transcribing...
+2026-01-27 21:42:05,123 - speech_to_text - INFO - Whisper transcription: What's the date
+2026-01-27 21:42:05,123 - __main__ - INFO - Transcribed text: What's the date
+2026-01-27 21:42:05,123 - __main__ - INFO - Intent recognition result: Today's date is January 27, 2026.
+2026-01-27 21:42:09,537 - __main__ - INFO - Response spoken
+2026-01-27 21:42:13,890 - __main__ - INFO - Wake word detected
+2026-01-27 21:42:13,890 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-27 21:42:16,307 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-01-27 21:42:16,321 - speech_to_text - INFO - Recording complete: 2.40s total, transcribing...
+2026-01-27 21:42:18,092 - speech_to_text - INFO - Whisper transcription: What day is it
+2026-01-27 21:42:18,092 - __main__ - INFO - Transcribed text: What day is it
+2026-01-27 21:42:18,093 - __main__ - INFO - Intent recognition result: Today is Tuesday.
+2026-01-27 21:42:19,586 - __main__ - INFO - Response spoken
+2026-01-27 21:42:24,066 - __main__ - INFO - Wake word detected
+2026-01-27 21:42:24,066 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-27 21:42:25,583 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-01-27 21:42:25,586 - speech_to_text - INFO - Recording complete: 1.50s total, transcribing...
+2026-01-27 21:42:27,296 - speech_to_text - INFO - Whisper transcription: 
+2026-01-27 21:42:27,296 - __main__ - INFO - Transcribed text: 
+2026-01-27 21:42:27,297 - __main__ - INFO - Intent recognition result: Sorry, I didn't understand that.
+2026-01-27 21:42:29,762 - __main__ - INFO - Response spoken
+2026-01-27 21:42:53,065 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-01-27 21:42:53,417 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-01-27 21:42:53,795 - speech_to_text - INFO - Whisper model loaded successfully
+2026-01-27 21:42:58,164 - __main__ - INFO - Wake word detected
+2026-01-27 21:42:58,164 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-27 21:43:01,481 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-01-27 21:43:01,491 - speech_to_text - INFO - Recording complete: 3.30s total, transcribing...
+2026-01-27 21:43:04,984 - speech_to_text - INFO - Whisper transcription: What's 2 times 2
+2026-01-27 21:43:04,984 - __main__ - INFO - Transcribed text: What's 2 times 2
+2026-01-27 21:43:04,984 - skills.calculator - INFO - Parsing expression: 2 times 2
+2026-01-27 21:43:04,985 - skills.calculator - INFO - Parsed to: 2 * 2
+2026-01-27 21:43:04,985 - skills.calculator - INFO - Evaluated '2 * 2' = 4
+2026-01-27 21:43:04,985 - __main__ - INFO - Intent recognition result: 4
+2026-01-27 21:43:05,765 - __main__ - INFO - Response spoken
+2026-01-27 21:43:10,436 - __main__ - INFO - Wake word detected
+2026-01-27 21:43:10,437 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-27 21:43:12,854 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-01-27 21:43:12,868 - speech_to_text - INFO - Recording complete: 2.40s total, transcribing...
+2026-01-27 21:43:14,827 - speech_to_text - INFO - Whisper transcription: What time is it
+2026-01-27 21:43:14,827 - __main__ - INFO - Transcribed text: What time is it
+2026-01-27 21:43:14,828 - __main__ - INFO - Intent recognition result: The current time is 09:43 PM.
+2026-01-27 21:43:18,341 - __main__ - INFO - Response spoken
