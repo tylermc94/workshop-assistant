@@ -7,17 +7,17 @@ from config.logging_config import setup_logging
 
 # Set up logging first thing
 setup_logging()
+import logging
+logger = logging.getLogger(__name__)
 
 import wake_word
 import speech_to_text
 import intent_recognition
 import text_to_speech
-import logging
 from config.settings import USE_DYNAMIC_RECORDING
 
-logger = logging.getLogger(__name__)
-
 async def main():
+    # Choose transcription function based on settings
     if USE_DYNAMIC_RECORDING:
         transcribe = speech_to_text.transcribe_speech_dynamic
     else:

@@ -38,3 +38,181 @@
 2026-01-20 20:57:34,633 - __main__ - INFO - Wake word detected
 2026-01-20 20:57:40,586 - __main__ - INFO - Transcribed text: what's the time
 2026-01-20 20:57:40,586 - __main__ - INFO - Intent recognition result: The current time is 08:57 PM.
+2026-01-21 15:24:13,143 - __main__ - INFO - Wake word detected
+2026-01-21 15:24:19,336 - __main__ - INFO - Transcribed text: so timer for ten seconds
+2026-01-21 15:24:19,336 - __main__ - INFO - Intent recognition result: Timer set for 10 seconds.
+2026-01-21 15:24:22,039 - __main__ - INFO - Response spoken
+2026-01-27 20:17:51,667 - __main__ - INFO - Wake word detected
+2026-01-27 20:17:57,771 - __main__ - INFO - Transcribed text: set a timer for ten seconds
+2026-01-27 20:17:57,773 - __main__ - INFO - Intent recognition result: Timer set for 10 seconds.
+2026-01-27 20:18:00,547 - __main__ - INFO - Response spoken
+2026-01-27 20:18:00,548 - asyncio - ERROR - Task exception was never retrieved
+future: <Task finished name='Task-2' coro=<start_timer() done, defined at /home/tyler/projects/workshop-assistant/src/skills/timer.py:12> exception=NameError("name 'logger' is not defined")>
+Traceback (most recent call last):
+  File "/home/tyler/projects/workshop-assistant/src/skills/timer.py", line 16, in start_timer
+    logger.info(f"Timer started for {duration_seconds} seconds")
+    ^^^^^^
+NameError: name 'logger' is not defined
+2026-01-27 20:20:54,090 - __main__ - INFO - Wake word detected
+2026-01-27 20:21:00,268 - __main__ - INFO - Transcribed text: set a timer for five seconds
+2026-01-27 20:21:00,268 - __main__ - INFO - Intent recognition result: Timer set for 5 seconds.
+2026-01-27 20:21:03,211 - __main__ - INFO - Response spoken
+2026-01-27 20:21:03,211 - skills.timer - INFO - Timer started for 5 seconds
+2026-01-27 20:21:08,216 - skills.timer - INFO - Timer finished!
+2026-01-27 20:24:32,035 - __main__ - INFO - Wake word detected
+2026-01-27 20:24:38,081 - __main__ - INFO - Transcribed text: set a timer for five seconds
+2026-01-27 20:24:38,082 - __main__ - INFO - Intent recognition result: Timer set for 5 seconds.
+2026-01-27 20:24:40,883 - __main__ - INFO - Response spoken
+2026-01-27 20:24:40,883 - skills.timer - INFO - Timer started for 5 seconds
+2026-01-27 20:24:45,886 - skills.timer - INFO - Timer finished!
+2026-01-27 20:24:59,348 - __main__ - INFO - Wake word detected
+2026-01-27 20:25:05,336 - __main__ - INFO - Transcribed text: stop stop
+2026-01-27 20:25:05,336 - skills.timer - INFO - Alarm stopped
+2026-01-27 20:25:05,337 - __main__ - INFO - Intent recognition result: Alarm stopped
+2026-01-27 20:25:05,526 - __main__ - INFO - Response spoken
+2026-01-27 20:27:33,242 - __main__ - INFO - Wake word detected
+2026-01-27 20:27:39,223 - __main__ - INFO - Transcribed text: set a timer for five seconds
+2026-01-27 20:27:39,224 - __main__ - INFO - Intent recognition result: Timer set for 5 seconds.
+2026-01-27 20:27:41,978 - __main__ - INFO - Response spoken
+2026-01-27 20:27:41,978 - skills.timer - INFO - Timer started for 5 seconds
+2026-01-27 20:27:46,982 - skills.timer - INFO - Timer finished!
+2026-01-27 20:39:41,590 - speech_to_text - INFO - Loading Whisper model: small
+2026-01-27 20:39:42,067 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-small/revision/main "HTTP/1.1 200 OK"
+2026-01-27 20:39:42,124 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/Systran/faster-whisper-small/resolve/536b0662742c02347bc0e980a01041f333bce120/model.bin "HTTP/1.1 302 Found"
+2026-01-27 20:39:42,171 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/Systran/faster-whisper-small/resolve/536b0662742c02347bc0e980a01041f333bce120/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-01-27 20:39:42,172 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/Systran/faster-whisper-small/resolve/536b0662742c02347bc0e980a01041f333bce120/tokenizer.json "HTTP/1.1 307 Temporary Redirect"
+2026-01-27 20:39:42,178 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/Systran/faster-whisper-small/resolve/536b0662742c02347bc0e980a01041f333bce120/vocabulary.txt "HTTP/1.1 307 Temporary Redirect"
+2026-01-27 20:39:42,182 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-small/xet-read-token/536b0662742c02347bc0e980a01041f333bce120 "HTTP/1.1 200 OK"
+2026-01-27 20:39:42,193 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Systran/faster-whisper-small/536b0662742c02347bc0e980a01041f333bce120/tokenizer.json "HTTP/1.1 200 OK"
+2026-01-27 20:39:42,194 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Systran/faster-whisper-small/536b0662742c02347bc0e980a01041f333bce120/config.json "HTTP/1.1 200 OK"
+2026-01-27 20:39:42,205 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Systran/faster-whisper-small/536b0662742c02347bc0e980a01041f333bce120/vocabulary.txt "HTTP/1.1 200 OK"
+2026-01-27 20:39:42,217 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/resolve-cache/models/Systran/faster-whisper-small/536b0662742c02347bc0e980a01041f333bce120/tokenizer.json "HTTP/1.1 200 OK"
+2026-01-27 20:39:42,225 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/resolve-cache/models/Systran/faster-whisper-small/536b0662742c02347bc0e980a01041f333bce120/config.json "HTTP/1.1 200 OK"
+2026-01-27 20:39:42,235 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/resolve-cache/models/Systran/faster-whisper-small/536b0662742c02347bc0e980a01041f333bce120/vocabulary.txt "HTTP/1.1 200 OK"
+2026-01-27 20:39:50,289 - speech_to_text - INFO - Whisper model loaded successfully
+2026-01-27 20:40:06,776 - __main__ - INFO - Wake word detected
+2026-01-27 20:40:06,776 - speech_to_text - INFO - Recording audio...
+2026-01-27 20:40:11,814 - speech_to_text - INFO - Recording complete, transcribing...
+2026-01-27 20:40:11,923 - faster_whisper - INFO - Processing audio with duration 00:05.000
+2026-01-27 20:40:16,691 - faster_whisper - INFO - Detected language 'en' with probability 0.98
+2026-01-27 20:40:22,990 - speech_to_text - INFO - Whisper transcription: What's 2 plus 4?
+2026-01-27 20:40:22,991 - __main__ - INFO - Transcribed text: What's 2 plus 4?
+2026-01-27 20:40:22,991 - __main__ - INFO - Intent recognition result: Sorry, I couldn't calculate that. Try rephrasing your question.
+2026-01-27 20:40:28,600 - __main__ - INFO - Response spoken
+2026-01-27 20:41:05,770 - __main__ - INFO - Wake word detected
+2026-01-27 20:41:05,771 - speech_to_text - INFO - Recording audio...
+2026-01-27 20:41:10,809 - speech_to_text - INFO - Recording complete, transcribing...
+2026-01-27 20:41:10,942 - faster_whisper - INFO - Processing audio with duration 00:05.000
+2026-01-27 20:41:17,228 - faster_whisper - INFO - Detected language 'en' with probability 0.99
+2026-01-27 20:41:26,592 - speech_to_text - INFO - Whisper transcription: Set a timer for five seconds.
+2026-01-27 20:41:26,593 - __main__ - INFO - Transcribed text: Set a timer for five seconds.
+2026-01-27 20:41:26,593 - __main__ - INFO - Intent recognition result: Could not parse a valid time duration from the input.
+2026-01-27 20:41:31,354 - __main__ - INFO - Response spoken
+2026-01-27 20:42:43,749 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-01-27 20:42:44,541 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-01-27 20:42:44,604 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/Systran/faster-whisper-tiny/resolve/d90ca5fe260221311c53c58e660288d3deb8d356/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-01-27 20:42:44,627 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Systran/faster-whisper-tiny/d90ca5fe260221311c53c58e660288d3deb8d356/config.json "HTTP/1.1 200 OK"
+2026-01-27 20:42:44,638 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/Systran/faster-whisper-tiny/resolve/d90ca5fe260221311c53c58e660288d3deb8d356/model.bin "HTTP/1.1 302 Found"
+2026-01-27 20:42:44,863 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/resolve-cache/models/Systran/faster-whisper-tiny/d90ca5fe260221311c53c58e660288d3deb8d356/config.json "HTTP/1.1 200 OK"
+2026-01-27 20:42:44,864 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/Systran/faster-whisper-tiny/resolve/d90ca5fe260221311c53c58e660288d3deb8d356/vocabulary.txt "HTTP/1.1 307 Temporary Redirect"
+2026-01-27 20:42:44,865 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/Systran/faster-whisper-tiny/resolve/d90ca5fe260221311c53c58e660288d3deb8d356/tokenizer.json "HTTP/1.1 307 Temporary Redirect"
+2026-01-27 20:42:44,890 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Systran/faster-whisper-tiny/d90ca5fe260221311c53c58e660288d3deb8d356/tokenizer.json "HTTP/1.1 200 OK"
+2026-01-27 20:42:44,891 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Systran/faster-whisper-tiny/d90ca5fe260221311c53c58e660288d3deb8d356/vocabulary.txt "HTTP/1.1 200 OK"
+2026-01-27 20:42:44,919 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/xet-read-token/d90ca5fe260221311c53c58e660288d3deb8d356 "HTTP/1.1 200 OK"
+2026-01-27 20:42:44,942 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/resolve-cache/models/Systran/faster-whisper-tiny/d90ca5fe260221311c53c58e660288d3deb8d356/vocabulary.txt "HTTP/1.1 200 OK"
+2026-01-27 20:42:44,976 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/resolve-cache/models/Systran/faster-whisper-tiny/d90ca5fe260221311c53c58e660288d3deb8d356/tokenizer.json "HTTP/1.1 200 OK"
+2026-01-27 20:42:46,994 - speech_to_text - INFO - Whisper model loaded successfully
+2026-01-27 20:43:15,303 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-01-27 20:43:15,624 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-01-27 20:43:15,912 - speech_to_text - INFO - Whisper model loaded successfully
+2026-01-27 20:43:20,015 - __main__ - INFO - Wake word detected
+2026-01-27 20:43:20,015 - speech_to_text - INFO - Recording audio...
+2026-01-27 20:43:25,054 - speech_to_text - INFO - Recording complete, transcribing...
+2026-01-27 20:43:25,145 - faster_whisper - INFO - Processing audio with duration 00:05.000
+2026-01-27 20:43:26,018 - faster_whisper - INFO - Detected language 'en' with probability 0.97
+2026-01-27 20:43:27,309 - speech_to_text - INFO - Whisper transcription: What's 2 plus 4?
+2026-01-27 20:43:27,311 - __main__ - INFO - Transcribed text: What's 2 plus 4?
+2026-01-27 20:43:27,311 - __main__ - INFO - Intent recognition result: Sorry, I couldn't calculate that. Try rephrasing your question.
+2026-01-27 20:43:33,023 - __main__ - INFO - Response spoken
+2026-01-27 20:43:48,981 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-01-27 20:43:49,335 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-01-27 20:43:49,609 - speech_to_text - INFO - Whisper model loaded successfully
+2026-01-27 20:43:53,520 - __main__ - INFO - Wake word detected
+2026-01-27 20:43:53,520 - speech_to_text - INFO - Recording audio...
+2026-01-27 20:43:58,559 - speech_to_text - INFO - Recording complete, transcribing...
+2026-01-27 20:43:58,650 - faster_whisper - INFO - Processing audio with duration 00:05.000
+2026-01-27 20:43:59,621 - faster_whisper - INFO - Detected language 'en' with probability 0.97
+2026-01-27 20:44:00,737 - speech_to_text - INFO - Whisper transcription: What's 2 plus 4
+2026-01-27 20:44:00,738 - __main__ - INFO - Transcribed text: What's 2 plus 4
+2026-01-27 20:44:00,738 - __main__ - INFO - Intent recognition result: 6
+2026-01-27 20:44:01,728 - __main__ - INFO - Response spoken
+2026-01-27 20:44:04,160 - __main__ - INFO - Wake word detected
+2026-01-27 20:44:04,160 - speech_to_text - INFO - Recording audio...
+2026-01-27 20:44:09,199 - speech_to_text - INFO - Recording complete, transcribing...
+2026-01-27 20:44:09,307 - faster_whisper - INFO - Processing audio with duration 00:05.000
+2026-01-27 20:44:10,095 - faster_whisper - INFO - Detected language 'en' with probability 0.99
+2026-01-27 20:44:11,359 - speech_to_text - INFO - Whisper transcription: Set the timer for 5 seconds
+2026-01-27 20:44:11,359 - __main__ - INFO - Transcribed text: Set the timer for 5 seconds
+2026-01-27 20:44:11,360 - __main__ - INFO - Intent recognition result: Could not parse a valid time duration from the input.
+2026-01-27 20:44:15,488 - __main__ - INFO - Response spoken
+2026-01-27 20:44:17,777 - __main__ - INFO - Wake word detected
+2026-01-27 20:44:17,777 - speech_to_text - INFO - Recording audio...
+2026-01-27 20:44:22,816 - speech_to_text - INFO - Recording complete, transcribing...
+2026-01-27 20:44:22,906 - faster_whisper - INFO - Processing audio with duration 00:05.000
+2026-01-27 20:44:23,662 - faster_whisper - INFO - Detected language 'en' with probability 0.99
+2026-01-27 20:44:24,663 - speech_to_text - INFO - Whisper transcription: Set a timer for five seconds
+2026-01-27 20:44:24,664 - __main__ - INFO - Transcribed text: Set a timer for five seconds
+2026-01-27 20:44:24,664 - __main__ - INFO - Intent recognition result: Timer set for 5 seconds.
+2026-01-27 20:44:27,393 - __main__ - INFO - Response spoken
+2026-01-27 20:44:27,393 - skills.timer - INFO - Timer started for 5 seconds
+2026-01-27 20:44:32,398 - skills.timer - INFO - Timer finished!
+2026-01-27 20:48:46,301 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-01-27 20:48:46,785 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-01-27 20:48:47,161 - speech_to_text - INFO - Whisper model loaded successfully
+2026-01-27 20:48:52,268 - __main__ - INFO - Wake word detected
+2026-01-27 20:48:52,268 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-27 20:50:03,041 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-01-27 20:50:03,385 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-01-27 20:50:03,661 - speech_to_text - INFO - Whisper model loaded successfully
+2026-01-27 20:50:07,390 - __main__ - INFO - Wake word detected
+2026-01-27 20:50:07,390 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-27 20:50:10,307 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-01-27 20:50:10,317 - speech_to_text - INFO - Recording complete: 2.90s total, transcribing...
+2026-01-27 20:50:10,427 - faster_whisper - INFO - Processing audio with duration 00:02.900
+2026-01-27 20:50:11,267 - faster_whisper - INFO - Detected language 'en' with probability 0.96
+2026-01-27 20:50:12,385 - speech_to_text - INFO - Whisper transcription: What's 2 plus 2
+2026-01-27 20:50:12,386 - __main__ - INFO - Transcribed text: What's 2 plus 2
+2026-01-27 20:50:12,387 - __main__ - INFO - Intent recognition result: 4
+2026-01-27 20:50:13,326 - __main__ - INFO - Response spoken
+2026-01-27 20:50:16,270 - __main__ - INFO - Wake word detected
+2026-01-27 20:50:16,271 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-27 20:50:20,188 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-01-27 20:50:20,190 - speech_to_text - INFO - Recording complete: 3.90s total, transcribing...
+2026-01-27 20:50:20,301 - faster_whisper - INFO - Processing audio with duration 00:03.900
+2026-01-27 20:50:21,129 - faster_whisper - INFO - Detected language 'en' with probability 0.98
+2026-01-27 20:50:22,537 - speech_to_text - INFO - Whisper transcription: set of timer for five seconds
+2026-01-27 20:50:22,538 - __main__ - INFO - Transcribed text: set of timer for five seconds
+2026-01-27 20:50:22,539 - __main__ - INFO - Intent recognition result: Timer set for 5 seconds.
+2026-01-27 20:50:25,166 - __main__ - INFO - Response spoken
+2026-01-27 20:50:25,167 - skills.timer - INFO - Timer started for 5 seconds
+2026-01-27 20:50:30,172 - skills.timer - INFO - Timer finished!
+2026-01-27 20:50:42,143 - __main__ - INFO - Wake word detected
+2026-01-27 20:50:42,143 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-27 20:50:44,660 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-01-27 20:50:44,671 - speech_to_text - INFO - Recording complete: 2.50s total, transcribing...
+2026-01-27 20:50:44,773 - faster_whisper - INFO - Processing audio with duration 00:02.500
+2026-01-27 20:50:45,627 - faster_whisper - INFO - Detected language 'en' with probability 0.97
+2026-01-27 20:50:46,687 - speech_to_text - INFO - Whisper transcription: What time is it
+2026-01-27 20:50:46,687 - __main__ - INFO - Transcribed text: What time is it
+2026-01-27 20:50:46,688 - __main__ - INFO - Intent recognition result: The current time is 08:50 PM.
+2026-01-27 20:50:50,032 - __main__ - INFO - Response spoken
+2026-01-27 20:51:39,522 - __main__ - INFO - Wake word detected
+2026-01-27 20:51:39,523 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-27 20:51:48,139 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-01-27 20:51:48,145 - speech_to_text - INFO - Recording complete: 8.60s total, transcribing...
+2026-01-27 20:51:48,264 - faster_whisper - INFO - Processing audio with duration 00:08.600
+2026-01-27 20:51:49,157 - faster_whisper - INFO - Detected language 'en' with probability 1.00
+2026-01-27 20:51:50,976 - speech_to_text - INFO - Whisper transcription: What's 5 plus 5 times 12 minus 13 plus 4 divided by 6 plus 2
+2026-01-27 20:51:50,977 - __main__ - INFO - Transcribed text: What's 5 plus 5 times 12 minus 13 plus 4 divided by 6 plus 2
+2026-01-27 20:51:50,977 - __main__ - INFO - Intent recognition result: 54.666666666666664
+2026-01-27 20:51:58,290 - __main__ - INFO - Response spoken

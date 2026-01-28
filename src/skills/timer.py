@@ -6,32 +6,35 @@ from word2number import w2n
 import subprocess
 from config.settings import TIMER_ALARM_SOUND, AUDIO_OUTPUT_DEVICE
 
+from config.logging_config import setup_logging
+setup_logging()
+import logging
+logger = logging.getLogger(__name__)
+
 # Global to track alarm process
 alarm_process = None
 
 async def start_timer(duration_seconds):
     """Run a timer for the specified duration"""
-    global alarm_process
-    
-    #print(f"Timer started for {duration_seconds} seconds")
+    logger.info(f"Timer started for {duration_seconds} seconds")
     await asyncio.sleep(duration_seconds)
-    print("Timer finished!")
+    logger.info("Timer finished!")
     
-    # Play alarm on loop to specific device
-    alarm_process = subprocess.Popen([
+    # Play alarm once
+    subprocess.run([
         'aplay', 
         '-D', f'plughw:{AUDIO_OUTPUT_DEVICE},0',
-        '-l',  # Loop forever
         TIMER_ALARM_SOUND
     ])
-
+        
 def stop_alarm():
     """Stop the alarm if it's playing"""
     global alarm_process
     
     if alarm_process is not None:
         alarm_process.terminate()  # Stop the process
-        alarm_process = None  # Clear it
+        alarm_process = None
+        logger.info("Alarm stopped")
         return "Alarm stopped"
     else:
         return "No alarm is playing"

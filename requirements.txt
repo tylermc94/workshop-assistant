@@ -3,6 +3,7 @@ pvporcupine>=3.0.0
 
 # Speech to text
 vosk>=0.3.45
+faster-whisper>=1.2.1
 
 # Text to speech
 piper-tts>=1.3.0

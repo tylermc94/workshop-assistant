@@ -9,7 +9,7 @@ CALENDAR_TRIGGERS = ["what time is it", "what's the time", "what's the date", "w
 CALCULATOR_TRIGGERS = ["what is", "what's", "calculate", "how much is"]
 HOME_ASSISTANT_TRIGGERS = ["turn on", "turn off"]
 TIMER_TRIGGERS = ["set a timer", "timer for", "start a timer"]
-ALARM_TRIGGERS = ["stop alarm", "stop timer", "turn off alarm"]
+ALARM_TRIGGERS = ["stop alarm", "stop timer", "turn off alarm", "stop"]
 
 def strip_trigger(text, triggers):
     """Remove trigger phrase from text"""
