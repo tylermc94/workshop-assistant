@@ -560,3 +560,221 @@ NameError: name 'TIMER_ALARM_REPEATS' is not defined
 2026-01-27 21:43:14,827 - __main__ - INFO - Transcribed text: What time is it
 2026-01-27 21:43:14,828 - __main__ - INFO - Intent recognition result: The current time is 09:43 PM.
 2026-01-27 21:43:18,341 - __main__ - INFO - Response spoken
+2026-01-27 21:45:46,844 - __main__ - INFO - Wake word detected
+2026-01-27 21:45:46,844 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-27 21:45:50,161 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-01-27 21:45:50,172 - speech_to_text - INFO - Recording complete: 3.30s total, transcribing...
+2026-01-27 21:45:52,938 - speech_to_text - INFO - Whisper transcription: Set a timer for 30 seconds
+2026-01-27 21:45:52,939 - __main__ - INFO - Transcribed text: Set a timer for 30 seconds
+2026-01-27 21:45:52,941 - __main__ - INFO - Intent recognition result: Timer set for 30 seconds.
+2026-01-27 21:45:55,820 - __main__ - INFO - Response spoken
+2026-01-27 21:45:55,821 - skills.timer - INFO - Timer started for 30 seconds
+2026-01-27 21:45:57,677 - __main__ - INFO - Wake word detected
+2026-01-27 21:45:57,677 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-27 21:46:00,494 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-01-27 21:46:00,508 - speech_to_text - INFO - Recording complete: 2.80s total, transcribing...
+2026-01-27 21:46:02,243 - speech_to_text - INFO - Whisper transcription: What's 2 plus 2
+2026-01-27 21:46:02,243 - __main__ - INFO - Transcribed text: What's 2 plus 2
+2026-01-27 21:46:02,243 - skills.calculator - INFO - Parsing expression: 2 plus 2
+2026-01-27 21:46:02,243 - skills.calculator - INFO - Parsed to: 2 + 2
+2026-01-27 21:46:02,243 - skills.calculator - INFO - Evaluated '2 + 2' = 4
+2026-01-27 21:46:02,243 - __main__ - INFO - Intent recognition result: 4
+2026-01-27 21:46:02,861 - __main__ - INFO - Response spoken
+2026-01-27 21:46:25,833 - skills.timer - INFO - Timer finished!
+2026-01-27 21:47:58,371 - __main__ - INFO - Wake word detected
+2026-01-27 21:47:58,371 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-27 21:48:00,788 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-01-27 21:48:00,802 - speech_to_text - INFO - Recording complete: 2.40s total, transcribing...
+2026-01-27 21:48:04,065 - speech_to_text - INFO - Whisper transcription: What is it
+2026-01-27 21:48:04,066 - __main__ - INFO - Transcribed text: What is it
+2026-01-27 21:48:04,066 - skills.calculator - INFO - Parsing expression: it
+2026-01-27 21:48:04,066 - skills.calculator - INFO - Parsed to: 
+2026-01-27 21:48:04,066 - __main__ - INFO - Intent recognition result: Sorry, I couldn't calculate that. Try rephrasing your question.
+2026-01-27 21:48:10,163 - __main__ - INFO - Response spoken
+2026-01-27 21:48:12,035 - __main__ - INFO - Wake word detected
+2026-01-27 21:48:12,035 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-27 21:48:14,852 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-01-27 21:48:14,866 - speech_to_text - INFO - Recording complete: 2.80s total, transcribing...
+2026-01-27 21:48:18,278 - speech_to_text - INFO - Whisper transcription: What day is it
+2026-01-27 21:48:18,278 - __main__ - INFO - Transcribed text: What day is it
+2026-01-27 21:48:18,279 - __main__ - INFO - Intent recognition result: Today is Tuesday.
+2026-01-27 21:48:20,339 - __main__ - INFO - Response spoken
+2026-01-29 15:08:31,296 - __main__ - INFO - Wake word detected
+2026-01-29 15:08:31,296 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-29 15:08:33,713 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-01-29 15:08:33,727 - speech_to_text - INFO - Recording complete: 2.40s total, transcribing...
+2026-01-29 15:13:18,692 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-01-29 15:13:19,169 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-01-29 15:13:20,380 - speech_to_text - INFO - Whisper model loaded successfully
+2026-01-29 15:13:43,724 - __main__ - INFO - Wake word detected
+2026-01-29 15:13:43,724 - speech_to_text - INFO - Starting dynamic recording...
+2026-01-29 15:13:46,141 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-01-29 15:13:46,155 - speech_to_text - INFO - Recording complete: 2.40s total, transcribing...
+2026-01-29 15:13:47,457 - speech_to_text - INFO - Whisper transcription: What day is it
+2026-01-29 15:13:47,457 - __main__ - INFO - Transcribed text: What day is it
+2026-01-29 15:13:47,457 - __main__ - INFO - Intent recognition result: Today is Thursday.
+2026-01-29 15:13:49,244 - __main__ - INFO - Response spoken
+2026-02-27 10:41:06,263 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-02-27 10:41:06,632 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-02-27 10:41:07,736 - speech_to_text - INFO - Whisper model loaded successfully
+2026-02-27 10:44:12,835 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-02-27 10:44:13,111 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-02-27 10:44:13,366 - speech_to_text - INFO - Whisper model loaded successfully
+2026-02-27 10:46:28,282 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-02-27 10:46:28,561 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-02-27 10:46:28,820 - speech_to_text - INFO - Whisper model loaded successfully
+2026-02-27 10:48:25,146 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-02-27 10:48:25,435 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-02-27 10:48:25,693 - speech_to_text - INFO - Whisper model loaded successfully
+2026-02-27 10:49:31,819 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-02-27 10:49:32,105 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-02-27 10:49:32,363 - speech_to_text - INFO - Whisper model loaded successfully
+2026-02-27 10:59:14,928 - __main__ - INFO - Wake word detected
+2026-02-27 10:59:14,929 - speech_to_text - INFO - Starting dynamic recording...
+2026-02-27 10:59:17,345 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-02-27 10:59:17,360 - speech_to_text - INFO - Recording complete: 2.40s total, transcribing...
+2026-02-27 10:59:18,534 - speech_to_text - INFO - Whisper transcription: What time is it
+2026-02-27 10:59:18,535 - __main__ - INFO - Transcribed text: What time is it
+2026-02-27 10:59:18,535 - __main__ - INFO - Intent recognition result: The current time is 10:59 AM.
+2026-02-27 10:59:22,034 - __main__ - INFO - Response spoken
+2026-02-27 10:59:24,209 - __main__ - INFO - Wake word detected
+2026-02-27 10:59:24,209 - speech_to_text - INFO - Starting dynamic recording...
+2026-02-27 10:59:27,026 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-02-27 10:59:27,040 - speech_to_text - INFO - Recording complete: 2.80s total, transcribing...
+2026-02-27 10:59:28,343 - speech_to_text - INFO - Whisper transcription: Who won the Super Bowl
+2026-02-27 10:59:28,344 - __main__ - INFO - Transcribed text: Who won the Super Bowl
+2026-02-27 10:59:28,344 - intent_recognition - INFO - No local skill matched, forwarding to Claude: Who won the Super Bowl
+2026-02-27 10:59:28,344 - claude_integration - INFO - Sending to Claude: Who won the Super Bowl
+2026-02-27 10:59:30,530 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-02-27 10:59:30,550 - claude_integration - INFO - Claude response: I'd need to know which year you're asking about, as there's a Super Bowl every year. The most recent Super Bowl LVIII (2024) was won by the Kansas City Chiefs, who defeated the San Francisco 49ers 25-22 in overtime.
+2026-02-27 10:59:30,550 - claude_integration - INFO - Tokens used - Input: 39, Output: 60
+2026-02-27 10:59:30,550 - __main__ - INFO - Intent recognition result: I'd need to know which year you're asking about, as there's a Super Bowl every year. The most recent Super Bowl LVIII (2024) was won by the Kansas City Chiefs, who defeated the San Francisco 49ers 25-22 in overtime.
+2026-02-27 10:59:50,643 - __main__ - INFO - Response spoken
+2026-02-27 11:04:03,906 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-02-27 11:04:04,229 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-02-27 11:04:04,487 - speech_to_text - INFO - Whisper model loaded successfully
+2026-02-27 11:04:11,293 - __main__ - INFO - Wake word detected
+2026-02-27 11:04:11,294 - speech_to_text - INFO - Starting dynamic recording...
+2026-02-27 11:04:14,810 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-02-27 11:04:14,812 - speech_to_text - INFO - Recording complete: 3.50s total, transcribing...
+2026-02-27 11:04:16,079 - speech_to_text - INFO - Whisper transcription: What's the square root of 69
+2026-02-27 11:04:16,080 - __main__ - INFO - Transcribed text: What's the square root of 69
+2026-02-27 11:04:16,080 - skills.calculator - INFO - Parsing expression: the square root of 69
+2026-02-27 11:04:16,080 - skills.calculator - INFO - Parsed to: 69
+2026-02-27 11:04:16,080 - skills.calculator - INFO - Evaluated '69' = 69
+2026-02-27 11:04:16,080 - __main__ - INFO - Intent recognition result: 69
+2026-02-27 11:04:17,247 - __main__ - INFO - Response spoken
+2026-02-27 11:04:24,478 - __main__ - INFO - Wake word detected
+2026-02-27 11:04:24,478 - speech_to_text - INFO - Starting dynamic recording...
+2026-02-27 11:04:28,295 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-02-27 11:04:28,301 - speech_to_text - INFO - Recording complete: 3.80s total, transcribing...
+2026-02-27 11:04:29,623 - speech_to_text - INFO - Whisper transcription: What's the square root of 240
+2026-02-27 11:04:29,624 - __main__ - INFO - Transcribed text: What's the square root of 240
+2026-02-27 11:04:29,624 - skills.calculator - INFO - Parsing expression: the square root of 240
+2026-02-27 11:04:29,624 - skills.calculator - INFO - Parsed to: 240
+2026-02-27 11:04:29,624 - skills.calculator - INFO - Evaluated '240' = 240
+2026-02-27 11:04:29,624 - __main__ - INFO - Intent recognition result: 240
+2026-02-27 11:04:31,487 - __main__ - INFO - Response spoken
+2026-02-27 11:05:45,409 - __main__ - INFO - Wake word detected
+2026-02-27 11:05:45,409 - speech_to_text - INFO - Starting dynamic recording...
+2026-02-27 11:05:48,926 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-02-27 11:05:48,945 - speech_to_text - INFO - Recording complete: 3.50s total, transcribing...
+2026-02-27 11:05:50,038 - speech_to_text - INFO - Whisper transcription: Who's the current president
+2026-02-27 11:05:50,038 - __main__ - INFO - Transcribed text: Who's the current president
+2026-02-27 11:05:50,038 - intent_recognition - INFO - No local skill matched, forwarding to Claude: Who's the current president
+2026-02-27 11:05:50,038 - claude_integration - INFO - Sending to Claude: Who's the current president
+2026-02-27 11:05:52,544 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-02-27 11:05:52,570 - claude_integration - INFO - Claude response: I don't have access to real-time information, so I can't tell you who the current president is as of today. My knowledge has a cutoff date, and political situations can change. You can check current news sources or official government websites for the most up-to-date information.
+2026-02-27 11:05:52,570 - claude_integration - INFO - Tokens used - Input: 39, Output: 63
+2026-02-27 11:05:52,570 - __main__ - INFO - Intent recognition result: I don't have access to real-time information, so I can't tell you who the current president is as of today. My knowledge has a cutoff date, and political situations can change. You can check current news sources or official government websites for the most up-to-date information.
+2026-02-27 11:06:12,388 - __main__ - INFO - Response spoken
+2026-02-27 11:06:33,315 - __main__ - INFO - Wake word detected
+2026-02-27 11:06:33,316 - speech_to_text - INFO - Starting dynamic recording...
+2026-02-27 11:06:37,332 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-02-27 11:06:37,347 - speech_to_text - INFO - Recording complete: 4.00s total, transcribing...
+2026-02-27 11:06:38,592 - speech_to_text - INFO - Whisper transcription: What's the bed size of an M3 printer
+2026-02-27 11:06:38,592 - __main__ - INFO - Transcribed text: What's the bed size of an M3 printer
+2026-02-27 11:06:38,592 - skills.calculator - INFO - Parsing expression: the bed size of an m3 printer
+2026-02-27 11:06:38,592 - skills.calculator - INFO - Parsed to: 
+2026-02-27 11:06:38,592 - intent_recognition - INFO - Calculator failed: Error evaluating expression: invalid syntax (<string>, line 0), forwarding to Claude
+2026-02-27 11:06:38,592 - claude_integration - INFO - Sending to Claude: What's the bed size of an M3 printer
+2026-02-27 11:06:41,701 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-02-27 11:06:41,702 - claude_integration - INFO - Claude response: I need clarification on which M3 printer you're referring to, as there are several models from different manufacturers. Could you specify the brand (like Bambu Lab, Zortrax, etc.)?
+
+In general, most desktop 3D printers labeled "M3" typically have build volumes ranging from 200x200x200mm to 300x300x300mm, but the exact dimensions vary by manufacturer.
+2026-02-27 11:06:41,702 - claude_integration - INFO - Tokens used - Input: 45, Output: 93
+2026-02-27 11:06:41,702 - __main__ - INFO - Intent recognition result: I need clarification on which M3 printer you're referring to, as there are several models from different manufacturers. Could you specify the brand (like Bambu Lab, Zortrax, etc.)?
+
+In general, most desktop 3D printers labeled "M3" typically have build volumes ranging from 200x200x200mm to 300x300x300mm, but the exact dimensions vary by manufacturer.
+2026-02-27 11:07:15,974 - __main__ - INFO - Response spoken
+2026-02-27 11:08:20,399 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-02-27 11:08:20,691 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-02-27 11:08:20,949 - speech_to_text - INFO - Whisper model loaded successfully
+2026-02-27 11:08:25,096 - __main__ - INFO - Wake word detected
+2026-02-27 11:08:25,096 - speech_to_text - INFO - Starting dynamic recording...
+2026-02-27 11:08:28,313 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-02-27 11:08:28,327 - speech_to_text - INFO - Recording complete: 3.20s total, transcribing...
+2026-02-27 11:08:29,587 - speech_to_text - INFO - Whisper transcription: What's the square root of 69
+2026-02-27 11:08:29,587 - __main__ - INFO - Transcribed text: What's the square root of 69
+2026-02-27 11:08:29,587 - skills.calculator - INFO - Calculating: the square root of 69
+2026-02-27 11:08:29,587 - skills.calculator - INFO - Parsing expression: the square root of 69
+2026-02-27 11:08:29,587 - skills.calculator - INFO - Parsed to: 69
+2026-02-27 11:08:29,587 - skills.calculator - INFO - Parsed expression: 69
+2026-02-27 11:08:29,587 - skills.calculator - ERROR - Calculation error: Could not parse mathematical expression from: the square root of 69
+2026-02-27 11:08:29,587 - intent_recognition - INFO - Calculator failed: Could not calculate: the square root of 69, forwarding to Claude
+2026-02-27 11:08:29,587 - claude_integration - INFO - Sending to Claude: What's the square root of 69
+2026-02-27 11:08:31,573 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-02-27 11:08:31,596 - claude_integration - INFO - Claude response: The square root of 69 is approximately 8.31. For practical purposes, it's between 8 and 8.5.
+2026-02-27 11:08:31,596 - claude_integration - INFO - Tokens used - Input: 42, Output: 33
+2026-02-27 11:08:31,597 - __main__ - INFO - Intent recognition result: The square root of 69 is approximately 8.31. For practical purposes, it's between 8 and 8.5.
+2026-02-27 11:08:41,098 - __main__ - INFO - Response spoken
+2026-02-27 11:09:11,604 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-02-27 11:09:11,884 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-02-27 11:09:12,143 - speech_to_text - INFO - Whisper model loaded successfully
+2026-02-27 11:09:20,859 - __main__ - INFO - Wake word detected
+2026-02-27 11:09:20,859 - speech_to_text - INFO - Starting dynamic recording...
+2026-02-27 11:09:25,175 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-02-27 11:09:25,194 - speech_to_text - INFO - Recording complete: 4.30s total, transcribing...
+2026-02-27 11:09:26,528 - speech_to_text - INFO - Whisper transcription: What's the build volume of an Ender 3 printer
+2026-02-27 11:09:26,528 - __main__ - INFO - Transcribed text: What's the build volume of an Ender 3 printer
+2026-02-27 11:09:26,528 - skills.calculator - INFO - Calculating: the build volume of an ender 3 printer
+2026-02-27 11:09:26,529 - skills.calculator - INFO - Parsing expression: the build volume of an ender 3 printer
+2026-02-27 11:09:26,529 - skills.calculator - INFO - Parsed to: 3
+2026-02-27 11:09:26,529 - skills.calculator - INFO - Parsed expression: 3
+2026-02-27 11:09:26,529 - skills.calculator - ERROR - Calculation error: Could not parse mathematical expression from: the build volume of an ender 3 printer
+2026-02-27 11:09:26,529 - intent_recognition - INFO - Calculator failed: Could not calculate: the build volume of an ender 3 printer, forwarding to Claude
+2026-02-27 11:09:26,529 - claude_integration - INFO - Sending to Claude: What's the build volume of an Ender 3 printer
+2026-02-27 11:09:28,730 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-02-27 11:09:28,752 - claude_integration - INFO - Claude response: The Ender 3 has a build volume of 220 x 220 x 250mm (8.7 x 8.7 x 9.8 inches). This gives you a decent amount of space for most hobby and prototyping projects.
+2026-02-27 11:09:28,752 - claude_integration - INFO - Tokens used - Input: 48, Output: 62
+2026-02-27 11:09:28,752 - __main__ - INFO - Intent recognition result: The Ender 3 has a build volume of 220 x 220 x 250mm (8.7 x 8.7 x 9.8 inches). This gives you a decent amount of space for most hobby and prototyping projects.
+2026-02-27 11:09:48,621 - __main__ - INFO - Response spoken
+2026-02-27 11:17:32,992 - __main__ - INFO - Wake word detected
+2026-02-27 11:17:32,992 - speech_to_text - INFO - Starting dynamic recording...
+2026-02-27 11:17:37,509 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-02-27 11:17:37,519 - speech_to_text - INFO - Recording complete: 4.50s total, transcribing...
+2026-02-27 11:17:38,789 - speech_to_text - INFO - Whisper transcription: What's the optimal temperature for printing PLA
+2026-02-27 11:17:38,789 - __main__ - INFO - Transcribed text: What's the optimal temperature for printing PLA
+2026-02-27 11:17:38,789 - skills.calculator - INFO - Calculating: the optimal temperature for printing pla
+2026-02-27 11:17:38,789 - skills.calculator - INFO - Parsing expression: the optimal temperature for printing pla
+2026-02-27 11:17:38,789 - skills.calculator - INFO - Parsed to: 4
+2026-02-27 11:17:38,789 - skills.calculator - INFO - Parsed expression: 4
+2026-02-27 11:17:38,789 - skills.calculator - ERROR - Calculation error: Could not parse mathematical expression from: the optimal temperature for printing pla
+2026-02-27 11:17:38,789 - intent_recognition - INFO - Calculator failed: Could not calculate: the optimal temperature for printing pla, forwarding to Claude
+2026-02-27 11:17:38,790 - claude_integration - INFO - Sending to Claude: What's the optimal temperature for printing PLA
+2026-02-27 11:17:41,529 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-02-27 11:17:41,530 - claude_integration - INFO - Claude response: The optimal temperature for printing PLA is 190-220°C for the hot end and 50-60°C for the heated bed. Most PLA filaments print well at 200-210°C, but check your specific filament manufacturer's recommendations as they can vary slightly.
+2026-02-27 11:17:41,530 - claude_integration - INFO - Tokens used - Input: 43, Output: 63
+2026-02-27 11:17:41,530 - __main__ - INFO - Intent recognition result: The optimal temperature for printing PLA is 190-220°C for the hot end and 50-60°C for the heated bed. Most PLA filaments print well at 200-210°C, but check your specific filament manufacturer's recommendations as they can vary slightly.
+2026-02-27 11:18:07,010 - __main__ - INFO - Response spoken
+2026-02-27 11:19:55,894 - __main__ - INFO - Wake word detected
+2026-02-27 11:19:55,894 - speech_to_text - INFO - Starting dynamic recording...
+2026-02-27 11:19:58,011 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-02-27 11:19:58,021 - speech_to_text - INFO - Recording complete: 2.10s total, transcribing...
+2026-02-27 11:19:59,104 - speech_to_text - INFO - Whisper transcription: What time is it
+2026-02-27 11:19:59,105 - __main__ - INFO - Transcribed text: What time is it
+2026-02-27 11:19:59,105 - __main__ - INFO - Intent recognition result: The current time is 11:19 AM.
+2026-02-27 11:20:02,503 - __main__ - INFO - Response spoken
+2026-02-27 16:05:33,589 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-02-27 16:05:33,873 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-02-27 16:05:34,156 - speech_to_text - INFO - Whisper model loaded successfully

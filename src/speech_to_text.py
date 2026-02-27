@@ -94,7 +94,11 @@ def _transcribe_with_whisper(audio):
             wf.writeframes(audio.tobytes())
         
         # Transcribe
-        segments, info = whisper_model.transcribe(tmp.name, beam_size=5)
+        segments, info = whisper_model.transcribe(
+            tmp.name, 
+            beam_size=5,
+            language="en"
+        )
         
         # Combine all segments into single text
         text = " ".join([segment.text for segment in segments]).strip()

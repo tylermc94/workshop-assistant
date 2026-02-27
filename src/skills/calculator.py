@@ -73,7 +73,21 @@ def evaluate_expression(expression):
         raise ValueError(f"Error evaluating expression: {e}")
 
 def calculate(expression):
-    """Calculates the result of a natural language arithmetic expression"""
-    math_expression = parse_calc_expression(expression)
-    result = evaluate_expression(math_expression)
-    return result
+    """Calculate a math expression from natural language"""
+    logger.info(f"Calculating: {expression}")
+    
+    try:
+        parsed_expression = parse_calc_expression(expression)
+        logger.info(f"Parsed expression: {parsed_expression}")
+        
+        # Check if we actually got a valid expression (has operators)
+        if not any(op in parsed_expression for op in ['+', '-', '*', '/', '**', '%']):
+            # No operators found - probably couldn't parse
+            raise ValueError(f"Could not parse mathematical expression from: {expression}")
+        
+        result = eval(parsed_expression, {"__builtins__": {}}, {})
+        logger.info(f"Result: {result}")
+        return result
+    except (ValueError, SyntaxError, NameError) as e:
+        logger.error(f"Calculation error: {e}")
+        raise ValueError(f"Could not calculate: {expression}")

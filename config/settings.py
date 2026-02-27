@@ -40,7 +40,7 @@ TTS_VOICES = {
     "alba": "models/piper/en_GB-alba-medium.onnx"     # UK Female
 }
 TTS_MODEL_PATH = TTS_VOICES[TTS_VOICE]
-TTS_SPEED = 1.0  # 1.0 = normal, <1 = faster, >1 = slower
+TTS_SPEED = 2  # 1 = normal, <1 = faster, >1 = slower
 TTS_NOISE_SCALE = 0.667
 TTS_NOISE_W = 0.8
 

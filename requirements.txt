@@ -13,6 +13,9 @@ sounddevice==0.4.6
 soundfile==0.12.1
 numpy>=1.26.0
 
+# Claude Integration
+anthropic
+
 # Miscellaneous
 scipy>=1.17.0
 word2number>=1.1

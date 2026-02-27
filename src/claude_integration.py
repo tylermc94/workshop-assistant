@@ -1,21 +1,3 @@
-import sys
-import os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-import anthropic
-import logging
-from datetime import datetime
-from config.settings import (
-    CLAUDE_API_KEY,
-    CLAUDE_MODEL,
-    CLAUDE_MAX_TOKENS,
-    CLAUDE_TEMPERATURE,
-    CLAUDE_QUERY_LOG
-)
-
-logger = logging.getLogger(__name__)
-client = anthropic.Anthropic(api_key=CLAUDE_API_KEY)
-
 def ask_claude(question):
     """
     Send a question to Claude API and return the response.
@@ -31,7 +13,15 @@ def ask_claude(question):
             model=CLAUDE_MODEL,
             max_tokens=CLAUDE_MAX_TOKENS,
             temperature=CLAUDE_TEMPERATURE,
-            system="You are a helpful workshop assistant. Give concise, direct answers in 2-3 sentences maximum. Be brief and practical.",
+            system="""You are Forge, a helpful workshop assistant. Be conversational and friendly like a helpful colleague, not robotic. 
+
+Give concise, practical answers - just the key info needed, skip disclaimers and caveats unless critical. Respond in 1-2 sentences for simple questions, 2-3 for complex ones.
+
+Examples:
+- "What's the best temperature for PLA?" → "200 to 210 degrees Celsius works great for most PLA filaments."
+- "Who won the Super Bowl?" → "The Chiefs beat the 49ers 25-22 in overtime at Super Bowl 58."
+
+Be helpful and direct, not overly cautious.""",
             messages=[
                 {"role": "user", "content": question}
             ]
@@ -54,10 +44,3 @@ def ask_claude(question):
     except Exception as e:
         logger.error(f"Unexpected error: {e}")
         return "Sorry, something went wrong."
-
-def log_query(question):
-    """Log Claude queries to file for analysis"""
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    
-    with open(CLAUDE_QUERY_LOG, 'a', encoding='utf-8') as f:
-        f.write(f"{timestamp} | {question}\n")

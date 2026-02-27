@@ -1,52 +1,84 @@
 import sys
 import os
-import subprocess
-import wave
-import tempfile
-import numpy as np
-from piper import PiperVoice
-
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from config.settings import AUDIO_OUTPUT_DEVICE, TTS_MODEL_PATH
+import subprocess
+import logging
+import threading
+from config.settings import TTS_MODEL_PATH, AUDIO_OUTPUT_DEVICE
+from tts_formatter import format_for_speech
 
-# Load TTS voice model
-voice = PiperVoice.load(TTS_MODEL_PATH)
+logger = logging.getLogger(__name__)
 
-def synthesize_speech(text):
-    """Convert text to audio using Piper TTS"""
-    audio_data = []
-    sample_rate = None
-    
-    for chunk in voice.synthesize(text):
-        audio_data.append(chunk.audio_int16_bytes)
-        if sample_rate is None:
-            sample_rate = chunk.sample_rate
-    
-    # Combine chunks and convert to numpy array
-    audio_bytes = b''.join(audio_data)
-    audio = np.frombuffer(audio_bytes, dtype=np.int16)
-    
-    return audio, sample_rate
+# Global flag for interruption
+_interrupt_flag = False
+_audio_process = None
 
-def speak(text):
-    """Synthesize and play text as speech"""
-    audio, sample_rate = synthesize_speech(text)
+def interrupt():
+    """Signal to interrupt current speech"""
+    global _interrupt_flag, _audio_process
+    _interrupt_flag = True
+    if _audio_process:
+        _audio_process.kill()
+        logger.info("TTS interrupted by user")
+
+def speak(text, check_interrupt_callback=None):
+    """
+    Convert text to speech using Piper TTS
     
-    # Create temporary wav file
-    with tempfile.NamedTemporaryFile(suffix='.wav', delete=False) as tmp:
-        with wave.open(tmp.name, 'wb') as wf:
-            wf.setnchannels(1)
-            wf.setsampwidth(2)
-            wf.setframerate(sample_rate)
-            wf.writeframes(audio.tobytes())
+    Args:
+        text: Text to speak
+        check_interrupt_callback: Optional function to check if we should interrupt
+    """
+    global _interrupt_flag, _audio_process
+    _interrupt_flag = False
+    
+    logger.info(f"Speaking: {text}")
+    
+    # Format for better TTS pronunciation
+    formatted_text = format_for_speech(text)
+    logger.info(f"Formatted for TTS: {formatted_text}")
+    
+    # Generate speech
+    piper_process = subprocess.Popen(
+        ['piper', '--model', TTS_MODEL_PATH, '--output-raw'],
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL
+    )
+    
+    audio_data, _ = piper_process.communicate(input=formatted_text.encode('utf-8'))
+    
+    if _interrupt_flag:
+        logger.info("TTS interrupted before playback")
+        return
+    
+    # Play audio (can be interrupted)
+    _audio_process = subprocess.Popen(
+        ['aplay', '-r', '22050', '-f', 'S16_LE', '-t', 'raw', '-D', f'plughw:{AUDIO_OUTPUT_DEVICE},0'],
+        stdin=subprocess.PIPE,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL
+    )
+    
+    # If callback provided, monitor for interrupt
+    if check_interrupt_callback:
+        def monitor_interrupt():
+            while _audio_process.poll() is None:  # While audio still playing
+                if check_interrupt_callback():
+                    interrupt()
+                    break
         
-        # Play with aplay to specific device (suppress output)
-        subprocess.run([
-            'aplay', 
-            '-D', f'plughw:{AUDIO_OUTPUT_DEVICE},0',
-            tmp.name
-        ], stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
-        
-        # Clean up temp file
-        os.unlink(tmp.name)
+        monitor_thread = threading.Thread(target=monitor_interrupt, daemon=True)
+        monitor_thread.start()
+    
+    # Send audio data
+    try:
+        _audio_process.communicate(input=audio_data, timeout=30)
+    except subprocess.TimeoutExpired:
+        _audio_process.kill()
+        logger.warning("TTS playback timeout")
+    except Exception as e:
+        logger.error(f"TTS playback error: {e}")
+    
+    _audio_process = None
