@@ -47,3 +47,20 @@ TTS_NOISE_W = 0.8
 # Timer Settings
 TIMER_ALARM_SOUND = "sounds/no-problem.wav"
 TIMER_ALARM_REPEATS = 3  # Play 3 times
+
+# Claude Settings
+# Import API key from secrets
+from config.secrets import CLAUDE_API_KEY
+
+# Claude API Configuration
+CLAUDE_MODEL = "claude-sonnet-4-20250514"
+CLAUDE_MAX_TOKENS = 200  # Short responses for question mode
+CLAUDE_TEMPERATURE = 1.0
+
+# Budget Settings
+BUDGET_WARNING_THRESHOLD = 15.00  # USD
+BUDGET_HARD_LIMIT = 20.00  # USD
+BUDGET_FILE = "logs/budget.json"  # Track spending
+
+# Query Logging
+CLAUDE_QUERY_LOG = "logs/claude_queries.log"

@@ -23,3 +23,6 @@ Thumbs.db
 # IDE
 .vscode/
 .idea/logs/
+
+logs/claude_queries.log
+logs/budget.json
