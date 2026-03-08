@@ -53,27 +53,10 @@ async def main():
         logger.info(f"Intent recognition result: {result}")
         
         print(f'"{result}"')
-        
-        # Start listening for wake word in background while speaking
-        async def listen_during_speech():
-            global wake_word_detected_during_speech
-            await asyncio.to_thread(wake_word.listen_for_wake_word)
-            wake_word_detected_during_speech = True
-            logger.info("Wake word detected during speech - interrupting")
-        
-        listen_task = asyncio.create_task(listen_during_speech())
-        
-        # Speak with interrupt checking
-        await asyncio.to_thread(text_to_speech.speak, result, check_for_interrupt)
-        
-        # Cancel wake word listening if speech finished naturally
-        if not wake_word_detected_during_speech:
-            listen_task.cancel()
-            try:
-                await listen_task
-            except asyncio.CancelledError:
-                pass
-        
+
+# Simple speak without interrupt checking (for now)
+        await asyncio.to_thread(text_to_speech.speak, result)
+
         logger.info("Response spoken")
 
 asyncio.run(main())

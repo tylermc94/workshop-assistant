@@ -1,3 +1,28 @@
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+import anthropic
+import logging
+from datetime import datetime
+from config.settings import (
+    CLAUDE_API_KEY,
+    CLAUDE_MODEL,
+    CLAUDE_MAX_TOKENS,
+    CLAUDE_TEMPERATURE
+)
+
+logger = logging.getLogger(__name__)
+client = anthropic.Anthropic(api_key=CLAUDE_API_KEY)
+
+def log_query(question):
+    """Log Claude queries to file for analysis"""
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+    # This is now handled by query_logger.py in intent_recognition
+    # Keeping this function for backward compatibility
+    pass
+
 def ask_claude(question):
     """
     Send a question to Claude API and return the response.

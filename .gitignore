@@ -24,5 +24,6 @@ Thumbs.db
 .vscode/
 .idea/logs/
 
+logs/all_queries.jsonl
 logs/claude_queries.log
 logs/budget.json

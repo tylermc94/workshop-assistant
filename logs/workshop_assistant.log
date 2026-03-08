@@ -778,3 +778,107 @@ In general, most desktop 3D printers labeled "M3" typically have build volumes r
 2026-02-27 16:05:33,589 - speech_to_text - INFO - Loading Whisper model: tiny
 2026-02-27 16:05:33,873 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
 2026-02-27 16:05:34,156 - speech_to_text - INFO - Whisper model loaded successfully
+2026-03-03 20:40:16,841 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-03-03 20:40:17,224 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-03-03 20:40:18,325 - speech_to_text - INFO - Whisper model loaded successfully
+2026-03-03 20:40:34,219 - __main__ - INFO - Wake word detected
+2026-03-03 20:40:34,220 - speech_to_text - INFO - Starting dynamic recording...
+2026-03-03 20:40:39,236 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-03-03 20:40:39,243 - speech_to_text - INFO - Recording complete: 5.00s total, transcribing...
+2026-03-03 20:40:40,562 - speech_to_text - INFO - Whisper transcription: How much RAM is in a Raspberry Pi 0 2
+2026-03-03 20:40:40,563 - __main__ - INFO - Transcribed text: How much RAM is in a Raspberry Pi 0 2
+2026-03-03 20:40:40,563 - intent_recognition - INFO - No local skill matched, forwarding to Claude: How much RAM is in a Raspberry Pi 0 2
+2026-03-03 20:42:51,167 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-03-03 20:42:51,468 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-03-03 20:42:51,723 - speech_to_text - INFO - Whisper model loaded successfully
+2026-03-03 20:42:56,066 - __main__ - INFO - Wake word detected
+2026-03-03 20:42:56,066 - speech_to_text - INFO - Starting dynamic recording...
+2026-03-03 20:43:00,383 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-03-03 20:43:00,385 - speech_to_text - INFO - Recording complete: 4.30s total, transcribing...
+2026-03-03 20:43:01,669 - speech_to_text - INFO - Whisper transcription: How much RAM is in a Raspberry Pi 2-0
+2026-03-03 20:43:01,670 - __main__ - INFO - Transcribed text: How much RAM is in a Raspberry Pi 2-0
+2026-03-03 20:43:01,670 - intent_recognition - INFO - No local skill matched, forwarding to Claude: How much RAM is in a Raspberry Pi 2-0
+2026-03-03 20:43:01,670 - claude_integration - INFO - Sending to Claude: How much RAM is in a Raspberry Pi 2-0
+2026-03-03 20:43:03,850 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-03-03 20:43:03,871 - claude_integration - INFO - Claude response: The Raspberry Pi 2 Model B has 1GB of LPDDR2 RAM. It was a nice upgrade from the original Pi's 512MB, making it much more capable for multitasking and running larger projects.
+2026-03-03 20:43:03,871 - claude_integration - INFO - Tokens used - Input: 170, Output: 54
+2026-03-03 20:43:03,872 - __main__ - INFO - Intent recognition result: The Raspberry Pi 2 Model B has 1GB of LPDDR2 RAM. It was a nice upgrade from the original Pi's 512MB, making it much more capable for multitasking and running larger projects.
+2026-03-03 20:43:03,872 - text_to_speech - INFO - Speaking: The Raspberry Pi 2 Model B has 1GB of LPDDR2 RAM. It was a nice upgrade from the original Pi's 512MB, making it much more capable for multitasking and running larger projects.
+2026-03-03 20:43:03,873 - text_to_speech - INFO - Formatted for TTS: The Raspberry Pi 2 Model B has 1GB of LPDDR2 RAM. It was a nice upgrade from the original Pi's 512MB, making it much more capable for multitasking and running larger projects.
+2026-03-03 20:43:23,332 - __main__ - INFO - Response spoken
+2026-03-03 20:46:03,601 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-03-03 20:46:03,898 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-03-03 20:46:04,152 - speech_to_text - INFO - Whisper model loaded successfully
+2026-03-03 20:46:38,396 - __main__ - INFO - Wake word detected
+2026-03-03 20:46:38,396 - speech_to_text - INFO - Starting dynamic recording...
+2026-03-03 20:46:42,713 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-03-03 20:46:42,715 - speech_to_text - INFO - Recording complete: 4.30s total, transcribing...
+2026-03-03 20:46:44,056 - speech_to_text - INFO - Whisper transcription: How much RAM is in a Raspberry Pi 0 2
+2026-03-03 20:46:44,057 - __main__ - INFO - Transcribed text: How much RAM is in a Raspberry Pi 0 2
+2026-03-03 20:46:44,057 - intent_recognition - INFO - No local skill matched, forwarding to Claude: How much RAM is in a Raspberry Pi 0 2
+2026-03-03 20:46:44,057 - claude_integration - INFO - Sending to Claude: How much RAM is in a Raspberry Pi 0 2
+2026-03-03 20:46:46,693 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-03-03 20:46:46,713 - claude_integration - INFO - Claude response: The Raspberry Pi Zero 2 W has 512MB of LPDDR2 RAM. It's a nice upgrade from the original Pi Zero which only had 512MB as well, but the Zero 2 W's quad-core processor makes much better use of that memory.
+2026-03-03 20:46:46,713 - claude_integration - INFO - Tokens used - Input: 170, Output: 64
+2026-03-03 20:46:46,714 - __main__ - INFO - Intent recognition result: The Raspberry Pi Zero 2 W has 512MB of LPDDR2 RAM. It's a nice upgrade from the original Pi Zero which only had 512MB as well, but the Zero 2 W's quad-core processor makes much better use of that memory.
+2026-03-03 20:46:46,714 - text_to_speech - INFO - Speaking: The Raspberry Pi Zero 2 W has 512MB of LPDDR2 RAM. It's a nice upgrade from the original Pi Zero which only had 512MB as well, but the Zero 2 W's quad-core processor makes much better use of that memory.
+2026-03-03 20:46:46,714 - text_to_speech - INFO - Formatted for TTS: The Raspberry Pi Zero 2 W has 512MB of LPDDR2 RAM. It's a nice upgrade from the original Pi Zero which only had 512MB as well, but the Zero 2 W's quad-core processor makes much better use of that memory.
+2026-03-03 20:47:09,956 - __main__ - INFO - Response spoken
+2026-03-05 19:50:09,143 - __main__ - INFO - Wake word detected
+2026-03-05 19:50:09,143 - speech_to_text - INFO - Starting dynamic recording...
+2026-03-05 19:50:11,759 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-03-05 19:50:11,766 - speech_to_text - INFO - Recording complete: 2.60s total, transcribing...
+2026-03-05 19:50:16,466 - speech_to_text - INFO - Whisper transcription: each blade
+2026-03-05 19:50:16,466 - __main__ - INFO - Transcribed text: each blade
+2026-03-05 19:50:16,466 - intent_recognition - INFO - No local skill matched, forwarding to Claude: each blade
+2026-03-05 19:50:16,466 - claude_integration - INFO - Sending to Claude: each blade
+2026-03-05 19:50:19,677 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-03-05 19:50:19,678 - claude_integration - INFO - Claude response: I'd be happy to help with blade-related info! Could you give me a bit more context? Are you asking about:
+
+- Saw blades (circular, band, jigsaw, etc.)
+- Router bits
+- Chisel blades
+- Something else entirely
+
+Just let me know what type of blades and what specific info you need!
+2026-03-05 19:50:19,678 - claude_integration - INFO - Tokens used - Input: 159, Output: 79
+2026-03-05 19:50:19,678 - __main__ - INFO - Intent recognition result: I'd be happy to help with blade-related info! Could you give me a bit more context? Are you asking about:
+
+- Saw blades (circular, band, jigsaw, etc.)
+- Router bits
+- Chisel blades
+- Something else entirely
+
+Just let me know what type of blades and what specific info you need!
+2026-03-05 19:50:19,678 - text_to_speech - INFO - Speaking: I'd be happy to help with blade-related info! Could you give me a bit more context? Are you asking about:
+
+- Saw blades (circular, band, jigsaw, etc.)
+- Router bits
+- Chisel blades
+- Something else entirely
+
+Just let me know what type of blades and what specific info you need!
+2026-03-05 19:50:19,679 - text_to_speech - INFO - Formatted for TTS: I'd be happy to help with blade-related info! Could you give me a bit more context? Are you asking about:
+
+- Saw blades (circular, band, jigsaw, and so on)
+- Router bits
+- Chisel blades
+- Something else entirely
+
+Just let me know what type of blades and what specific info you need!
+2026-03-05 19:50:42,379 - __main__ - INFO - Response spoken
+2026-03-05 19:50:55,513 - __main__ - INFO - Wake word detected
+2026-03-05 19:50:55,513 - speech_to_text - INFO - Starting dynamic recording...
+2026-03-05 19:51:00,230 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-03-05 19:51:00,232 - speech_to_text - INFO - Recording complete: 4.70s total, transcribing...
+2026-03-05 19:51:01,649 - speech_to_text - INFO - Whisper transcription: That's the recommended cutting speed on a half inch round over router bit
+2026-03-05 19:51:01,650 - __main__ - INFO - Transcribed text: That's the recommended cutting speed on a half inch round over router bit
+2026-03-05 19:51:01,650 - intent_recognition - INFO - No local skill matched, forwarding to Claude: That's the recommended cutting speed on a half inch round over router bit
+2026-03-05 19:51:01,650 - claude_integration - INFO - Sending to Claude: That's the recommended cutting speed on a half inch round over router bit
+2026-03-05 19:51:05,142 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-03-05 19:51:05,143 - claude_integration - INFO - Claude response: For a 1/2" roundover bit, you'll typically want to run around 18,000-20,000 RPM for most routers. Feed rate should be steady but not rushed - about 10-15 feet per minute depending on your material hardness. Hardwoods need slower feeds, softwoods can handle the faster end of that range.
+2026-03-05 19:51:05,143 - claude_integration - INFO - Tokens used - Input: 171, Output: 82
+2026-03-05 19:51:05,143 - __main__ - INFO - Intent recognition result: For a 1/2" roundover bit, you'll typically want to run around 18,000-20,000 RPM for most routers. Feed rate should be steady but not rushed - about 10-15 feet per minute depending on your material hardness. Hardwoods need slower feeds, softwoods can handle the faster end of that range.
+2026-03-05 19:51:05,144 - text_to_speech - INFO - Speaking: For a 1/2" roundover bit, you'll typically want to run around 18,000-20,000 RPM for most routers. Feed rate should be steady but not rushed - about 10-15 feet per minute depending on your material hardness. Hardwoods need slower feeds, softwoods can handle the faster end of that range.
+2026-03-05 19:51:05,144 - text_to_speech - INFO - Formatted for TTS: For a 1/2" roundover bit, you'll typically want to run around 18,000-20,000 RPM for most routers. Feed rate should be steady but not rushed - about 10-15 feet per minute depending on your material hardness. Hardwoods need slower feeds, softwoods can handle the faster end of that range.
+2026-03-05 19:51:30,571 - __main__ - INFO - Response spoken
