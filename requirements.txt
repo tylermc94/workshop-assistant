@@ -16,6 +16,11 @@ numpy>=1.26.0
 # Claude Integration
 anthropic
 
+# FastAPI and HTTP server
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+python-multipart>=0.0.6
+
 # Miscellaneous
 scipy>=1.17.0
 word2number>=1.1

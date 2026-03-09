@@ -9,8 +9,9 @@ from config.settings import (
     CLAUDE_API_KEY,
     CLAUDE_MODEL,
     CLAUDE_MAX_TOKENS,
-    CLAUDE_TEMPERATURE
+    CLAUDE_TEMPERATURE,
 )
+import budget_tracker
 
 logger = logging.getLogger(__name__)
 client = anthropic.Anthropic(api_key=CLAUDE_API_KEY)
@@ -29,10 +30,14 @@ def ask_claude(question):
     Logs the query for analysis.
     """
     logger.info(f"Sending to Claude: {question}")
-    
+
+    if budget_tracker.is_limit_reached():
+        logger.warning("Claude API call blocked — budget hard limit reached")
+        return "The Claude budget has been reached. Please check the logs."
+
     # Log query to file for pattern analysis
     log_query(question)
-    
+
     try:
         message = client.messages.create(
             model=CLAUDE_MODEL,
@@ -54,12 +59,14 @@ Be helpful and direct, not overly cautious.""",
         
         response = message.content[0].text
         logger.info(f"Claude response: {response}")
-        
-        # TODO: Track token usage for budget
+
         input_tokens = message.usage.input_tokens
         output_tokens = message.usage.output_tokens
-        logger.info(f"Tokens used - Input: {input_tokens}, Output: {output_tokens}")
-        
+        budget = budget_tracker.record_usage(input_tokens, output_tokens)
+
+        if budget["warning"]:
+            response += " Heads up — the Claude API budget is getting low."
+
         return response
         
     except anthropic.APIError as e:

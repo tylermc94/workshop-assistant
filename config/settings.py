@@ -52,6 +52,9 @@ TIMER_ALARM_REPEATS = 3  # Play 3 times
 # Import API key from secrets
 from config.secrets import CLAUDE_API_KEY
 
+# API Settings
+from config.secrets import API_KEY
+
 # Claude API Configuration
 CLAUDE_MODEL = "claude-sonnet-4-20250514"
 CLAUDE_MAX_TOKENS = 200  # Short responses for question mode
@@ -62,5 +65,13 @@ BUDGET_WARNING_THRESHOLD = 15.00  # USD
 BUDGET_HARD_LIMIT = 20.00  # USD
 BUDGET_FILE = "logs/budget.json"  # Track spending
 
+# Claude Pricing (USD per million tokens)
+CLAUDE_INPUT_PRICE_PER_MTOK = 3.00
+CLAUDE_OUTPUT_PRICE_PER_MTOK = 15.00
+
 # Query Logging
 CLAUDE_QUERY_LOG = "logs/claude_queries.log"
+
+# API Configuration
+API_ENABLED = True
+API_PORT = 8080

@@ -4,7 +4,8 @@
 Workshop Forge is a voice-controlled AI assistant running on a Raspberry Pi 5 ("Lab Pi") in a home workshop. It provides hands-free help while working on projects. A companion device, Pocket Forge (Pi Zero 2W), can send queries wirelessly via HTTP API.
 
 ## Hardware
-- Raspberry Pi 5 (hostname: lab-pi.local, user: tyler)
+- Raspberry Pi 5 (hostname: labpi.local, user: tyler) — dedicated Forge appliance, no keyboard/mouse
+- Small USB+HDMI touchscreen — displays terminal with Forge output (interim until Phase 3 GUI)
 - Scarlett 2i4 audio interface
 - USB speakers
 - Runs as a systemd service
@@ -48,10 +49,10 @@ Local skills are checked first before forwarding to Claude. Skills include:
 - All queries logged to `logs/all_queries.jsonl`
 - Each entry includes: query, handler (local skill or claude), response, errors, source (voice or api)
 
-## API (In Progress)
+## API ✅
 - FastAPI server on port 8080
-- Runs concurrently with voice pipeline, must not block it
-- Single hardcoded API key in config
+- Runs concurrently with voice pipeline via asyncio.gather()
+- Single hardcoded API key in config/secrets.py
 - Auth: `Authorization: Bearer <api_key>` header
 
 ### Endpoint
@@ -69,20 +70,20 @@ Response: JSON
 ```
 
 ## Config File
-Contains API keys, model settings, budget limits, and feature flags including `api_enabled` and `api_key`.
+Contains API keys, model settings, budget limits, and feature flags including `api_enabled`, `api_key`, and `API_PORT`.
 
 ## Phase Roadmap
 - Phase 1: ✅ Voice pipeline + local skills
-- Phase 2: 🔄 Claude API (question mode done, conversation mode + HTTP API in progress)
-- Phase 3: GUI for voice selection and settings
+- Phase 2: 🔄 Claude API (question mode ✅, HTTP API ✅, budget tracker and conversation mode pending)
+- Phase 3: Touchscreen GUI — must be designed for touchscreen appliance, not desktop. Consider fullscreen pygame or browser kiosk mode served via FastAPI
 - Phase 4: Notion API integration
 - Phase 5: Home Assistant integration
 - Phase 6-7: Pocket Forge companion integration
 
 ## Known Pending Features
-- Budget tracking ($15 warning, $20 limit)
+- Budget tracking ($15 warning, $20 limit) — next up
 - Conversation mode (multi-turn dialogue)
-- HTTP API for remote clients (current focus)
+- Pocket Forge client integration (send WAV, receive text + audio)
 
 ## Clients That Will Use the API
 - **Pocket Forge** (Pi Zero 2W) — primary companion device, sends WAV, receives text + audio
@@ -95,3 +96,8 @@ Contains API keys, model settings, budget limits, and feature flags including `a
 - Do not load Whisper or Piper more than once — reuse existing instances
 - Follow existing patterns before introducing new libraries
 - Log all queries with source field indicating origin (voice/api)
+
+## Future Projects (Planned, Not Started)
+- **Clean reinstall** — reimage Pi 5 with fresh Raspberry Pi OS, install only Forge dependencies, decommission old Lab Pi setup (shared folders etc.). Do this once Forge reaches a stable v1.0 state, not mid-development.
+- **Phase 3 GUI** — design for touchscreen from the start, not a desktop app retrofit. Fullscreen pygame or a web UI served by FastAPI are the leading options.
+- **Mobile Forge** — phone app client using the same FastAPI endpoint

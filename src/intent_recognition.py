@@ -26,13 +26,13 @@ def strip_trigger(text, triggers):
             break
     return text_lower
 
-async def classify_intent(text):
+async def classify_intent(text, source="voice"):
     text_lower = text.lower()
-    
+
     # Check for stop/acknowledgment commands first (highest priority)
     if any(trigger in text_lower for trigger in STOP_TRIGGERS):
         result = "Got it."
-        query_logger.log_query(text, "local_stop", result)
+        query_logger.log_query(text, "local_stop", result, source=source)
         return result
     
     # Try local skills
@@ -40,7 +40,7 @@ async def classify_intent(text):
     # Check calendar BEFORE calculator (more specific)
     if any(trigger in text_lower for trigger in CALENDAR_TRIGGERS):
         result = calendar.calendar_query(text)
-        query_logger.log_query(text, "local_calendar", result)
+        query_logger.log_query(text, "local_calendar", result, source=source)
         return result
     
     # Calculator checks after (less specific)
@@ -48,34 +48,34 @@ async def classify_intent(text):
         clean_text = strip_trigger(text, CALCULATOR_TRIGGERS)
         try:
             result = calculator.calculate(clean_text)
-            query_logger.log_query(text, "local_calculator", str(result))
+            query_logger.log_query(text, "local_calculator", str(result), source=source)
             return str(result)
         except ValueError as e:
             # Calculator failed, let Claude try
             logger.info(f"Calculator failed: {e}, forwarding to Claude")
             result = claude_integration.ask_claude(text)
-            query_logger.log_query(text, "claude_fallback_calc", result, error=str(e))
+            query_logger.log_query(text, "claude_fallback_calc", result, error=str(e), source=source)
             return result
     
     elif any(trigger in text_lower for trigger in TIMER_TRIGGERS):
         clean_text = strip_trigger(text, TIMER_TRIGGERS)
         result = await timer.set_timer(clean_text)
-        query_logger.log_query(text, "local_timer", result)
+        query_logger.log_query(text, "local_timer", result, source=source)
         return result
 
     elif any(trigger in text_lower for trigger in HOME_ASSISTANT_TRIGGERS):
         result = "Home Assistant"
-        query_logger.log_query(text, "local_home_assistant", result)
+        query_logger.log_query(text, "local_home_assistant", result, source=source)
         return result
     
     elif any(trigger in text_lower for trigger in ALARM_TRIGGERS):
         result = timer.stop_alarm()
-        query_logger.log_query(text, "local_alarm", result)
+        query_logger.log_query(text, "local_alarm", result, source=source)
         return result
     
     # No local skill matched - ask Claude
     else:
         logger.info(f"No local skill matched, forwarding to Claude: {text}")
         result = claude_integration.ask_claude(text)
-        query_logger.log_query(text, "claude", result)
+        query_logger.log_query(text, "claude", result, source=source)
         return result
