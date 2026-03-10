@@ -32,6 +32,7 @@ async def classify_intent(text, source="voice"):
     # Check for stop/acknowledgment commands first (highest priority)
     if any(trigger in text_lower for trigger in STOP_TRIGGERS):
         result = "Got it."
+        claude_integration.clear_history(source)
         query_logger.log_query(text, "local_stop", result, source=source)
         return result
     
@@ -53,7 +54,7 @@ async def classify_intent(text, source="voice"):
         except ValueError as e:
             # Calculator failed, let Claude try
             logger.info(f"Calculator failed: {e}, forwarding to Claude")
-            result = claude_integration.ask_claude(text)
+            result = claude_integration.ask_claude(text, source=source)
             query_logger.log_query(text, "claude_fallback_calc", result, error=str(e), source=source)
             return result
     
@@ -76,6 +77,6 @@ async def classify_intent(text, source="voice"):
     # No local skill matched - ask Claude
     else:
         logger.info(f"No local skill matched, forwarding to Claude: {text}")
-        result = claude_integration.ask_claude(text)
+        result = claude_integration.ask_claude(text, source=source)
         query_logger.log_query(text, "claude", result, source=source)
         return result

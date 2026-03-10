@@ -882,3 +882,518 @@ Just let me know what type of blades and what specific info you need!
 2026-03-05 19:51:05,144 - text_to_speech - INFO - Speaking: For a 1/2" roundover bit, you'll typically want to run around 18,000-20,000 RPM for most routers. Feed rate should be steady but not rushed - about 10-15 feet per minute depending on your material hardness. Hardwoods need slower feeds, softwoods can handle the faster end of that range.
 2026-03-05 19:51:05,144 - text_to_speech - INFO - Formatted for TTS: For a 1/2" roundover bit, you'll typically want to run around 18,000-20,000 RPM for most routers. Feed rate should be steady but not rushed - about 10-15 feet per minute depending on your material hardness. Hardwoods need slower feeds, softwoods can handle the faster end of that range.
 2026-03-05 19:51:30,571 - __main__ - INFO - Response spoken
+2026-03-08 22:05:34,878 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-03-08 22:05:35,172 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-03-08 22:05:35,449 - speech_to_text - INFO - Whisper model loaded successfully
+2026-03-08 22:05:35,800 - __main__ - INFO - Started voice pipeline
+2026-03-08 22:05:35,979 - __main__ - INFO - Starting API server
+2026-03-08 22:05:35,995 - api_server - INFO - Starting FastAPI server on port 8080
+2026-03-08 22:06:08,002 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-03-08 22:06:08,299 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-03-08 22:06:08,576 - speech_to_text - INFO - Whisper model loaded successfully
+2026-03-08 22:06:08,921 - __main__ - INFO - Started voice pipeline
+2026-03-08 22:06:09,082 - __main__ - INFO - Starting API server
+2026-03-08 22:06:09,098 - api_server - INFO - Starting FastAPI server on port 8080
+2026-03-08 22:06:12,247 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-03-08 22:06:12,547 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-03-08 22:06:12,835 - speech_to_text - INFO - Whisper model loaded successfully
+2026-03-08 22:06:13,196 - __main__ - INFO - Started voice pipeline
+2026-03-08 22:06:13,361 - __main__ - INFO - Starting API server
+2026-03-08 22:06:13,377 - api_server - INFO - Starting FastAPI server on port 8080
+2026-03-08 22:07:35,123 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-03-08 22:07:35,424 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-03-08 22:07:35,703 - speech_to_text - INFO - Whisper model loaded successfully
+2026-03-08 22:07:36,054 - __main__ - INFO - Started voice pipeline
+2026-03-08 22:07:36,216 - __main__ - INFO - Starting API server
+2026-03-08 22:07:36,231 - api_server - INFO - Starting FastAPI server on port 8080
+2026-03-08 22:07:54,235 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-03-08 22:07:54,529 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-03-08 22:07:54,807 - speech_to_text - INFO - Whisper model loaded successfully
+2026-03-08 22:07:55,160 - __main__ - INFO - Started voice pipeline
+2026-03-08 22:07:55,325 - __main__ - INFO - Starting API server
+2026-03-08 22:07:55,341 - api_server - INFO - Starting FastAPI server on port 8080
+2026-03-08 22:08:41,879 - __main__ - INFO - Wake word detected
+2026-03-08 22:08:41,879 - speech_to_text - INFO - Starting dynamic recording...
+2026-03-08 22:08:44,996 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-03-08 22:08:44,998 - speech_to_text - INFO - Recording complete: 3.10s total, transcribing...
+2026-03-08 22:08:46,139 - speech_to_text - INFO - Whisper transcription: What's the weather
+2026-03-08 22:08:46,139 - __main__ - INFO - Transcribed text: What's the weather
+2026-03-08 22:08:46,139 - skills.calculator - INFO - Calculating: the weather
+2026-03-08 22:08:46,140 - skills.calculator - INFO - Parsing expression: the weather
+2026-03-08 22:08:46,140 - skills.calculator - INFO - Parsed to: 
+2026-03-08 22:08:46,140 - skills.calculator - INFO - Parsed expression: 
+2026-03-08 22:08:46,140 - skills.calculator - ERROR - Calculation error: Could not parse mathematical expression from: the weather
+2026-03-08 22:08:46,140 - intent_recognition - INFO - Calculator failed: Could not calculate: the weather, forwarding to Claude
+2026-03-08 22:08:46,140 - claude_integration - INFO - Sending to Claude: What's the weather
+2026-03-08 22:08:48,135 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-03-08 22:08:48,156 - claude_integration - INFO - Claude response: I don't have access to current weather data or your location, so I can't tell you what the weather is right now. You'll want to check a weather app, website, or just look outside to see the current conditions in your area.
+2026-03-08 22:08:48,156 - claude_integration - INFO - Tokens used - Input: 161, Output: 53
+2026-03-08 22:08:48,156 - __main__ - INFO - Intent recognition result: I don't have access to current weather data or your location, so I can't tell you what the weather is right now. You'll want to check a weather app, website, or just look outside to see the current conditions in your area.
+2026-03-08 22:08:48,156 - text_to_speech - INFO - Speaking: I don't have access to current weather data or your location, so I can't tell you what the weather is right now. You'll want to check a weather app, website, or just look outside to see the current conditions in your area.
+2026-03-08 22:08:48,157 - text_to_speech - INFO - Formatted for TTS: I don't have access to current weather data or your location, so I can't tell you what the weather is right now. You'll want to check a weather app, website, or just look outside to see the current conditions in your area.
+2026-03-08 22:09:04,884 - __main__ - INFO - Response spoken
+2026-03-08 22:10:01,060 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-03-08 22:10:01,435 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-03-08 22:10:01,709 - speech_to_text - INFO - Whisper model loaded successfully
+2026-03-08 22:10:02,065 - __main__ - INFO - Started voice pipeline
+2026-03-08 22:10:02,225 - __main__ - INFO - Starting API server
+2026-03-08 22:10:02,242 - api_server - INFO - Starting FastAPI server on port 8080
+2026-03-08 22:10:33,518 - api_server - INFO - Received API query from audio file: no-problem.wav
+2026-03-08 22:10:33,518 - api_server - INFO - Read 125710 bytes of audio data
+2026-03-08 22:10:33,519 - audio_utils - INFO - Input WAV: 62816 frames, 44100Hz, 1ch, 2bytes/sample
+2026-03-08 22:10:33,519 - audio_utils - WARNING - Sample rate mismatch: 44100Hz -> 48000Hz. Simple resampling applied.
+2026-03-08 22:10:33,521 - audio_utils - INFO - Processed audio: 68371 samples at 48000Hz
+2026-03-08 22:10:34,878 - speech_to_text - INFO - Whisper transcription: 
+2026-03-08 22:10:34,879 - api_server - INFO - Transcribed: 
+2026-03-08 22:11:09,833 - api_server - INFO - Received API query from audio file: test_query.wav
+2026-03-08 22:11:09,834 - api_server - INFO - Read 62508 bytes of audio data
+2026-03-08 22:11:09,834 - audio_utils - INFO - Input WAV: 31232 frames, 22050Hz, 1ch, 2bytes/sample
+2026-03-08 22:11:09,834 - audio_utils - WARNING - Sample rate mismatch: 22050Hz -> 48000Hz. Simple resampling applied.
+2026-03-08 22:11:09,835 - audio_utils - INFO - Processed audio: 67988 samples at 48000Hz
+2026-03-08 22:11:11,268 - speech_to_text - INFO - Whisper transcription: What is 2 plus 2
+2026-03-08 22:11:11,268 - api_server - INFO - Transcribed: What is 2 plus 2
+2026-03-08 22:11:11,269 - skills.calculator - INFO - Calculating: 2 plus 2
+2026-03-08 22:11:11,269 - skills.calculator - INFO - Parsing expression: 2 plus 2
+2026-03-08 22:11:11,269 - skills.calculator - INFO - Parsed to: 2 + 2
+2026-03-08 22:11:11,269 - skills.calculator - INFO - Parsed expression: 2 + 2
+2026-03-08 22:11:11,269 - skills.calculator - INFO - Result: 4
+2026-03-08 22:11:11,270 - api_server - INFO - Intent response: 4
+2026-03-08 22:11:11,270 - audio_utils - INFO - Converting text to speech: 4...
+2026-03-08 22:11:13,062 - audio_utils - INFO - Generated TTS audio: 22060 bytes WAV -> 29416 bytes base64
+2026-03-08 22:11:38,692 - api_server - INFO - Received API query from audio file: test_query.wav
+2026-03-08 22:11:38,692 - api_server - INFO - Read 62508 bytes of audio data
+2026-03-08 22:11:38,692 - audio_utils - INFO - Input WAV: 31232 frames, 22050Hz, 1ch, 2bytes/sample
+2026-03-08 22:11:38,693 - audio_utils - WARNING - Sample rate mismatch: 22050Hz -> 48000Hz. Simple resampling applied.
+2026-03-08 22:11:38,694 - audio_utils - INFO - Processed audio: 67988 samples at 48000Hz
+2026-03-08 22:11:40,135 - speech_to_text - INFO - Whisper transcription: What is 2 plus 2
+2026-03-08 22:11:40,136 - api_server - INFO - Transcribed: What is 2 plus 2
+2026-03-08 22:11:40,136 - skills.calculator - INFO - Calculating: 2 plus 2
+2026-03-08 22:11:40,136 - skills.calculator - INFO - Parsing expression: 2 plus 2
+2026-03-08 22:11:40,136 - skills.calculator - INFO - Parsed to: 2 + 2
+2026-03-08 22:11:40,136 - skills.calculator - INFO - Parsed expression: 2 + 2
+2026-03-08 22:11:40,136 - skills.calculator - INFO - Result: 4
+2026-03-08 22:11:40,136 - api_server - INFO - Intent response: 4
+2026-03-08 22:11:40,137 - audio_utils - INFO - Converting text to speech: 4...
+2026-03-08 22:11:41,868 - audio_utils - INFO - Generated TTS audio: 22572 bytes WAV -> 30096 bytes base64
+2026-03-08 22:16:20,939 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-03-08 22:16:21,229 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-03-08 22:16:21,498 - speech_to_text - INFO - Whisper model loaded successfully
+2026-03-08 22:16:21,849 - __main__ - INFO - Started voice pipeline
+2026-03-08 22:16:22,014 - __main__ - INFO - Starting API server
+2026-03-08 22:16:22,029 - api_server - INFO - Starting FastAPI server on port 8080
+2026-03-09 12:51:00,130 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-03-09 12:51:00,413 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-03-09 12:51:00,676 - speech_to_text - INFO - Whisper model loaded successfully
+2026-03-09 12:51:01,019 - __main__ - INFO - Started voice pipeline
+2026-03-09 12:51:01,180 - __main__ - INFO - Starting API server
+2026-03-09 12:51:01,196 - api_server - INFO - Starting FastAPI server on port 8080
+2026-03-09 12:51:09,668 - __main__ - INFO - Wake word detected
+2026-03-09 12:51:09,669 - speech_to_text - INFO - Starting dynamic recording...
+2026-03-09 12:51:13,885 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-03-09 12:51:13,892 - speech_to_text - INFO - Recording complete: 4.20s total, transcribing...
+2026-03-09 12:51:15,120 - speech_to_text - INFO - Whisper transcription: What's the best temperature to print PLA
+2026-03-09 12:51:15,121 - __main__ - INFO - Transcribed text: What's the best temperature to print PLA
+2026-03-09 12:51:15,121 - skills.calculator - INFO - Calculating: the best temperature to print pla
+2026-03-09 12:51:15,121 - skills.calculator - INFO - Parsing expression: the best temperature to print pla
+2026-03-09 12:51:15,121 - skills.calculator - INFO - Parsed to: 2
+2026-03-09 12:51:15,121 - skills.calculator - INFO - Parsed expression: 2
+2026-03-09 12:51:15,121 - skills.calculator - ERROR - Calculation error: Could not parse mathematical expression from: the best temperature to print pla
+2026-03-09 12:51:15,121 - intent_recognition - INFO - Calculator failed: Could not calculate: the best temperature to print pla, forwarding to Claude
+2026-03-09 12:51:15,121 - claude_integration - INFO - Sending to Claude: What's the best temperature to print PLA
+2026-03-09 12:51:17,683 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-03-09 12:51:17,704 - claude_integration - INFO - Claude response: 200 to 210°C for the hotend works great for most PLA filaments, with the bed around 50-60°C. Start at 200°C and bump it up if you're getting poor layer adhesion or under-extrusion.
+2026-03-09 12:51:17,704 - budget_tracker - INFO - Budget: $0.0042 / $20.00 (this call: $0.0014)
+2026-03-09 12:51:17,705 - __main__ - INFO - Intent recognition result: 200 to 210°C for the hotend works great for most PLA filaments, with the bed around 50-60°C. Start at 200°C and bump it up if you're getting poor layer adhesion or under-extrusion.
+2026-03-09 12:51:17,705 - text_to_speech - INFO - Speaking: 200 to 210°C for the hotend works great for most PLA filaments, with the bed around 50-60°C. Start at 200°C and bump it up if you're getting poor layer adhesion or under-extrusion.
+2026-03-09 12:51:17,705 - text_to_speech - INFO - Formatted for TTS: 200 to 210 degrees Celsius for the hotend works great for most PLA filaments, with the bed around 50 to 60 degrees Celsius. Start at 200 degrees Celsius and bump it up if you're getting poor layer adhesion or under-extrusion.
+2026-03-09 12:51:38,883 - __main__ - INFO - Response spoken
+2026-03-09 12:51:40,934 - __main__ - INFO - Wake word detected
+2026-03-09 12:51:40,934 - speech_to_text - INFO - Starting dynamic recording...
+2026-03-09 12:51:42,451 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-03-09 12:51:42,453 - speech_to_text - INFO - Recording complete: 1.50s total, transcribing...
+2026-03-09 12:51:43,504 - speech_to_text - INFO - Whisper transcription: 
+2026-03-09 12:51:43,505 - __main__ - INFO - Transcribed text: 
+2026-03-09 12:51:43,505 - intent_recognition - INFO - No local skill matched, forwarding to Claude: 
+2026-03-09 12:51:43,505 - claude_integration - INFO - Sending to Claude: 
+2026-03-09 12:51:43,661 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 400 Bad Request"
+2026-03-09 12:51:43,662 - claude_integration - ERROR - Claude API error: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'messages.2: user messages must have non-empty content'}, 'request_id': 'req_011CYsrQDbQTz7QUF2uRfXPk'}
+2026-03-09 12:51:43,662 - __main__ - INFO - Intent recognition result: Sorry, I couldn't reach Claude right now. Please try again.
+2026-03-09 12:51:43,662 - text_to_speech - INFO - Speaking: Sorry, I couldn't reach Claude right now. Please try again.
+2026-03-09 12:51:43,662 - text_to_speech - INFO - Formatted for TTS: Sorry, I couldn't reach Claude right now. Please try again.
+2026-03-09 12:51:49,910 - __main__ - INFO - Response spoken
+2026-03-09 12:51:52,150 - __main__ - INFO - Wake word detected
+2026-03-09 12:51:52,151 - speech_to_text - INFO - Starting dynamic recording...
+2026-03-09 12:51:55,367 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-03-09 12:51:55,382 - speech_to_text - INFO - Recording complete: 3.20s total, transcribing...
+2026-03-09 12:51:56,496 - speech_to_text - INFO - Whisper transcription: What about for PETG
+2026-03-09 12:51:56,496 - __main__ - INFO - Transcribed text: What about for PETG
+2026-03-09 12:51:56,497 - intent_recognition - INFO - No local skill matched, forwarding to Claude: What about for PETG
+2026-03-09 12:51:56,497 - claude_integration - INFO - Sending to Claude: What about for PETG
+2026-03-09 12:51:58,962 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-03-09 12:51:58,963 - claude_integration - INFO - Claude response: 230 to 250°C for the hotend with PETG, and 70-80°C for the bed. Start around 235°C - PETG is more forgiving than PLA but needs that extra heat to flow well.
+2026-03-09 12:51:58,963 - budget_tracker - INFO - Budget: $0.0058 / $20.00 (this call: $0.0016)
+2026-03-09 12:51:58,963 - __main__ - INFO - Intent recognition result: 230 to 250°C for the hotend with PETG, and 70-80°C for the bed. Start around 235°C - PETG is more forgiving than PLA but needs that extra heat to flow well.
+2026-03-09 12:51:58,964 - text_to_speech - INFO - Speaking: 230 to 250°C for the hotend with PETG, and 70-80°C for the bed. Start around 235°C - PETG is more forgiving than PLA but needs that extra heat to flow well.
+2026-03-09 12:51:58,964 - text_to_speech - INFO - Formatted for TTS: 230 to 250 degrees Celsius for the hotend with PETG, and 70 to 80 degrees Celsius for the bed. Start around 235 degrees Celsius - PETG is more forgiving than PLA but needs that extra heat to flow well.
+2026-03-09 12:52:19,598 - __main__ - INFO - Response spoken
+2026-03-09 12:52:44,569 - __main__ - INFO - Wake word detected
+2026-03-09 12:52:44,569 - speech_to_text - INFO - Starting dynamic recording...
+2026-03-09 12:52:46,886 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-03-09 12:52:46,888 - speech_to_text - INFO - Recording complete: 2.30s total, transcribing...
+2026-03-09 12:52:47,997 - speech_to_text - INFO - Whisper transcription: Thank you
+2026-03-09 12:52:47,997 - __main__ - INFO - Transcribed text: Thank you
+2026-03-09 12:52:47,998 - claude_integration - INFO - Conversation history cleared for source: voice
+2026-03-09 12:52:47,998 - __main__ - INFO - Intent recognition result: Got it.
+2026-03-09 12:52:47,998 - text_to_speech - INFO - Speaking: Got it.
+2026-03-09 12:52:47,998 - text_to_speech - INFO - Formatted for TTS: Got it.
+2026-03-09 12:52:50,542 - __main__ - INFO - Response spoken
+2026-03-09 12:52:52,522 - __main__ - INFO - Wake word detected
+2026-03-09 12:52:52,522 - speech_to_text - INFO - Starting dynamic recording...
+2026-03-09 12:52:55,438 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-03-09 12:52:55,448 - speech_to_text - INFO - Recording complete: 2.90s total, transcribing...
+2026-03-09 12:52:56,632 - speech_to_text - INFO - Whisper transcription: What about TPU
+2026-03-09 12:52:56,632 - __main__ - INFO - Transcribed text: What about TPU
+2026-03-09 12:52:56,632 - intent_recognition - INFO - No local skill matched, forwarding to Claude: What about TPU
+2026-03-09 12:52:56,632 - claude_integration - INFO - Sending to Claude: What about TPU
+2026-03-09 12:53:00,064 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-03-09 12:53:00,065 - claude_integration - INFO - Claude response: TPU prints best around 220-230°C with a really slow print speed - think 15-25mm/s. The key is keeping tension low in your extruder since it's so flexible, and a direct drive setup makes life much easier than bowden.
+2026-03-09 12:53:00,065 - budget_tracker - INFO - Budget: $0.0072 / $20.00 (this call: $0.0014)
+2026-03-09 12:53:00,065 - __main__ - INFO - Intent recognition result: TPU prints best around 220-230°C with a really slow print speed - think 15-25mm/s. The key is keeping tension low in your extruder since it's so flexible, and a direct drive setup makes life much easier than bowden.
+2026-03-09 12:53:00,066 - text_to_speech - INFO - Speaking: TPU prints best around 220-230°C with a really slow print speed - think 15-25mm/s. The key is keeping tension low in your extruder since it's so flexible, and a direct drive setup makes life much easier than bowden.
+2026-03-09 12:53:00,066 - text_to_speech - INFO - Formatted for TTS: TPU prints best around 220 to 230 degrees Celsius with a really slow print speed - think 15-25 millimeters/s. The key is keeping tension low in your extruder since it's so flexible, and a direct drive setup makes life much easier than bowden.
+2026-03-09 12:53:24,891 - __main__ - INFO - Response spoken
+2026-03-09 13:54:05,131 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-03-09 13:54:05,413 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-03-09 13:54:05,674 - speech_to_text - INFO - Whisper model loaded successfully
+2026-03-09 13:54:06,011 - __main__ - INFO - Started voice pipeline
+2026-03-09 13:54:06,169 - __main__ - INFO - Starting API server
+2026-03-09 13:54:06,184 - api_server - INFO - Starting FastAPI server on port 8080
+2026-03-09 13:54:09,369 - __main__ - INFO - Wake word detected
+2026-03-09 13:54:09,370 - speech_to_text - INFO - Starting dynamic recording...
+2026-03-09 13:54:13,386 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-03-09 13:54:13,401 - speech_to_text - INFO - Recording complete: 4.00s total, transcribing...
+2026-03-09 13:54:14,738 - speech_to_text - INFO - Whisper transcription: What's the ideal temperature for printing PLA
+2026-03-09 13:54:14,738 - __main__ - INFO - Transcribed text: What's the ideal temperature for printing PLA
+2026-03-09 13:54:14,739 - skills.calculator - INFO - Calculating: the ideal temperature for printing pla
+2026-03-09 13:54:14,739 - skills.calculator - INFO - Parsing expression: the ideal temperature for printing pla
+2026-03-09 13:54:14,739 - skills.calculator - INFO - Parsed to: 4
+2026-03-09 13:54:14,739 - skills.calculator - INFO - Parsed expression: 4
+2026-03-09 13:54:14,739 - skills.calculator - ERROR - Calculation error: Could not parse mathematical expression from: the ideal temperature for printing pla
+2026-03-09 13:54:14,739 - intent_recognition - INFO - Calculator failed: Could not calculate: the ideal temperature for printing pla, forwarding to Claude
+2026-03-09 13:54:14,739 - claude_integration - INFO - Sending to Claude: What's the ideal temperature for printing PLA
+2026-03-09 13:54:17,323 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-03-09 13:54:17,344 - claude_integration - INFO - Claude response: 200-220°C for the hotend works well for most PLA filaments, with 210°C being a great starting point. Keep your bed around 50-60°C for good adhesion without warping.
+2026-03-09 13:54:17,345 - budget_tracker - INFO - Budget: $0.0085 / $20.00 (this call: $0.0013)
+2026-03-09 13:54:17,345 - __main__ - INFO - Intent recognition result: 200-220°C for the hotend works well for most PLA filaments, with 210°C being a great starting point. Keep your bed around 50-60°C for good adhesion without warping.
+2026-03-09 13:54:17,345 - text_to_speech - INFO - Speaking: 200-220°C for the hotend works well for most PLA filaments, with 210°C being a great starting point. Keep your bed around 50-60°C for good adhesion without warping.
+2026-03-09 13:54:17,345 - text_to_speech - INFO - Formatted for TTS: 200 to 220 degrees Celsius for the hotend works well for most PLA filaments, with 210 degrees Celsius being a great starting point. Keep your bed around 50 to 60 degrees Celsius for good adhesion without warping.
+2026-03-09 13:54:34,425 - __main__ - INFO - Response spoken
+2026-03-09 13:54:36,347 - __main__ - INFO - Wake word detected
+2026-03-09 13:54:36,347 - speech_to_text - INFO - Starting dynamic recording...
+2026-03-09 13:54:39,564 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-03-09 13:54:39,578 - speech_to_text - INFO - Recording complete: 3.20s total, transcribing...
+2026-03-09 13:54:40,754 - speech_to_text - INFO - Whisper transcription: What about PETG
+2026-03-09 13:54:40,754 - __main__ - INFO - Transcribed text: What about PETG
+2026-03-09 13:54:40,754 - intent_recognition - INFO - No local skill matched, forwarding to Claude: What about PETG
+2026-03-09 13:54:40,755 - claude_integration - INFO - Sending to Claude: What about PETG
+2026-03-09 13:54:43,065 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-03-09 13:54:43,066 - claude_integration - INFO - Claude response: PETG prints best at 230-250°C for the hotend, with 240°C being a solid starting temperature. Set your bed to 70-80°C for good adhesion, and print a bit slower than PLA since PETG needs more time to cool properly.
+2026-03-09 13:54:43,067 - budget_tracker - INFO - Budget: $0.0101 / $20.00 (this call: $0.0016)
+2026-03-09 13:54:43,067 - __main__ - INFO - Intent recognition result: PETG prints best at 230-250°C for the hotend, with 240°C being a solid starting temperature. Set your bed to 70-80°C for good adhesion, and print a bit slower than PLA since PETG needs more time to cool properly.
+2026-03-09 13:54:43,067 - text_to_speech - INFO - Speaking: PETG prints best at 230-250°C for the hotend, with 240°C being a solid starting temperature. Set your bed to 70-80°C for good adhesion, and print a bit slower than PLA since PETG needs more time to cool properly.
+2026-03-09 13:54:43,067 - text_to_speech - INFO - Formatted for TTS: PETG prints best at 230 to 250 degrees Celsius for the hotend, with 240 degrees Celsius being a solid starting temperature. Set your bed to 70 to 80 degrees Celsius for good adhesion, and print a bit slower than PLA since PETG needs more time to cool properly.
+2026-03-09 13:55:03,468 - __main__ - INFO - Response spoken
+2026-03-09 13:55:14,109 - __main__ - INFO - Wake word detected
+2026-03-09 13:55:14,109 - speech_to_text - INFO - Starting dynamic recording...
+2026-03-09 13:55:17,125 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-03-09 13:55:17,132 - speech_to_text - INFO - Recording complete: 3.00s total, transcribing...
+2026-03-09 13:55:18,149 - speech_to_text - INFO - Whisper transcription: Thank you
+2026-03-09 13:55:18,150 - __main__ - INFO - Transcribed text: Thank you
+2026-03-09 13:55:18,150 - claude_integration - INFO - Conversation history cleared for source: voice
+2026-03-09 13:55:18,150 - __main__ - INFO - Intent recognition result: Got it.
+2026-03-09 13:55:18,150 - text_to_speech - INFO - Speaking: Got it.
+2026-03-09 13:55:18,150 - text_to_speech - INFO - Formatted for TTS: Got it.
+2026-03-09 13:55:20,357 - __main__ - INFO - Response spoken
+2026-03-09 13:55:22,077 - __main__ - INFO - Wake word detected
+2026-03-09 13:55:22,077 - speech_to_text - INFO - Starting dynamic recording...
+2026-03-09 13:55:25,094 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-03-09 13:55:25,100 - speech_to_text - INFO - Recording complete: 3.00s total, transcribing...
+2026-03-09 13:55:26,221 - speech_to_text - INFO - Whisper transcription: What about TPU
+2026-03-09 13:55:26,222 - __main__ - INFO - Transcribed text: What about TPU
+2026-03-09 13:55:26,222 - intent_recognition - INFO - No local skill matched, forwarding to Claude: What about TPU
+2026-03-09 13:55:26,222 - claude_integration - INFO - Sending to Claude: What about TPU
+2026-03-09 13:55:28,951 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-03-09 13:55:28,952 - claude_integration - INFO - Claude response: For TPU, print at 220-250°C for the hotend and keep the bed around 40-60°C. Print slow though - around 20-30 mm/s works best since TPU is flexible and can jam easily at higher speeds.
+2026-03-09 13:55:28,953 - budget_tracker - INFO - Budget: $0.0115 / $20.00 (this call: $0.0014)
+2026-03-09 13:55:28,953 - __main__ - INFO - Intent recognition result: For TPU, print at 220-250°C for the hotend and keep the bed around 40-60°C. Print slow though - around 20-30 mm/s works best since TPU is flexible and can jam easily at higher speeds.
+2026-03-09 13:55:28,953 - text_to_speech - INFO - Speaking: For TPU, print at 220-250°C for the hotend and keep the bed around 40-60°C. Print slow though - around 20-30 mm/s works best since TPU is flexible and can jam easily at higher speeds.
+2026-03-09 13:55:28,953 - text_to_speech - INFO - Formatted for TTS: For TPU, print at 220 to 250 degrees Celsius for the hotend and keep the bed around 40 to 60 degrees Celsius. Print slow though - around 20-30 mm/s works best since TPU is flexible and can jam easily at higher speeds.
+2026-03-09 13:55:47,891 - __main__ - INFO - Response spoken
+2026-03-09 21:22:29,806 - __main__ - INFO - Wake word detected
+2026-03-09 21:22:29,812 - speech_to_text - INFO - Starting dynamic recording...
+2026-03-09 21:22:39,320 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-03-09 21:22:39,323 - speech_to_text - INFO - Recording complete: 9.50s total, transcribing...
+2026-03-09 21:22:42,276 - speech_to_text - INFO - Whisper transcription: At 36 cents per kilowatt hour, how much would it cost to charge a 2M hour  to wall battery
+2026-03-09 21:22:42,277 - __main__ - INFO - Transcribed text: At 36 cents per kilowatt hour, how much would it cost to charge a 2M hour  to wall battery
+2026-03-09 21:22:42,277 - intent_recognition - INFO - No local skill matched, forwarding to Claude: At 36 cents per kilowatt hour, how much would it cost to charge a 2M hour  to wall battery
+2026-03-09 21:22:42,277 - claude_integration - INFO - Sending to Claude: At 36 cents per kilowatt hour, how much would it cost to charge a 2M hour  to wall battery
+2026-03-09 21:22:42,277 - claude_integration - INFO - Conversation timeout for voice, clearing history
+2026-03-09 21:22:42,277 - claude_integration - INFO - Conversation history cleared for source: voice
+2026-03-09 21:22:46,043 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-03-09 21:22:46,054 - claude_integration - INFO - Claude response: I need to clarify what you mean by "2M hour to wall battery" - that's not a standard battery specification I recognize.
+
+If you mean a 2 MWh (megawatt-hour) battery, that would cost 2,000 kWh × $0.36 = $720 to fully charge from empty.
+
+Could you clarify the battery capacity? Are you referring to a specific battery model or perhaps meant something like 2 kWh?
+2026-03-09 21:22:46,057 - budget_tracker - INFO - Budget: $0.0136 / $20.00 (this call: $0.0022)
+2026-03-09 21:22:46,061 - __main__ - INFO - Intent recognition result: I need to clarify what you mean by "2M hour to wall battery" - that's not a standard battery specification I recognize.
+
+If you mean a 2 MWh (megawatt-hour) battery, that would cost 2,000 kWh × $0.36 = $720 to fully charge from empty.
+
+Could you clarify the battery capacity? Are you referring to a specific battery model or perhaps meant something like 2 kWh?
+2026-03-09 21:22:46,061 - text_to_speech - INFO - Speaking: I need to clarify what you mean by "2M hour to wall battery" - that's not a standard battery specification I recognize.
+
+If you mean a 2 MWh (megawatt-hour) battery, that would cost 2,000 kWh × $0.36 = $720 to fully charge from empty.
+
+Could you clarify the battery capacity? Are you referring to a specific battery model or perhaps meant something like 2 kWh?
+2026-03-09 21:22:46,061 - text_to_speech - INFO - Formatted for TTS: I need to clarify what you mean by "2M hour to wall battery" - that's not a standard battery specification I recognize.
+
+If you mean a 2 MWh (megawatt-hour) battery, that would cost 2,000 kWh × $0.36 = $720 to fully charge from empty.
+
+Could you clarify the battery capacity? Are you referring to a specific battery model or perhaps meant something like 2 kWh?
+2026-03-09 21:23:18,198 - __main__ - INFO - Response spoken
+2026-03-09 21:23:21,069 - __main__ - INFO - Wake word detected
+2026-03-09 21:23:21,069 - speech_to_text - INFO - Starting dynamic recording...
+2026-03-09 21:23:26,186 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-03-09 21:23:26,188 - speech_to_text - INFO - Recording complete: 5.10s total, transcribing...
+2026-03-09 21:23:27,526 - speech_to_text - INFO - Whisper transcription: A 2-amp hour do-walt battery
+2026-03-09 21:23:27,526 - __main__ - INFO - Transcribed text: A 2-amp hour do-walt battery
+2026-03-09 21:23:27,527 - intent_recognition - INFO - No local skill matched, forwarding to Claude: A 2-amp hour do-walt battery
+2026-03-09 21:23:27,527 - claude_integration - INFO - Sending to Claude: A 2-amp hour do-walt battery
+2026-03-09 21:23:31,236 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-03-09 21:23:31,237 - claude_integration - INFO - Claude response: A DeWalt battery's energy capacity depends on its voltage. Most DeWalt batteries are either 18V or 20V Max (which is actually 18V nominal).
+
+For a 2Ah DeWalt battery at 18V: 2Ah × 18V = 36Wh (0.036 kWh)
+
+At 36 cents per kWh, it would cost about 0.036 × $0.36 = **1.3 cents** to fully charge.
+2026-03-09 21:23:31,238 - budget_tracker - INFO - Budget: $0.0163 / $20.00 (this call: $0.0027)
+2026-03-09 21:23:31,238 - __main__ - INFO - Intent recognition result: A DeWalt battery's energy capacity depends on its voltage. Most DeWalt batteries are either 18V or 20V Max (which is actually 18V nominal).
+
+For a 2Ah DeWalt battery at 18V: 2Ah × 18V = 36Wh (0.036 kWh)
+
+At 36 cents per kWh, it would cost about 0.036 × $0.36 = **1.3 cents** to fully charge.
+2026-03-09 21:23:31,238 - text_to_speech - INFO - Speaking: A DeWalt battery's energy capacity depends on its voltage. Most DeWalt batteries are either 18V or 20V Max (which is actually 18V nominal).
+
+For a 2Ah DeWalt battery at 18V: 2Ah × 18V = 36Wh (0.036 kWh)
+
+At 36 cents per kWh, it would cost about 0.036 × $0.36 = **1.3 cents** to fully charge.
+2026-03-09 21:23:31,238 - text_to_speech - INFO - Formatted for TTS: A DeWalt battery's energy capacity depends on its voltage. Most DeWalt batteries are either 18V or 20V Max (which is actually 18V nominal).
+
+For a 2Ah DeWalt battery at 18V: 2Ah × 18V = 36Wh (0.036 kWh)
+
+At 36 cents per kWh, it would cost about 0.036 × $0.36 = **1.3 cents** to fully charge.
+2026-03-09 21:24:06,115 - __main__ - INFO - Response spoken
+2026-03-09 21:30:16,455 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-03-09 21:30:16,863 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-03-09 21:30:17,958 - speech_to_text - INFO - Whisper model loaded successfully
+2026-03-09 21:30:18,505 - __main__ - INFO - Started voice pipeline
+2026-03-09 21:30:18,702 - __main__ - INFO - Starting API server
+2026-03-09 21:30:18,735 - api_server - INFO - Starting FastAPI server on port 8080
+2026-03-09 21:30:21,920 - __main__ - INFO - Wake word detected
+2026-03-09 21:30:21,921 - speech_to_text - INFO - Starting dynamic recording...
+2026-03-09 21:30:25,937 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-03-09 21:30:25,952 - speech_to_text - INFO - Recording complete: 4.00s total, transcribing...
+2026-03-09 21:30:27,147 - speech_to_text - INFO - Whisper transcription: Give me three random sentences
+2026-03-09 21:30:27,148 - __main__ - INFO - Transcribed text: Give me three random sentences
+2026-03-09 21:30:27,148 - intent_recognition - INFO - No local skill matched, forwarding to Claude: Give me three random sentences
+2026-03-09 21:30:27,148 - claude_integration - INFO - Sending to Claude: Give me three random sentences
+2026-03-09 21:30:27,148 - claude_integration - INFO - [DEBUG] ask_claude source='voice', history_len=0, messages_to_send=[{'role': 'user', 'content': 'Give me three random sentences'}]
+2026-03-09 21:30:29,581 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-03-09 21:30:29,602 - claude_integration - INFO - Claude response: Here are three random sentences for you:
+
+The old lighthouse keeper collected seashells that whispered stories of distant storms. My neighbor's cat has figured out how to open the mailbox and steals packages. Scientists recently discovered that octopuses dream in color patterns that ripple across their skin.
+2026-03-09 21:30:29,602 - budget_tracker - INFO - Budget: $0.0177 / $20.00 (this call: $0.0014)
+2026-03-09 21:30:29,603 - __main__ - INFO - Intent recognition result: Here are three random sentences for you:
+
+The old lighthouse keeper collected seashells that whispered stories of distant storms. My neighbor's cat has figured out how to open the mailbox and steals packages. Scientists recently discovered that octopuses dream in color patterns that ripple across their skin.
+2026-03-09 21:30:29,603 - text_to_speech - INFO - Speaking: Here are three random sentences for you:
+
+The old lighthouse keeper collected seashells that whispered stories of distant storms. My neighbor's cat has figured out how to open the mailbox and steals packages. Scientists recently discovered that octopuses dream in color patterns that ripple across their skin.
+2026-03-09 21:30:29,604 - text_to_speech - INFO - Formatted for TTS: Here are three random sentences for you:
+
+The old lighthouse keeper collected seashells that whispered stories of distant storms. My neighbor's cat has figured out how to open the mailbox and steals packages. Scientists recently discovered that octopuses dream in color patterns that ripple across their skin.
+2026-03-09 21:30:50,553 - __main__ - INFO - Response spoken
+2026-03-09 21:34:55,429 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-03-09 21:34:55,852 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-03-09 21:34:56,115 - speech_to_text - INFO - Whisper model loaded successfully
+2026-03-09 21:34:56,462 - __main__ - INFO - Started voice pipeline
+2026-03-09 21:34:56,620 - __main__ - INFO - Starting API server
+2026-03-09 21:34:56,636 - api_server - INFO - Starting FastAPI server on port 8080
+2026-03-09 21:35:02,766 - __main__ - INFO - Wake word detected
+2026-03-09 21:35:02,766 - speech_to_text - INFO - Starting dynamic recording...
+2026-03-09 21:35:06,682 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-03-09 21:35:06,685 - speech_to_text - INFO - Recording complete: 3.90s total, transcribing...
+2026-03-09 21:35:07,824 - speech_to_text - INFO - Whisper transcription: Give me three random sentences
+2026-03-09 21:35:07,824 - __main__ - INFO - Transcribed text: Give me three random sentences
+2026-03-09 21:35:07,825 - intent_recognition - INFO - No local skill matched, forwarding to Claude: Give me three random sentences
+2026-03-09 21:35:07,825 - claude_integration - INFO - Sending to Claude: Give me three random sentences
+2026-03-09 21:35:07,825 - claude_integration - INFO - [DEBUG] ask_claude source='voice', history_len=0, messages_to_send=[{'role': 'user', 'content': 'Give me three random sentences'}]
+2026-03-09 21:35:10,885 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-03-09 21:35:10,907 - claude_integration - INFO - Claude response: Here are three random sentences for you:
+
+The old lighthouse keeper collected vintage postcards from sailors who never returned to port. My neighbor's cat has learned to open the refrigerator and steals only the expensive cheese. Yesterday I discovered that pressing Ctrl+Alt+J in most browsers opens absolutely nothing, but I keep trying it anyway.
+2026-03-09 21:35:10,907 - budget_tracker - INFO - Budget: $0.0193 / $20.00 (this call: $0.0016)
+2026-03-09 21:35:10,907 - __main__ - INFO - Intent recognition result: Here are three random sentences for you:
+
+The old lighthouse keeper collected vintage postcards from sailors who never returned to port. My neighbor's cat has learned to open the refrigerator and steals only the expensive cheese. Yesterday I discovered that pressing Ctrl+Alt+J in most browsers opens absolutely nothing, but I keep trying it anyway.
+2026-03-09 21:35:10,908 - text_to_speech - INFO - Speaking: Here are three random sentences for you:
+
+The old lighthouse keeper collected vintage postcards from sailors who never returned to port. My neighbor's cat has learned to open the refrigerator and steals only the expensive cheese. Yesterday I discovered that pressing Ctrl+Alt+J in most browsers opens absolutely nothing, but I keep trying it anyway.
+2026-03-09 21:35:10,908 - text_to_speech - INFO - Formatted for TTS: Here are three random sentences for you:
+
+The old lighthouse keeper collected vintage postcards from sailors who never returned to port. My neighbor's cat has learned to open the refrigerator and steals only the expensive cheese. Yesterday I discovered that pressing Ctrl+Alt+J in most browsers opens absolutely nothing, but I keep trying it anyway.
+2026-03-09 21:35:17,694 - text_to_speech - INFO - TTS interrupted by user
+2026-03-09 21:35:17,727 - __main__ - INFO - TTS interrupted by wake word during playback
+2026-03-09 21:35:54,063 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-03-09 21:35:54,347 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-03-09 21:35:54,617 - speech_to_text - INFO - Whisper model loaded successfully
+2026-03-09 21:35:54,959 - __main__ - INFO - Started voice pipeline
+2026-03-09 21:35:55,118 - __main__ - INFO - Starting API server
+2026-03-09 21:35:55,134 - api_server - INFO - Starting FastAPI server on port 8080
+2026-03-09 21:36:00,512 - __main__ - INFO - Wake word detected
+2026-03-09 21:36:00,512 - speech_to_text - INFO - Starting dynamic recording...
+2026-03-09 21:36:04,029 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-03-09 21:36:04,031 - speech_to_text - INFO - Recording complete: 3.50s total, transcribing...
+2026-03-09 21:36:05,202 - speech_to_text - INFO - Whisper transcription: Give me three random sentences
+2026-03-09 21:36:05,203 - __main__ - INFO - Transcribed text: Give me three random sentences
+2026-03-09 21:36:05,203 - intent_recognition - INFO - No local skill matched, forwarding to Claude: Give me three random sentences
+2026-03-09 21:36:05,203 - claude_integration - INFO - Sending to Claude: Give me three random sentences
+2026-03-09 21:36:05,203 - claude_integration - INFO - [DEBUG] ask_claude source='voice', history_len=0, messages_to_send=[{'role': 'user', 'content': 'Give me three random sentences'}]
+2026-03-09 21:36:08,092 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-03-09 21:36:08,113 - claude_integration - INFO - Claude response: The old lighthouse keeper collected bottle caps from every continent except Antarctica. My neighbor's cat has learned to open doors and now roams the entire apartment building like it owns the place. Scientists recently discovered that octopuses dream in color patterns that ripple across their skin while they sleep.
+2026-03-09 21:36:08,114 - budget_tracker - INFO - Budget: $0.0207 / $20.00 (this call: $0.0014)
+2026-03-09 21:36:08,114 - __main__ - INFO - Intent recognition result: The old lighthouse keeper collected bottle caps from every continent except Antarctica. My neighbor's cat has learned to open doors and now roams the entire apartment building like it owns the place. Scientists recently discovered that octopuses dream in color patterns that ripple across their skin while they sleep.
+2026-03-09 21:36:08,115 - text_to_speech - INFO - Speaking: The old lighthouse keeper collected bottle caps from every continent except Antarctica. My neighbor's cat has learned to open doors and now roams the entire apartment building like it owns the place. Scientists recently discovered that octopuses dream in color patterns that ripple across their skin while they sleep.
+2026-03-09 21:36:08,115 - text_to_speech - INFO - Formatted for TTS: The old lighthouse keeper collected bottle caps from every continent except Antarctica. My neighbor's cat has learned to open doors and now roams the entire apartment building like it owns the place. Scientists recently discovered that octopuses dream in color patterns that ripple across their skin while they sleep.
+2026-03-09 21:36:16,225 - text_to_speech - INFO - TTS interrupted by user
+2026-03-09 21:36:16,259 - __main__ - INFO - TTS interrupted by wake word during playback
+2026-03-09 21:36:16,259 - speech_to_text - INFO - Recording short snippet (1.5s)...
+2026-03-09 21:36:18,905 - speech_to_text - INFO - Whisper transcription: Stop
+2026-03-09 21:36:18,906 - __main__ - INFO - Post-interrupt command: 'Stop'
+2026-03-09 21:36:18,906 - __main__ - INFO - Stop command confirmed — returning to wake word listen
+2026-03-09 21:38:05,729 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-03-09 21:38:06,020 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-03-09 21:38:06,282 - speech_to_text - INFO - Whisper model loaded successfully
+2026-03-09 21:38:06,622 - __main__ - INFO - Started voice pipeline
+2026-03-09 21:38:06,780 - __main__ - INFO - Starting API server
+2026-03-09 21:38:06,796 - api_server - INFO - Starting FastAPI server on port 8080
+2026-03-09 21:38:13,014 - __main__ - INFO - Wake word detected
+2026-03-09 21:38:13,016 - speech_to_text - INFO - Starting dynamic recording...
+2026-03-09 21:38:16,331 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-03-09 21:38:16,342 - speech_to_text - INFO - Recording complete: 3.30s total, transcribing...
+2026-03-09 21:38:17,563 - speech_to_text - INFO - Whisper transcription: Give me three random sentences
+2026-03-09 21:38:17,563 - __main__ - INFO - Transcribed text: Give me three random sentences
+2026-03-09 21:38:17,563 - intent_recognition - INFO - No local skill matched, forwarding to Claude: Give me three random sentences
+2026-03-09 21:38:17,564 - claude_integration - INFO - Sending to Claude: Give me three random sentences
+2026-03-09 21:38:17,564 - claude_integration - INFO - [DEBUG] ask_claude source='voice', history_len=0, messages_to_send=[{'role': 'user', 'content': 'Give me three random sentences'}]
+2026-03-09 21:38:20,924 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-03-09 21:38:20,945 - claude_integration - INFO - Claude response: The old typewriter in the corner still clicks rhythmically when the wind hits it just right. My neighbor's cat has figured out how to open the mailbox and leaves small gifts inside. Yesterday I discovered that honey never expires, which explains why that jar from 2019 still tastes perfectly fine.
+2026-03-09 21:38:20,946 - budget_tracker - INFO - Budget: $0.0222 / $20.00 (this call: $0.0015)
+2026-03-09 21:38:20,946 - __main__ - INFO - Intent recognition result: The old typewriter in the corner still clicks rhythmically when the wind hits it just right. My neighbor's cat has figured out how to open the mailbox and leaves small gifts inside. Yesterday I discovered that honey never expires, which explains why that jar from 2019 still tastes perfectly fine.
+2026-03-09 21:38:20,946 - text_to_speech - INFO - Speaking: The old typewriter in the corner still clicks rhythmically when the wind hits it just right. My neighbor's cat has figured out how to open the mailbox and leaves small gifts inside. Yesterday I discovered that honey never expires, which explains why that jar from 2019 still tastes perfectly fine.
+2026-03-09 21:38:20,947 - text_to_speech - INFO - Formatted for TTS: The old typewriter in the corner still clicks rhythmically when the wind hits it just right. My neighbor's cat has figured out how to open the mailbox and leaves small gifts inside. Yesterday I discovered that honey never expires, which explains why that jar from 2019 still tastes perfectly fine.
+2026-03-09 21:38:39,687 - __main__ - INFO - Response spoken
+2026-03-09 21:44:47,501 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-03-09 21:44:47,804 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-03-09 21:44:48,076 - speech_to_text - INFO - Whisper model loaded successfully
+2026-03-09 21:44:48,449 - text_to_speech - INFO - Loading Piper TTS model: models/piper/en_US-lessac-medium.onnx
+2026-03-09 21:44:49,777 - text_to_speech - INFO - Piper TTS model loaded
+2026-03-09 21:44:49,778 - __main__ - INFO - Started voice pipeline
+2026-03-09 21:44:49,934 - __main__ - INFO - Starting API server
+2026-03-09 21:44:49,958 - api_server - INFO - Starting FastAPI server on port 8080
+2026-03-09 21:44:57,897 - __main__ - INFO - Wake word detected
+2026-03-09 21:44:57,898 - speech_to_text - INFO - Starting dynamic recording...
+2026-03-09 21:45:01,914 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-03-09 21:45:01,929 - speech_to_text - INFO - Recording complete: 4.00s total, transcribing...
+2026-03-09 21:45:03,165 - speech_to_text - INFO - Whisper transcription: Give me three random sentences
+2026-03-09 21:45:03,166 - __main__ - INFO - Transcribed text: Give me three random sentences
+2026-03-09 21:45:03,166 - intent_recognition - INFO - No local skill matched, forwarding to Claude: Give me three random sentences
+2026-03-09 21:45:03,167 - claude_integration - INFO - Sending to Claude: Give me three random sentences
+2026-03-09 21:45:03,167 - claude_integration - INFO - [DEBUG] ask_claude source='voice', history_len=0, messages_to_send=[{'role': 'user', 'content': 'Give me three random sentences'}]
+2026-03-09 21:45:06,972 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-03-09 21:45:06,993 - claude_integration - INFO - Claude response: The old lighthouse keeper discovered a message in a bottle that had been floating for thirty-seven years. My neighbor's cat has learned to open doors and now thinks it owns the entire apartment building. Scientists recently found that octopuses collect shiny bottle caps and arrange them in neat little piles on the ocean floor.
+2026-03-09 21:45:06,993 - budget_tracker - INFO - Budget: $0.0237 / $20.00 (this call: $0.0015)
+2026-03-09 21:45:06,994 - __main__ - INFO - Intent recognition result: The old lighthouse keeper discovered a message in a bottle that had been floating for thirty-seven years. My neighbor's cat has learned to open doors and now thinks it owns the entire apartment building. Scientists recently found that octopuses collect shiny bottle caps and arrange them in neat little piles on the ocean floor.
+2026-03-09 21:45:06,994 - text_to_speech - INFO - Speaking: The old lighthouse keeper discovered a message in a bottle that had been floating for thirty-seven years. My neighbor's cat has learned to open doors and now thinks it owns the entire apartment building. Scientists recently found that octopuses collect shiny bottle caps and arrange them in neat little piles on the ocean floor.
+2026-03-09 21:45:06,995 - text_to_speech - INFO - Formatted for TTS: The old lighthouse keeper discovered a message in a bottle that had been floating for thirty-seven years. My neighbor's cat has learned to open doors and now thinks it owns the entire apartment building. Scientists recently found that octopuses collect shiny bottle caps and arrange them in neat little piles on the ocean floor.
+2026-03-09 21:46:38,158 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-03-09 21:46:38,504 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-03-09 21:46:38,770 - speech_to_text - INFO - Whisper model loaded successfully
+2026-03-09 21:46:39,143 - text_to_speech - INFO - Loading Piper TTS model: models/piper/en_US-lessac-medium.onnx
+2026-03-09 21:46:40,423 - text_to_speech - INFO - Piper TTS model loaded
+2026-03-09 21:46:40,423 - __main__ - INFO - Started voice pipeline
+2026-03-09 21:46:40,583 - __main__ - INFO - Starting API server
+2026-03-09 21:46:40,607 - api_server - INFO - Starting FastAPI server on port 8080
+2026-03-09 21:46:43,358 - __main__ - INFO - Wake word detected
+2026-03-09 21:46:43,358 - speech_to_text - INFO - Starting dynamic recording...
+2026-03-09 21:46:46,775 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-03-09 21:46:46,781 - speech_to_text - INFO - Recording complete: 3.40s total, transcribing...
+2026-03-09 21:46:47,982 - speech_to_text - INFO - Whisper transcription: Give me three random sentences
+2026-03-09 21:46:47,983 - __main__ - INFO - Transcribed text: Give me three random sentences
+2026-03-09 21:46:47,983 - intent_recognition - INFO - No local skill matched, forwarding to Claude: Give me three random sentences
+2026-03-09 21:46:47,983 - claude_integration - INFO - Sending to Claude: Give me three random sentences
+2026-03-09 21:46:47,983 - claude_integration - INFO - [DEBUG] ask_claude source='voice', history_len=0, messages_to_send=[{'role': 'user', 'content': 'Give me three random sentences'}]
+2026-03-09 21:46:51,032 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-03-09 21:46:51,053 - claude_integration - INFO - Claude response: The old lighthouse keeper discovered a message in a bottle that had been floating for thirty-seven years. My neighbor's cat has learned to open doors and now thinks it owns the entire apartment building. Scientists recently found that honeybees can be trained to detect explosives better than some electronic devices.
+2026-03-09 21:46:51,053 - budget_tracker - INFO - Budget: $0.0251 / $20.00 (this call: $0.0014)
+2026-03-09 21:46:51,054 - __main__ - INFO - Intent recognition result: The old lighthouse keeper discovered a message in a bottle that had been floating for thirty-seven years. My neighbor's cat has learned to open doors and now thinks it owns the entire apartment building. Scientists recently found that honeybees can be trained to detect explosives better than some electronic devices.
+2026-03-09 21:46:51,054 - text_to_speech - INFO - Speaking: The old lighthouse keeper discovered a message in a bottle that had been floating for thirty-seven years. My neighbor's cat has learned to open doors and now thinks it owns the entire apartment building. Scientists recently found that honeybees can be trained to detect explosives better than some electronic devices.
+2026-03-09 21:46:51,055 - text_to_speech - INFO - Formatted for TTS: The old lighthouse keeper discovered a message in a bottle that had been floating for thirty-seven years. My neighbor's cat has learned to open doors and now thinks it owns the entire apartment building. Scientists recently found that honeybees can be trained to detect explosives better than some electronic devices.
+2026-03-09 21:47:09,246 - __main__ - INFO - Response spoken
+2026-03-09 21:48:55,930 - speech_to_text - INFO - Loading Whisper model: tiny
+2026-03-09 21:48:56,224 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny/revision/main "HTTP/1.1 200 OK"
+2026-03-09 21:48:56,492 - speech_to_text - INFO - Whisper model loaded successfully
+2026-03-09 21:48:56,859 - text_to_speech - INFO - Loading Piper TTS model: models/piper/en_US-lessac-medium.onnx
+2026-03-09 21:48:58,172 - text_to_speech - INFO - Piper TTS model loaded
+2026-03-09 21:48:58,173 - __main__ - INFO - Started voice pipeline
+2026-03-09 21:48:58,338 - __main__ - INFO - Starting API server
+2026-03-09 21:48:58,365 - api_server - INFO - Starting FastAPI server on port 8080
+2026-03-09 21:49:03,876 - __main__ - INFO - Wake word detected
+2026-03-09 21:49:03,877 - speech_to_text - INFO - Starting dynamic recording...
+2026-03-09 21:49:07,093 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-03-09 21:49:07,107 - speech_to_text - INFO - Recording complete: 3.20s total, transcribing...
+2026-03-09 21:49:08,383 - speech_to_text - INFO - Whisper transcription: Give me a random sentence
+2026-03-09 21:49:08,384 - __main__ - INFO - Transcribed text: Give me a random sentence
+2026-03-09 21:49:08,384 - intent_recognition - INFO - No local skill matched, forwarding to Claude: Give me a random sentence
+2026-03-09 21:49:08,384 - claude_integration - INFO - Sending to Claude: Give me a random sentence
+2026-03-09 21:49:08,384 - claude_integration - INFO - [DEBUG] ask_claude source='voice', history_len=0, messages_to_send=[{'role': 'user', 'content': 'Give me a random sentence'}]
+2026-03-09 21:49:10,236 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-03-09 21:49:10,257 - claude_integration - INFO - Claude response: The old lighthouse keeper discovered a message in a bottle that had been floating in the ocean for thirty-seven years.
+2026-03-09 21:49:10,257 - budget_tracker - INFO - Budget: $0.0259 / $20.00 (this call: $0.0009)
+2026-03-09 21:49:10,257 - __main__ - INFO - Intent recognition result: The old lighthouse keeper discovered a message in a bottle that had been floating in the ocean for thirty-seven years.
+2026-03-09 21:49:10,258 - text_to_speech - INFO - Speaking: The old lighthouse keeper discovered a message in a bottle that had been floating in the ocean for thirty-seven years.
+2026-03-09 21:49:10,258 - text_to_speech - INFO - Formatted for TTS: The old lighthouse keeper discovered a message in a bottle that had been floating in the ocean for thirty-seven years.
+2026-03-09 21:49:17,236 - __main__ - INFO - Response spoken
+2026-03-09 21:49:18,133 - __main__ - INFO - Wake word detected
+2026-03-09 21:49:18,133 - speech_to_text - INFO - Starting dynamic recording...
+2026-03-09 21:49:19,650 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-03-09 21:49:19,652 - speech_to_text - INFO - Recording complete: 1.50s total, transcribing...
+2026-03-09 21:49:20,712 - speech_to_text - INFO - Whisper transcription: 
+2026-03-09 21:49:20,712 - __main__ - INFO - Transcribed text: 
+2026-03-09 21:49:20,712 - __main__ - INFO - Empty transcription, ignoring
+2026-03-09 21:49:24,293 - __main__ - INFO - Wake word detected
+2026-03-09 21:49:24,293 - speech_to_text - INFO - Starting dynamic recording...
+2026-03-09 21:49:27,510 - speech_to_text - INFO - Silence threshold reached (1.5s)
+2026-03-09 21:49:27,524 - speech_to_text - INFO - Recording complete: 3.20s total, transcribing...
+2026-03-09 21:49:28,666 - speech_to_text - INFO - Whisper transcription: Give me three random sentences
+2026-03-09 21:49:28,666 - __main__ - INFO - Transcribed text: Give me three random sentences
+2026-03-09 21:49:28,667 - intent_recognition - INFO - No local skill matched, forwarding to Claude: Give me three random sentences
+2026-03-09 21:49:28,667 - claude_integration - INFO - Sending to Claude: Give me three random sentences
+2026-03-09 21:49:28,667 - claude_integration - INFO - [DEBUG] ask_claude source='voice', history_len=2, messages_to_send=[{'role': 'user', 'content': 'Give me a random sentence'}, {'role': 'assistant', 'content': 'The old lighthouse keeper discovered a message in a bottle that had been floating in the ocean for thirty-seven years.'}, {'role': 'user', 'content': 'Give me three random sentences'}]
+2026-03-09 21:49:32,357 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-03-09 21:49:32,358 - claude_integration - INFO - Claude response: The bakery on Fifth Street accidentally created a new pastry when their oven timer broke during a thunderstorm. A family of raccoons has been teaching their young how to open garbage cans using a sophisticated lever system. The librarian noticed that every Tuesday, someone returns exactly seven mystery novels and borrows six cookbooks.
+2026-03-09 21:49:32,359 - budget_tracker - INFO - Budget: $0.0276 / $20.00 (this call: $0.0016)
+2026-03-09 21:49:32,359 - __main__ - INFO - Intent recognition result: The bakery on Fifth Street accidentally created a new pastry when their oven timer broke during a thunderstorm. A family of raccoons has been teaching their young how to open garbage cans using a sophisticated lever system. The librarian noticed that every Tuesday, someone returns exactly seven mystery novels and borrows six cookbooks.
+2026-03-09 21:49:32,359 - text_to_speech - INFO - Speaking: The bakery on Fifth Street accidentally created a new pastry when their oven timer broke during a thunderstorm. A family of raccoons has been teaching their young how to open garbage cans using a sophisticated lever system. The librarian noticed that every Tuesday, someone returns exactly seven mystery novels and borrows six cookbooks.
+2026-03-09 21:49:32,360 - text_to_speech - INFO - Formatted for TTS: The bakery on Fifth Street accidentally created a new pastry when their oven timer broke during a thunderstorm. A family of raccoons has been teaching their young how to open garbage cans using a sophisticated lever system. The librarian noticed that every Tuesday, someone returns exactly seven mystery novels and borrows six cookbooks.
+2026-03-09 21:49:52,933 - __main__ - INFO - Response spoken
