@@ -2,37 +2,40 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+import subprocess
 import logging
+import io
+import wave
 import numpy as np
 import sounddevice as sd
 from piper import PiperVoice
-from config.settings import TTS_MODEL_PATH, AUDIO_OUTPUT_SD_DEVICE
+from config.settings import TTS_MODEL_PATH, AUDIO_OUTPUT_DEVICE
 from tts_formatter import format_for_speech
 
 logger = logging.getLogger(__name__)
 
-# Load model once at startup — this is the expensive step (~1.3s), so we do it here
+# Load model once at startup — avoids ~1.7s subprocess overhead per call
 logger.info(f"Loading Piper TTS model: {TTS_MODEL_PATH}")
 _voice = PiperVoice.load(TTS_MODEL_PATH)
 logger.info("Piper TTS model loaded")
 
 _interrupt_flag = False
+_audio_process = None
 
 
 def interrupt():
     """Stop current speech immediately"""
-    global _interrupt_flag
+    global _interrupt_flag, _audio_process
     _interrupt_flag = True
-    sd.stop()
-    logger.info("TTS interrupted")
+    if _audio_process:
+        _audio_process.kill()
+        logger.info("TTS interrupted")
 
 
 def synthesize_to_wav(text):
     """
     Synthesize text and return WAV bytes (used by API server for base64 audio responses).
-    Reuses the already-loaded voice model.
     """
-    import io, wave
     formatted_text = format_for_speech(text)
     chunks = list(_voice.synthesize(formatted_text))
     if not chunks:
@@ -53,10 +56,9 @@ def synthesize_to_wav(text):
 
 def speak(text, check_interrupt_callback=None):
     """
-    Synthesize text and play it via sounddevice.
-    Model is pre-loaded so synthesis starts immediately (~100-500ms vs ~1.7s with subprocess).
+    Synthesize text with the pre-loaded Piper model and play via aplay.
     """
-    global _interrupt_flag
+    global _interrupt_flag, _audio_process
     _interrupt_flag = False
 
     logger.info(f"Speaking: {text}")
@@ -70,6 +72,22 @@ def speak(text, check_interrupt_callback=None):
 
     audio = np.concatenate([c.audio_int16_array for c in chunks])
     sample_rate = chunks[0].sample_rate
+    raw_audio = audio.tobytes()
 
-    sd.play(audio, samplerate=sample_rate, device=AUDIO_OUTPUT_SD_DEVICE)
-    sd.wait()
+    _audio_process = subprocess.Popen(
+        ['aplay', '-r', str(sample_rate), '-f', 'S16_LE', '-t', 'raw',
+         '-D', f'plughw:{AUDIO_OUTPUT_DEVICE},0'],
+        stdin=subprocess.PIPE,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL
+    )
+
+    try:
+        _audio_process.communicate(input=raw_audio, timeout=60)
+    except subprocess.TimeoutExpired:
+        _audio_process.kill()
+        logger.warning("TTS playback timeout")
+    except Exception as e:
+        logger.error(f"TTS playback error: {e}")
+
+    _audio_process = None
