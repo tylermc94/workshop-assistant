@@ -7,7 +7,6 @@ import logging
 import io
 import wave
 import numpy as np
-import sounddevice as sd
 from piper import PiperVoice
 from config.settings import TTS_MODEL_PATH, AUDIO_OUTPUT_DEVICE
 from tts_formatter import format_for_speech
@@ -56,7 +55,9 @@ def synthesize_to_wav(text):
 
 def speak(text, check_interrupt_callback=None):
     """
-    Synthesize text with the pre-loaded Piper model and play via aplay.
+    Synthesize text with the pre-loaded Piper model and stream to aplay.
+    Piper yields one AudioChunk per sentence, so aplay starts playing the
+    first sentence while subsequent sentences are still being synthesized.
     """
     global _interrupt_flag, _audio_process
     _interrupt_flag = False
@@ -66,13 +67,7 @@ def speak(text, check_interrupt_callback=None):
     formatted_text = format_for_speech(text)
     logger.info(f"Formatted for TTS: {formatted_text}")
 
-    chunks = list(_voice.synthesize(formatted_text))
-    if not chunks or _interrupt_flag:
-        return
-
-    audio = np.concatenate([c.audio_int16_array for c in chunks])
-    sample_rate = chunks[0].sample_rate
-    raw_audio = audio.tobytes()
+    sample_rate = _voice.config.sample_rate
 
     _audio_process = subprocess.Popen(
         ['aplay', '-r', str(sample_rate), '-f', 'S16_LE', '-t', 'raw',
@@ -83,7 +78,14 @@ def speak(text, check_interrupt_callback=None):
     )
 
     try:
-        _audio_process.communicate(input=raw_audio, timeout=60)
+        for chunk in _voice.synthesize(formatted_text):
+            if _interrupt_flag:
+                break
+            _audio_process.stdin.write(chunk.audio_int16_bytes)
+        _audio_process.stdin.close()
+        _audio_process.wait(timeout=60)
+    except BrokenPipeError:
+        pass  # Interrupted mid-stream
     except subprocess.TimeoutExpired:
         _audio_process.kill()
         logger.warning("TTS playback timeout")
