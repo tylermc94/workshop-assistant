@@ -6,10 +6,8 @@ import numpy as np
 import wave
 import io
 import base64
-import tempfile
-import subprocess
 import logging
-from config.settings import TTS_MODEL_PATH
+import text_to_speech
 from tts_formatter import format_for_speech
 
 logger = logging.getLogger(__name__)
@@ -80,65 +78,12 @@ def wav_bytes_to_numpy(wav_bytes, target_sample_rate=48000):
 def text_to_audio_base64(text):
     """
     Convert text to speech and return as base64-encoded WAV.
-
-    Args:
-        text (str): Text to convert to speech
-
-    Returns:
-        str: Base64-encoded WAV file content
+    Uses the pre-loaded Piper model from text_to_speech module.
     """
     logger.info(f"Converting text to speech: {text[:50]}...")
-
-    # Format for better TTS pronunciation
-    formatted_text = format_for_speech(text)
-    logger.debug(f"Formatted for TTS: {formatted_text}")
-
-    # Generate speech using Piper
-    piper_process = subprocess.Popen(
-        ['piper', '--model', TTS_MODEL_PATH, '--output-raw'],
-        stdin=subprocess.PIPE,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.DEVNULL
-    )
-
-    raw_audio_data, _ = piper_process.communicate(input=formatted_text.encode('utf-8'))
-
-    if piper_process.returncode != 0:
-        logger.error("Piper TTS failed")
-        raise RuntimeError("TTS generation failed")
-
-    # Convert raw audio to WAV format
-    # Piper outputs 22050Hz, 16-bit mono raw audio
-    wav_bytes = raw_audio_to_wav(raw_audio_data, sample_rate=22050)
-
-    # Encode as base64
+    wav_bytes = text_to_speech.synthesize_to_wav(text)
     base64_audio = base64.b64encode(wav_bytes).decode('utf-8')
-
     logger.info(f"Generated TTS audio: {len(wav_bytes)} bytes WAV -> {len(base64_audio)} bytes base64")
     return base64_audio
 
 
-def raw_audio_to_wav(raw_audio_data, sample_rate=22050, channels=1, sample_width=2):
-    """
-    Convert raw audio data to WAV format.
-
-    Args:
-        raw_audio_data (bytes): Raw audio data
-        sample_rate (int): Sample rate (default: 22050 for Piper)
-        channels (int): Number of channels (default: 1 for mono)
-        sample_width (int): Sample width in bytes (default: 2 for 16-bit)
-
-    Returns:
-        bytes: WAV file content as bytes
-    """
-    # Create WAV file in memory
-    wav_buffer = io.BytesIO()
-
-    with wave.open(wav_buffer, 'wb') as wav_file:
-        wav_file.setnchannels(channels)
-        wav_file.setsampwidth(sample_width)
-        wav_file.setframerate(sample_rate)
-        wav_file.writeframes(raw_audio_data)
-
-    wav_buffer.seek(0)
-    return wav_buffer.read()

@@ -1,7 +1,8 @@
 # Audio Configuration
 AUDIO_INPUT_DEVICE = 1  # Scarlett 2i4 USB
 SCARLETT_SAMPLE_RATE = 48000  # Scarlett's native sample rate
-AUDIO_OUTPUT_DEVICE = 3  # USB Audio Device for output
+AUDIO_OUTPUT_DEVICE = 3       # USB Audio Device — ALSA card number (used by aplay in timer skill)
+AUDIO_OUTPUT_SD_DEVICE = 2    # USB Audio Device — sounddevice index (used by TTS)
 
 # Model Paths (relative to project root)
 WAKE_WORD_MODEL = 'models/Hey-Forge_en_raspberry-pi_v4_0_0.ppn' # Porcupine wake word model path
@@ -31,7 +32,7 @@ CHUNK_SIZE = 4000 #samples per read (~0.1 second at 48000 Hz). More samples = mo
 SILENCE_THRESHOLD = 1.5 # seconds of silence before stopping
 
 # Piper TTS Settings
-TTS_VOICE = "alan"  # Options: "amy", "lessac", "alan", "alba"
+TTS_VOICE = "lessac"  # Options: "amy", "lessac", "alan", "alba"
 # Voice model paths
 TTS_VOICES = {
     "amy": "models/piper/en_US-amy-medium.onnx",      # US Female
@@ -68,6 +69,10 @@ BUDGET_FILE = "logs/budget.json"  # Track spending
 # Claude Pricing (USD per million tokens)
 CLAUDE_INPUT_PRICE_PER_MTOK = 3.00
 CLAUDE_OUTPUT_PRICE_PER_MTOK = 15.00
+
+# Conversation Mode
+CONVERSATION_TIMEOUT = 120      # seconds of Claude-turn inactivity before history resets
+CONVERSATION_MAX_TURNS = 10     # max user+assistant pairs to retain
 
 # Query Logging
 CLAUDE_QUERY_LOG = "logs/claude_queries.log"
