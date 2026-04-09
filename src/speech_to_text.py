@@ -94,7 +94,11 @@ def _transcribe_with_whisper(audio):
             wf.writeframes(audio.tobytes())
         
         # Transcribe
-        segments, info = whisper_model.transcribe(tmp.name, beam_size=5)
+        segments, info = whisper_model.transcribe(
+            tmp.name, 
+            beam_size=5,
+            language="en"
+        )
         
         # Combine all segments into single text
         text = " ".join([segment.text for segment in segments]).strip()
@@ -107,6 +111,24 @@ def _transcribe_with_whisper(audio):
         
     logger.info(f"Whisper transcription: {text}")
     return text
+
+def transcribe_short(duration=1.5):
+    """Record a short fixed-duration snippet and transcribe it (used for interrupt commands)."""
+    logger.info(f"Recording short snippet ({duration}s)...")
+    audio = sd.rec(
+        int(duration * SCARLETT_SAMPLE_RATE),
+        samplerate=SCARLETT_SAMPLE_RATE,
+        channels=1,
+        dtype='int16',
+        device=AUDIO_INPUT_DEVICE
+    )
+    sd.wait()
+
+    if STT_ENGINE == "vosk":
+        return _transcribe_with_vosk(audio)
+    elif STT_ENGINE == "whisper":
+        return _transcribe_with_whisper(audio)
+
 
 def transcribe_speech_dynamic():
     """

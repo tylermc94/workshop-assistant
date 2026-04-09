@@ -9,7 +9,7 @@ def setup_logging():
         level=logging.INFO,
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
         handlers=[
-            logging.FileHandler('logs/workshop_assistant.log')
+            logging.FileHandler('logs/workshop_assistant.log', encoding='utf-8'),
             # Remove StreamHandler - no console output
         ]
     )

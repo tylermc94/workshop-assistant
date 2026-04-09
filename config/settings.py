@@ -31,7 +31,7 @@ CHUNK_SIZE = 4000 #samples per read (~0.1 second at 48000 Hz). More samples = mo
 SILENCE_THRESHOLD = 1.5 # seconds of silence before stopping
 
 # Piper TTS Settings
-TTS_VOICE = "alan"  # Options: "amy", "lessac", "alan", "alba"
+TTS_VOICE = "lessac"  # Options: "amy", "lessac", "alan", "alba"
 # Voice model paths
 TTS_VOICES = {
     "amy": "models/piper/en_US-amy-medium.onnx",      # US Female
@@ -40,7 +40,7 @@ TTS_VOICES = {
     "alba": "models/piper/en_GB-alba-medium.onnx"     # UK Female
 }
 TTS_MODEL_PATH = TTS_VOICES[TTS_VOICE]
-TTS_SPEED = 1.0  # 1.0 = normal, <1 = faster, >1 = slower
+TTS_SPEED = 2  # 1 = normal, <1 = faster, >1 = slower
 TTS_NOISE_SCALE = 0.667
 TTS_NOISE_W = 0.8
 
@@ -52,6 +52,9 @@ TIMER_ALARM_REPEATS = 3  # Play 3 times
 # Import API key from secrets
 from config.secrets import CLAUDE_API_KEY
 
+# API Settings
+from config.secrets import API_KEY
+
 # Claude API Configuration
 CLAUDE_MODEL = "claude-sonnet-4-20250514"
 CLAUDE_MAX_TOKENS = 200  # Short responses for question mode
@@ -62,5 +65,17 @@ BUDGET_WARNING_THRESHOLD = 15.00  # USD
 BUDGET_HARD_LIMIT = 20.00  # USD
 BUDGET_FILE = "logs/budget.json"  # Track spending
 
+# Claude Pricing (USD per million tokens)
+CLAUDE_INPUT_PRICE_PER_MTOK = 3.00
+CLAUDE_OUTPUT_PRICE_PER_MTOK = 15.00
+
+# Conversation Mode
+CONVERSATION_TIMEOUT = 120      # seconds of Claude-turn inactivity before history resets
+CONVERSATION_MAX_TURNS = 10     # max user+assistant pairs to retain
+
 # Query Logging
 CLAUDE_QUERY_LOG = "logs/claude_queries.log"
+
+# API Configuration
+API_ENABLED = True
+API_PORT = 8080

@@ -58,3 +58,28 @@ def listen_for_wake_word():
         if keyword_index >= 0:
             #print("Wake word detected!")
             return #exit the function
+
+def listen_for_wake_word_stoppable(stop_event):
+    """Listen for wake word, returning True if detected or False if stop_event is set."""
+    while not stop_event.is_set():
+        audio_frame = sd.rec(
+            samples_needed,
+            samplerate=SCARLETT_SAMPLE_RATE,
+            channels=1,
+            dtype='int16',
+            device=AUDIO_INPUT_DEVICE
+        )
+        sd.wait()
+
+        if stop_event.is_set():
+            return False
+
+        audio_resampled = signal.resample(audio_frame.flatten(), FRAME_LENGTH)
+        audio_list = audio_resampled.astype('int16').tolist()
+
+        keyword_index = porcupine.process(audio_list)
+
+        if keyword_index >= 0:
+            return True
+
+    return False
