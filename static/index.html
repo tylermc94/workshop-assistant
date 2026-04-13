@@ -284,14 +284,22 @@
       lastStatus = status;
     }
 
+    let serverWasDown = false;
+
     async function poll() {
       try {
         const res = await fetch("/status");
         if (res.ok) {
+          if (serverWasDown) {
+            // Server just came back — reload to pick up any UI changes
+            location.reload();
+            return;
+          }
           const data = await res.json();
           applyState(data);
         }
       } catch (_) {
+        serverWasDown = true;
         // server unreachable — keep current display
       }
     }
