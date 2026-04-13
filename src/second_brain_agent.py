@@ -212,11 +212,47 @@ def _execute_tool(name: str, inputs: dict) -> str:
 
 
 # ---------------------------------------------------------------------------
+# Git helpers — enforced at the framework level, not left to the agent
+# ---------------------------------------------------------------------------
+
+def _git_pull() -> None:
+    """Pull latest vault state before the agent starts. Non-fatal on failure."""
+    result = subprocess.run(
+        ['git', 'pull', '--rebase'],
+        cwd=str(VAULT), capture_output=True, text=True
+    )
+    if result.returncode != 0:
+        logger.warning(f"git pull before agent: {result.stderr.strip()}")
+    else:
+        logger.debug("git pull OK")
+
+
+def _git_push() -> None:
+    """Push after write operations. Non-fatal on failure."""
+    # Stage anything uncommitted first (agent may have forgotten git_add_all / git_commit)
+    subprocess.run(['git', 'add', '-A'], cwd=str(VAULT), capture_output=True, text=True)
+    commit_result = subprocess.run(
+        ['git', 'commit', '-m', 'forge: agent write (auto-commit)'],
+        cwd=str(VAULT), capture_output=True, text=True
+    )
+    # commit returns 1 if nothing to commit — that's fine
+    push_result = subprocess.run(
+        ['git', 'push'], cwd=str(VAULT), capture_output=True, text=True
+    )
+    if push_result.returncode != 0:
+        logger.warning(f"git push after agent: {push_result.stderr.strip()}")
+    else:
+        logger.debug("git push OK")
+
+
+# ---------------------------------------------------------------------------
 # Agent loop
 # ---------------------------------------------------------------------------
 
 def _run_agent_loop(transcript: str, intent: str) -> str:
     """Run the tool-use loop and return a final spoken response string."""
+    _git_pull()
+
     messages = [{"role": "user", "content": transcript}]
 
     for round_num in range(MAX_TOOL_ROUNDS):
@@ -259,6 +295,14 @@ def _run_agent_loop(transcript: str, intent: str) -> str:
     return "Sorry, I ran out of steps before finishing that task."
 
 
+def _run_agent_loop_with_push(transcript: str, intent: str) -> str:
+    """Run agent loop, then guarantee a push for write intents."""
+    result = _run_agent_loop(transcript, intent)
+    if intent in ('CAPTURE', 'PROCESS'):
+        _git_push()
+    return result
+
+
 # ---------------------------------------------------------------------------
 # Background task support
 # ---------------------------------------------------------------------------
@@ -279,7 +323,7 @@ def _append_forge_log(message: str) -> None:
 
 def _run_background(transcript: str) -> None:
     try:
-        result = _run_agent_loop(transcript, 'PROCESS')
+        result = _run_agent_loop_with_push(transcript, 'PROCESS')
         _append_forge_log(result)
         logger.info(f"Background task complete: {result}")
     except Exception as e:
@@ -306,4 +350,4 @@ def run(transcript: str, intent: str = None) -> str:
         ).start()
         return "On it, I'll process that in the background."
 
-    return _run_agent_loop(transcript, intent or 'CAPTURE')
+    return _run_agent_loop_with_push(transcript, intent or 'CAPTURE')
