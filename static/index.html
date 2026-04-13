@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1024, height=600">
+  <title>Workshop Forge</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 1024px;
+      height: 600px;
+      overflow: hidden;
+      background: #000;
+      font-family: 'Share Tech Mono', monospace;
+      color: #f97316;
+    }
+
+    /* ── Top bar ── */
+    #topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px 12px;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    #title { font-size: 18px; letter-spacing: 0.15em; }
+    #clock { font-size: 18px; letter-spacing: 0.1em; }
+
+    /* ── Center stage ── */
+    #stage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 488px; /* 600 - topbar ~56px - bottombar ~56px */
+      gap: 20px;
+      padding: 0 10%;
+    }
+
+    #status-label {
+      font-size: 52px;
+      letter-spacing: 0.08em;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    #transcript, #response {
+      font-size: 16px;
+      text-align: center;
+      max-width: 80%;
+      line-height: 1.5;
+      transition: opacity 0.3s ease;
+    }
+    #transcript { color: #fff; }
+    #response   { color: #737373; }
+
+    .hidden { opacity: 0; pointer-events: none; }
+
+    /* ── Bottom bar ── */
+    #bottombar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 1024px;
+      height: 44px;
+      border-top: 1px solid #2a2a2a;
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      gap: 10px;
+    }
+    #dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      transition: background-color 0.3s ease;
+    }
+    #status-text {
+      font-size: 13px;
+      letter-spacing: 0.1em;
+      transition: color 0.3s ease;
+    }
+
+    /* ── Vault indicator (right side of bottom bar) ── */
+    #vault-indicator {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    #vault-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #737373;
+      transition: background-color 0.3s ease;
+    }
+    #vault-dot.working {
+      background: #3b82f6;
+      animation: pulse 1.2s ease-in-out infinite;
+    }
+    #vault-dot.error {
+      background: #ef4444;
+    }
+    #vault-label {
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      color: #737373;
+      transition: color 0.3s ease;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.3; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="topbar">
+    <span id="title">WORKSHOP FORGE</span>
+    <span id="clock"></span>
+  </div>
+
+  <div id="stage">
+    <div id="status-label">READY</div>
+    <div id="transcript" class="hidden"></div>
+    <div id="response" class="hidden"></div>
+  </div>
+
+  <div id="bottombar">
+    <div id="dot"></div>
+    <span id="status-text">idle</span>
+    <div id="vault-indicator">
+      <div id="vault-dot"></div>
+      <span id="vault-label">VAULT</span>
+    </div>
+  </div>
+
+  <script>
+    const STATE_MAP = {
+      idle:       { label: "READY",        color: "#737373" },
+      wake:       { label: "WAKE WORD",    color: "#f97316" },
+      listening:  { label: "LISTENING...", color: "#22c55e" },
+      thinking:   { label: "THINKING...", color: "#3b82f6" },
+      responding: { label: "RESPONDING...",color: "#f97316" },
+    };
+
+    const $label      = document.getElementById("status-label");
+    const $transcript = document.getElementById("transcript");
+    const $response   = document.getElementById("response");
+    const $dot        = document.getElementById("dot");
+    const $statusTxt  = document.getElementById("status-text");
+    const $clock      = document.getElementById("clock");
+    const $vaultDot   = document.getElementById("vault-dot");
+    const $vaultLabel = document.getElementById("vault-label");
+
+    const VAULT_COLORS = {
+      ready:   "#737373",
+      working: "#3b82f6",
+      error:   "#ef4444",
+    };
+
+    let lastStatus = null;
+    let lingerTimer = null;
+    let lingerResponse = null;
+
+    function clearLinger() {
+      if (lingerTimer) {
+        clearTimeout(lingerTimer);
+        lingerTimer = null;
+      }
+      lingerResponse = null;
+    }
+
+    function updateClock() {
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2, "0");
+      const m = String(now.getMinutes()).padStart(2, "0");
+      const s = String(now.getSeconds()).padStart(2, "0");
+      $clock.textContent = `${h}:${m}:${s}`;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    function applyState(data) {
+      const status = data.status || "idle";
+      const map = STATE_MAP[status] || STATE_MAP.idle;
+
+      if (status !== lastStatus) {
+        // Animate out
+        $label.style.opacity = "0";
+        $label.style.transform = "scale(0.95)";
+        setTimeout(() => {
+          $label.textContent = map.label;
+          $label.style.color = map.color;
+          // Animate in
+          $label.style.opacity = "1";
+          $label.style.transform = "scale(1)";
+        }, 150);
+      }
+
+      $dot.style.background = map.color;
+      $statusTxt.textContent = status;
+      $statusTxt.style.color = map.color;
+
+      // Transcript: show during listening / thinking / responding
+      const showTranscript = ["listening", "thinking", "responding"].includes(status);
+      $transcript.textContent = data.transcript || "";
+      $transcript.classList.toggle("hidden", !showTranscript || !data.transcript);
+
+      // Response: show during responding, then linger 30s after transitioning to idle
+      const activeStatus = ["wake", "listening", "thinking", "responding"].includes(status);
+      if (activeStatus) {
+        // Any active state — clear linger and show live response
+        clearLinger();
+        $response.textContent = data.response || "";
+        $response.classList.toggle("hidden", status !== "responding" || !data.response);
+      } else {
+        // Idle
+        if (lastStatus === "responding" && data.response) {
+          // Transition from responding → idle: start linger
+          lingerResponse = data.response;
+          $response.textContent = lingerResponse;
+          $response.classList.remove("hidden");
+          lingerTimer = setTimeout(() => {
+            $response.textContent = "";
+            $response.classList.add("hidden");
+            lingerResponse = null;
+            lingerTimer = null;
+          }, 30000);
+        } else if (!lingerTimer) {
+          // No linger in progress — normal idle clear
+          $response.textContent = "";
+          $response.classList.add("hidden");
+        }
+        // If lingerTimer is running, leave $response alone
+      }
+
+      // Vault indicator
+      const vaultStatus = data.second_brain_status || "ready";
+      const vaultColor = VAULT_COLORS[vaultStatus] || VAULT_COLORS.ready;
+      $vaultDot.className = vaultStatus === "ready" ? "" : vaultStatus;
+      $vaultLabel.style.color = vaultColor;
+
+      lastStatus = status;
+    }
+
+    async function poll() {
+      try {
+        const res = await fetch("/status");
+        if (res.ok) {
+          const data = await res.json();
+          applyState(data);
+        }
+      } catch (_) {
+        // server unreachable — keep current display
+      }
+    }
+
+    setInterval(poll, 500);
+    poll();
+  </script>
+</body>
+</html>

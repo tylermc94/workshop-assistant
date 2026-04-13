@@ -15,6 +15,7 @@ from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config.secrets import CLAUDE_API_KEY as ANTHROPIC_API_KEY
+import forge_state
 
 import anthropic
 
@@ -251,6 +252,7 @@ def _git_push() -> None:
 
 def _run_agent_loop(transcript: str, intent: str) -> str:
     """Run the tool-use loop and return a final spoken response string."""
+    forge_state.state['second_brain_status'] = 'working'
     _git_pull()
 
     messages = [{"role": "user", "content": transcript}]
@@ -270,6 +272,7 @@ def _run_agent_loop(transcript: str, intent: str) -> str:
 
         if not tool_calls:
             # No more tool calls — return the final text
+            forge_state.state['second_brain_status'] = 'ready'
             if text_blocks:
                 return text_blocks[-1].text.strip()
             return "Done."
@@ -291,6 +294,7 @@ def _run_agent_loop(transcript: str, intent: str) -> str:
 
         messages.append({"role": "user", "content": tool_results})
 
+    forge_state.state['second_brain_status'] = 'error'
     logger.warning("Agent hit MAX_TOOL_ROUNDS without finishing")
     return "Sorry, I ran out of steps before finishing that task."
 
@@ -327,6 +331,7 @@ def _run_background(transcript: str) -> None:
         _append_forge_log(result)
         logger.info(f"Background task complete: {result}")
     except Exception as e:
+        forge_state.state['second_brain_status'] = 'error'
         logger.error(f"Background agent error: {e}", exc_info=True)
         _append_forge_log(f"Error during background processing: {e}")
 
