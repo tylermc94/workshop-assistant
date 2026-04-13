@@ -35,9 +35,10 @@ You are Forge, a voice-controlled workshop assistant with read/write access to t
 second-brain vault. You help capture notes, answer questions about vault contents, and process \
 ingress files into the right projects.
 
-Use your tools to explore the vault before writing anything. For captures, check existing \
-project files so you append tasks or notes to the right place. For queries, read the relevant \
-files before answering.
+ALWAYS read the target file with read_file before writing to it. Never append blindly — \
+find the correct section (e.g. ## Tasks) and write the full updated content with write_file, \
+or use append_file only if you are adding a new section that doesn't exist yet. \
+For captures, list_directory first to find the right project file, then read it before writing.
 
 After any write to the vault, always run git operations in order: git_pull, git_add_all, \
 git_commit (with a short descriptive message), git_push.
@@ -48,16 +49,31 @@ No markdown, no bullet points, no headers. Respond as if speaking aloud.\
 
 
 def _load_system_prompt() -> str:
-    if AGENT_MD.exists():
+    parts = [_BASE_SYSTEM]
+
+    # Primary vault reference — full conventions, task format, project structure
+    claude_md = VAULT / 'CLAUDE.md'
+    if claude_md.exists():
         try:
-            vault_ref = AGENT_MD.read_text(encoding='utf-8')
-            return _BASE_SYSTEM + '\n\n' + vault_ref
+            parts.append(claude_md.read_text(encoding='utf-8'))
         except Exception:
             pass
-    return _BASE_SYSTEM
+
+    # Forge-specific additions (Forge Log location, spoken response style, etc.)
+    if AGENT_MD.exists():
+        try:
+            parts.append(AGENT_MD.read_text(encoding='utf-8'))
+        except Exception:
+            pass
+
+    # Correct the vault path — CLAUDE.md references Windows paths, Pi path overrides them
+    parts.append("## Path Override (this device)\nVault root on this device: /home/tyler/second-brain/")
+
+    return '\n\n'.join(parts)
 
 
 SYSTEM_PROMPT = _load_system_prompt()
+logger.debug(f"System prompt loaded: {len(SYSTEM_PROMPT)} chars")
 
 
 TOOLS = [
