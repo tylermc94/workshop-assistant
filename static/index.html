@@ -92,28 +92,36 @@
       gap: 8px;
     }
     #vault-dot {
-      width: 8px;
-      height: 8px;
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
       background: #737373;
       transition: background-color 0.3s ease;
     }
     #vault-dot.working {
       background: #3b82f6;
-      animation: pulse 1.2s ease-in-out infinite;
+      animation: pulse 1s ease-in-out infinite;
     }
     #vault-dot.error {
       background: #ef4444;
     }
     #vault-label {
-      font-size: 11px;
-      letter-spacing: 0.15em;
+      font-size: 13px;
+      letter-spacing: 0.12em;
       color: #737373;
       transition: color 0.3s ease;
     }
+    #vault-status {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: #737373;
+      transition: color 0.3s ease, opacity 0.3s ease;
+      opacity: 0;
+    }
+    #vault-status.visible { opacity: 1; }
     @keyframes pulse {
       0%, 100% { opacity: 1; }
-      50%       { opacity: 0.3; }
+      50%       { opacity: 0.25; }
     }
   </style>
 </head>
@@ -136,6 +144,7 @@
     <div id="vault-indicator">
       <div id="vault-dot"></div>
       <span id="vault-label">VAULT</span>
+      <span id="vault-status"></span>
     </div>
   </div>
 
@@ -154,14 +163,23 @@
     const $dot        = document.getElementById("dot");
     const $statusTxt  = document.getElementById("status-text");
     const $clock      = document.getElementById("clock");
-    const $vaultDot   = document.getElementById("vault-dot");
-    const $vaultLabel = document.getElementById("vault-label");
+    const $vaultDot    = document.getElementById("vault-dot");
+    const $vaultLabel  = document.getElementById("vault-label");
+    const $vaultStatus = document.getElementById("vault-status");
 
     const VAULT_COLORS = {
       ready:   "#737373",
       working: "#3b82f6",
       error:   "#ef4444",
     };
+
+    const VAULT_STATUS_TEXT = {
+      ready:   "",
+      working: "working...",
+      error:   "error",
+    };
+
+    let vaultLingerTimer = null;
 
     let lastStatus = null;
     let lingerTimer = null;
@@ -244,6 +262,24 @@
       const vaultColor = VAULT_COLORS[vaultStatus] || VAULT_COLORS.ready;
       $vaultDot.className = vaultStatus === "ready" ? "" : vaultStatus;
       $vaultLabel.style.color = vaultColor;
+
+      // Status text — show while working or on error; linger 5s after returning to ready
+      if (vaultStatus !== "ready") {
+        if (vaultLingerTimer) { clearTimeout(vaultLingerTimer); vaultLingerTimer = null; }
+        $vaultStatus.textContent = VAULT_STATUS_TEXT[vaultStatus] || vaultStatus;
+        $vaultStatus.style.color = vaultColor;
+        $vaultStatus.classList.add("visible");
+      } else {
+        // Transitioned to ready — linger the "working..." text briefly so it's noticeable
+        if ($vaultStatus.classList.contains("visible") && !vaultLingerTimer) {
+          $vaultStatus.textContent = "done";
+          $vaultStatus.style.color = "#737373";
+          vaultLingerTimer = setTimeout(() => {
+            $vaultStatus.classList.remove("visible");
+            vaultLingerTimer = null;
+          }, 3000);
+        }
+      }
 
       lastStatus = status;
     }
