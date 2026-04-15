@@ -12,7 +12,7 @@ from fastapi.staticfiles import StaticFiles
 import hashlib
 import hmac
 import logging
-from config.settings import API_KEY, API_PORT
+from config.settings import API_KEY, API_PORT, HA_URL, HA_UNIFI_ENTITIES, HA_POWER_ENTITIES, HA_OUTLET_ENTITIES, HA_OCTOPRINT_ENTITIES
 import speech_to_text
 import intent_recognition
 import audio_utils
@@ -54,6 +54,198 @@ def verify_api_key(credentials: HTTPAuthorizationCredentials = Depends(security)
             detail="Invalid API key"
         )
     return credentials.credentials
+
+def _ha_request(path: str, token: str):
+    """Make a single HA API request, return parsed JSON or None."""
+    import urllib.request
+    import json as _json
+    try:
+        req = urllib.request.Request(
+            f"{HA_URL}{path}",
+            headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
+        )
+        with urllib.request.urlopen(req, timeout=5) as resp:
+            return _json.loads(resp.read())
+    except Exception as e:
+        logger.warning(f"HA request failed for {path}: {e}")
+        return None
+
+
+def _fetch_sensors_data() -> dict:
+    """Fetch all sensor data + 12h history synchronously (run in thread)."""
+    from datetime import datetime, timedelta, timezone
+    import json as _json
+
+    try:
+        import config.secrets as _secrets
+        token = getattr(_secrets, 'HA_TOKEN', '')
+    except Exception:
+        token = ''
+
+    # --- Current states ---
+    all_entities = (
+        ["sensor.workshop_temp_humidity_temperature", "sensor.workshop_temp_humidity_humidity"]
+        + HA_UNIFI_ENTITIES
+        + HA_POWER_ENTITIES
+        + HA_OUTLET_ENTITIES
+        + HA_OCTOPRINT_ENTITIES
+    )
+    states = {}
+    for eid in all_entities:
+        data = _ha_request(f"/api/states/{eid}", token)
+        if data:
+            states[eid] = {
+                "state": data.get("state"),
+                "name":  data.get("attributes", {}).get("friendly_name", eid),
+                "unit":  data.get("attributes", {}).get("unit_of_measurement", ""),
+            }
+        else:
+            states[eid] = {"state": "unavailable", "name": eid, "unit": ""}
+
+    # --- 12h history for temp, humidity, and power draw ---
+    start = (datetime.now(timezone.utc) - timedelta(hours=12)).strftime("%Y-%m-%dT%H:%M:%S+00:00")
+    history_entities = ",".join([
+        "sensor.workshop_temp_humidity_temperature",
+        "sensor.workshop_temp_humidity_humidity",
+        "sensor.workshop_power_current_consumption",
+        "sensor.dream_machine_cloudflare_wan_latency",
+        "sensor.dream_machine_google_wan_latency",
+        "sensor.dream_machine_microsoft_wan_latency",
+    ])
+    history_data = _ha_request(
+        f"/api/history/period/{start}?filter_entity_id={history_entities}"
+        f"&minimal_response=true&no_attributes=true",
+        token
+    ) or []
+
+    def sample_history(series, n=24):
+        """Downsample a history series to n numeric values."""
+        points = []
+        for entry in series:
+            try:
+                points.append(float(entry["state"]))
+            except (ValueError, KeyError):
+                pass
+        if len(points) <= n:
+            return points
+        step = len(points) / n
+        return [points[int(i * step)] for i in range(n)]
+
+    temp_history  = []
+    hum_history   = []
+    power_history = []
+    cf_history    = []
+    google_history = []
+    ms_history    = []
+    for series in history_data:
+        if not series:
+            continue
+        eid = series[0].get("entity_id") or ""
+        if "temperature" in eid and "humidity" not in eid:
+            temp_history = sample_history(series)
+        elif "humidity" in eid:
+            hum_history = sample_history(series)
+        elif "current_consumption" in eid:
+            power_history = sample_history(series)
+        elif "cloudflare" in eid:
+            cf_history = sample_history(series)
+        elif "google_wan" in eid:
+            google_history = sample_history(series)
+        elif "microsoft" in eid:
+            ms_history = sample_history(series)
+
+    # --- Build response ---
+    temp = states.get("sensor.workshop_temp_humidity_temperature", {})
+    hum  = states.get("sensor.workshop_temp_humidity_humidity", {})
+
+    octo_printing   = states.get("binary_sensor.octoprint_printing", {}).get("state") == "on"
+    octo_pct        = states.get("sensor.octoprint_job_percentage", {}).get("state", "0")
+    octo_state      = states.get("sensor.octoprint_current_state", {}).get("state", "unknown")
+    octo_file       = states.get("sensor.octoprint_current_file", {}).get("state", "")
+    octo_finish     = states.get("sensor.octoprint_estimated_finish_time", {}).get("state")
+    octo_bed_temp   = states.get("sensor.octoprint_actual_bed_temp", {}).get("state")
+    octo_nozzle_temp = states.get("sensor.octoprint_actual_tool0_temp", {}).get("state")
+
+    outlets = []
+    for eid in HA_OUTLET_ENTITIES:
+        s = states.get(eid, {})
+        name = s.get("name", eid)
+        for prefix in ["TP-LINK_Power Strip_503C ", "TP-Link Power Strip 503C "]:
+            if name.startswith(prefix):
+                name = name[len(prefix):]
+                break
+        outlets.append({"entity_id": eid, "name": name, "on": s.get("state") == "on"})
+
+    def _speed(s):
+        """Format KiB/s to a readable string."""
+        try:
+            kib = float(s)
+            if kib >= 1024:
+                return f"{kib/1024:.1f} MiB/s"
+            return f"{kib:.0f} KiB/s"
+        except (TypeError, ValueError):
+            return "—"
+
+    unifi_clients   = states.get("sensor.dream_machine_clients", {})
+    unifi_cf_lat    = states.get("sensor.dream_machine_cloudflare_wan_latency", {})
+    unifi_google_lat = states.get("sensor.dream_machine_google_wan_latency", {})
+    unifi_ms_lat    = states.get("sensor.dream_machine_microsoft_wan_latency", {})
+    udm_state         = states.get("sensor.dream_machine_state", {}).get("state", "")
+    u6_pro_state      = states.get("sensor.u6_pro_state", {}).get("state", "")
+    u6_mesh_state     = states.get("sensor.u6_mesh_state", {}).get("state", "")
+    usw_lite_state    = states.get("sensor.usw_lite_8_poe_state", {}).get("state", "")
+    usw_flex_state    = states.get("sensor.usw_flex_mini_state", {}).get("state", "")
+
+    pwr_on       = states.get("switch.workshop_power", {}).get("state") == "on"
+    pwr_watts    = states.get("sensor.workshop_power_current_consumption", {})
+    pwr_today    = states.get("sensor.workshop_power_today_s_consumption", {})
+    pwr_voltage  = states.get("sensor.workshop_power_voltage", {})
+    pwr_overload = states.get("binary_sensor.workshop_power_overloaded", {}).get("state") == "on"
+
+    return {
+        "unifi": {
+            "cf_latency":     unifi_cf_lat.get("state", "—"),
+            "cf_history":     cf_history,
+            "google_latency": unifi_google_lat.get("state", "—"),
+            "google_history": google_history,
+            "ms_latency":     unifi_ms_lat.get("state", "—"),
+            "ms_history":     ms_history,
+            "latency_unit":   unifi_google_lat.get("unit", "ms"),
+            "clients":        unifi_clients.get("state", "—"),
+            "udm":            udm_state == "connected",
+            "u6_pro":         u6_pro_state == "connected",
+            "u6_mesh":        u6_mesh_state == "connected",
+            "usw_lite":       usw_lite_state == "connected",
+            "usw_flex":       usw_flex_state == "connected",
+        },
+        "temperature": {"value": temp.get("state", "—"), "unit": temp.get("unit", "°F"), "history": temp_history},
+        "humidity":    {"value": hum.get("state",  "—"), "unit": hum.get("unit",  "%"),  "history": hum_history},
+        "power": {
+            "on":       pwr_on,
+            "watts":    pwr_watts.get("state", "—"),
+            "today_kwh": pwr_today.get("state", "—"),
+            "voltage":  pwr_voltage.get("state", "—"),
+            "overloaded": pwr_overload,
+            "history":  power_history,
+        },
+        "octoprint": {
+            "printing":     octo_printing,
+            "state":        octo_state,
+            "job_pct":      octo_pct,
+            "file":         octo_file,
+            "finish_time":  None if octo_finish in (None, "unknown") else octo_finish,
+            "bed_temp":     None if octo_bed_temp in (None, "unknown", "unavailable") else octo_bed_temp,
+            "nozzle_temp":  None if octo_nozzle_temp in (None, "unknown", "unavailable") else octo_nozzle_temp,
+        },
+        "outlets": outlets,
+    }
+
+
+@app.get("/sensors")
+async def get_sensors():
+    """Fetch live sensor data from Home Assistant."""
+    return await asyncio.to_thread(_fetch_sensors_data)
+
 
 @app.get("/status")
 async def get_status():

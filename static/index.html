@@ -9,303 +9,648 @@
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     html, body {
-      width: 1024px;
-      height: 600px;
-      overflow: hidden;
-      background: #000;
-      font-family: 'Share Tech Mono', monospace;
-      color: #f97316;
+      width: 1024px; height: 600px; overflow: hidden;
+      background: #000; font-family: 'Share Tech Mono', monospace;
+      color: #f97316; user-select: none; position: relative;
+    }
+
+    /* ── Fire canvas — full height behind everything ── */
+    #fire-canvas {
+      position: absolute; bottom: 0; left: 0;
+      width: 1024px; height: 540px;
+      z-index: 0; pointer-events: none;
+      image-rendering: pixelated;
     }
 
     /* ── Top bar ── */
     #topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 16px 24px 12px;
-      border-bottom: 1px solid #1a1a1a;
+      position: absolute; top: 0; left: 0; width: 1024px; height: 60px;
+      display: flex; align-items: center; padding: 0 20px;
+      background: rgba(0,0,0,0.88);
+      border-bottom: 1px solid #1c1c1c;
+      z-index: 10;
     }
-    #title { font-size: 18px; letter-spacing: 0.15em; }
-    #clock { font-size: 18px; letter-spacing: 0.1em; }
+    #title { font-size: 13px; letter-spacing: 0.2em; color: #333; }
+    #clock-wrap {
+      position: absolute; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center;
+    }
+    #clock { font-size: 46px; letter-spacing: 0.06em; color: #f97316; line-height: 1; }
+    #date  { font-size: 11px; letter-spacing: 0.18em; color: #f97316; margin-top: 2px; opacity: 0.65; font-weight: bold; }
+    #vault-wrap { display: flex; align-items: center; gap: 5px; margin-left: auto; }
+    #vault-dot  { width: 7px; height: 7px; border-radius: 50%; background: #161616; transition: background 0.3s; }
+    #vault-dot.working { background: #3b82f6; animation: vaultpulse 1s ease-in-out infinite; }
+    #vault-dot.error   { background: #ef4444; }
+    #vault-text { font-size: 9px; letter-spacing: 0.15em; color: #232323; transition: color 0.3s; }
+    @keyframes vaultpulse { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+    /* ── Left/right card columns ── */
+    #cards-left, #cards-right {
+      position: absolute; top: 60px; width: 210px; height: 540px;
+      display: flex; flex-direction: column;
+      justify-content: center; gap: 14px; padding: 0 16px;
+      z-index: 5;
+    }
+    #cards-left  { left: 0; }
+    #cards-right { right: 0; }
+
+    .card {
+      background: rgba(0,0,0,0.72);
+      border: 1px solid #1e1e1e;
+      border-radius: 3px;
+      padding: 10px 14px;
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .card-header { display: flex; align-items: center; gap: 8px; }
+    .card-icon   { font-size: 14px; opacity: 0.55; }
+    .card-label  { font-size: 10px; letter-spacing: 0.18em; color: #555; text-transform: uppercase; }
+    .card-value  { font-size: 24px; letter-spacing: 0.04em; transition: color 0.3s; padding-left: 2px; }
+    .card-value.ok  { color: #b85e08; }
+    .card-value.on  { color: #22c55e; }
+    .card-value.off { color: #444; }
+    .card-sub    { font-size: 11px; letter-spacing: 0.08em; color: #4a4a4a; padding-left: 2px; }
+
+    /* ── Outlets card ── */
+    .outlet-row { display: flex; align-items: center; gap: 7px; padding: 3px 0; }
+    .outlet-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; transition: background 0.3s; }
+    .outlet-dot.on  { background: #22c55e; }
+    .outlet-dot.off { background: #2a2a2a; }
+    .outlet-name { font-size: 11px; letter-spacing: 0.05em; color: #666; flex: 1;
+                   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .outlet-state { font-size: 10px; letter-spacing: 0.1em; flex-shrink: 0; transition: color 0.3s; }
+    .outlet-state.on  { color: #22c55e; }
+    .outlet-state.off { color: #383838; }
+
+    /* ── Print progress bar ── */
+    .print-bar-wrap { margin-top: 4px; }
+    .print-bar-bg   { height: 3px; background: #111; border-radius: 2px; overflow: hidden; }
+    .print-bar-fill { height: 100%; background: #f97316; border-radius: 2px; transition: width 0.5s; }
+    .print-meta     { display: flex; justify-content: space-between; margin-top: 3px; }
+    .print-meta span { font-size: 9px; letter-spacing: 0.08em; color: #333; }
 
     /* ── Center stage ── */
     #stage {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 488px; /* 600 - topbar ~56px - bottombar ~56px */
-      gap: 20px;
-      padding: 0 10%;
+      position: absolute; top: 60px; left: 210px; right: 210px; height: 540px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 16px; padding: 0 32px;
+      z-index: 5;
     }
-
     #status-label {
-      font-size: 52px;
-      letter-spacing: 0.08em;
-      transition: opacity 0.3s ease, transform 0.3s ease;
+      font-size: 44px; letter-spacing: 0.1em;
+      transition: opacity 0.25s, transform 0.25s, color 0.25s;
+      text-shadow: 0 0 40px currentColor;
     }
-
-    #transcript, #response {
-      font-size: 16px;
-      text-align: center;
-      max-width: 80%;
-      line-height: 1.5;
-      transition: opacity 0.3s ease;
+    #transcript {
+      font-size: 14px; color: #444; text-align: center;
+      max-width: 100%; line-height: 1.5; letter-spacing: 0.04em;
+      transition: color 0.3s; min-height: 1.4em;
     }
-    #transcript { color: #fff; }
-    #response   { color: #737373; }
-
-    .hidden { opacity: 0; pointer-events: none; }
-
-    /* ── Bottom bar ── */
-    #bottombar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 1024px;
-      height: 44px;
-      border-top: 1px solid #2a2a2a;
-      display: flex;
-      align-items: center;
-      padding: 0 24px;
-      gap: 10px;
+    #transcript.visible { color: #888; }
+    #response {
+      font-size: 21px; color: #ddd; text-align: center;
+      max-width: 100%; line-height: 1.55;
+      text-shadow: 0 1px 12px rgba(0,0,0,0.9);
+      transition: opacity 0.4s, color 0.4s;
     }
-    #dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      transition: background-color 0.3s ease;
-    }
-    #status-text {
-      font-size: 13px;
-      letter-spacing: 0.1em;
-      transition: color 0.3s ease;
-    }
-
-    /* ── Vault indicator (right side of bottom bar) ── */
-    #vault-indicator {
-      margin-left: auto;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    #vault-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: #737373;
-      transition: background-color 0.3s ease;
-    }
-    #vault-dot.working {
-      background: #3b82f6;
-      animation: pulse 1s ease-in-out infinite;
-    }
-    #vault-dot.error {
-      background: #ef4444;
-    }
-    #vault-label {
-      font-size: 13px;
-      letter-spacing: 0.12em;
-      color: #737373;
-      transition: color 0.3s ease;
-    }
-    #vault-status {
-      font-size: 11px;
-      letter-spacing: 0.1em;
-      color: #737373;
-      transition: color 0.3s ease, opacity 0.3s ease;
-      opacity: 0;
-    }
-    #vault-status.visible { opacity: 1; }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50%       { opacity: 0.25; }
-    }
+    #response.dim { color: #444; }
+    .hidden { opacity: 0 !important; pointer-events: none; }
   </style>
 </head>
 <body>
 
+  <!-- Fire sits at z:0 behind everything -->
+  <canvas id="fire-canvas"></canvas>
+
+  <!-- Top bar -->
   <div id="topbar">
     <span id="title">WORKSHOP FORGE</span>
-    <span id="clock"></span>
-  </div>
-
-  <div id="stage">
-    <div id="status-label">READY</div>
-    <div id="transcript" class="hidden"></div>
-    <div id="response" class="hidden"></div>
-  </div>
-
-  <div id="bottombar">
-    <div id="dot"></div>
-    <span id="status-text">idle</span>
-    <div id="vault-indicator">
+    <div id="clock-wrap">
+      <span id="clock">00:00:00</span>
+      <span id="date">WED · APR 15</span>
+    </div>
+    <div id="vault-wrap">
       <div id="vault-dot"></div>
-      <span id="vault-label">VAULT</span>
-      <span id="vault-status"></span>
+      <span id="vault-text">VAULT</span>
     </div>
   </div>
 
-  <script>
-    const STATE_MAP = {
-      idle:       { label: "READY",        color: "#737373" },
-      wake:       { label: "WAKE WORD",    color: "#f97316" },
-      listening:  { label: "LISTENING...", color: "#22c55e" },
-      thinking:   { label: "THINKING...", color: "#3b82f6" },
-      responding: { label: "RESPONDING...",color: "#f97316" },
-    };
+  <!-- Left cards -->
+  <div id="cards-left">
+    <div class="card">
+      <div class="card-header"><span class="card-icon">🔌</span><span class="card-label">ENERGY TODAY</span></div>
+      <span class="card-value ok" id="val-today">—</span>
+      <span class="card-sub" id="val-voltage">—V</span>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-icon">⚡</span><span class="card-label">POWER DRAW</span></div>
+      <span class="card-value ok" id="val-watts">—</span>
+      <canvas id="spark-power" width="174" height="28" style="display:block;margin-top:6px;opacity:0.7"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-icon">🌡</span><span class="card-label">WORKSHOP TEMP</span></div>
+      <span class="card-value ok" id="val-temp">—</span>
+      <canvas id="spark-temp" width="174" height="28" style="display:block;margin-top:6px;opacity:0.7"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-icon">💧</span><span class="card-label">HUMIDITY</span></div>
+      <span class="card-value ok" id="val-hum">—</span>
+      <canvas id="spark-hum" width="174" height="28" style="display:block;margin-top:6px;opacity:0.7"></canvas>
+    </div>
+  </div>
 
-    const $label      = document.getElementById("status-label");
-    const $transcript = document.getElementById("transcript");
-    const $response   = document.getElementById("response");
-    const $dot        = document.getElementById("dot");
-    const $statusTxt  = document.getElementById("status-text");
-    const $clock      = document.getElementById("clock");
-    const $vaultDot    = document.getElementById("vault-dot");
-    const $vaultLabel  = document.getElementById("vault-label");
-    const $vaultStatus = document.getElementById("vault-status");
+  <!-- Center stage -->
+  <div id="stage">
+    <div id="status-label">READY</div>
+    <div id="transcript"></div>
+    <div id="response"></div>
+  </div>
 
-    const VAULT_COLORS = {
-      ready:   "#737373",
-      working: "#3b82f6",
-      error:   "#ef4444",
-    };
+  <!-- Right cards -->
+  <div id="cards-right">
+    <div class="card">
+      <div class="card-header"><span class="card-icon">🌐</span><span class="card-label">NETWORK</span></div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
+        <!-- Cloudflare -->
+        <div style="display:flex;align-items:center;gap:5px;border-bottom:1px solid #1e1e1e;padding-bottom:8px">
+          <svg width="14" height="9" viewBox="0 0 80 54" style="flex-shrink:0">
+            <path fill="#F6821F" d="M61 21.5c-1.3-6.5-7-11.5-13.9-11.5-3.5 0-6.7 1.4-9.1 3.6C36.4 9.3 31.4 6.5 25.8 6.5 16 6.5 8 14.5 8 24.5c0 .9.1 1.7.2 2.5H7C3.1 27 0 30.1 0 34s3.1 7 7 7h52c4.3 0 7.7-3.4 7.7-7.7 0-3.6-2.5-6.6-5.7-7.8z"/>
+            <path fill="#FBAD41" d="M65 27.5c-.3 0-.7 0-1 .1l-.4-1.6C61.9 21.5 57.8 19 53.3 19c-3 0-5.7 1.1-7.7 2.9l-.1.1c-.4-3.5-3.4-6.2-7-6.2-3.9 0-7 3.1-7 7 0 .4 0 .8.1 1.2H31C28.2 24 26 26.2 26 29s2.2 5 5 5h34c2.8 0 5-2.2 5-5 0-2.6-2-4.7-4.5-5-.2 0-.3-.5-.5-.5z" opacity=".5"/>
+          </svg>
+          <span class="card-sub" id="val-cf-lat" style="font-size:11px;width:44px;flex-shrink:0;text-align:right;white-space:nowrap">— ms</span>
+          <canvas id="spark-cf" width="76" height="20" style="display:block;opacity:0.75;flex-shrink:0"></canvas>
+        </div>
+        <!-- Google -->
+        <div style="display:flex;align-items:center;gap:5px;border-bottom:1px solid #1e1e1e;padding-bottom:8px">
+          <svg width="14" height="14" viewBox="0 0 24 24" style="flex-shrink:0">
+            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57C21.36 18.1 22.56 15.3 22.56 12.25z" fill="#4285F4"/>
+            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+          </svg>
+          <span class="card-sub" id="val-goog-lat" style="font-size:11px;width:44px;flex-shrink:0;text-align:right;white-space:nowrap">— ms</span>
+          <canvas id="spark-goog" width="76" height="20" style="display:block;opacity:0.75;flex-shrink:0"></canvas>
+        </div>
+        <!-- Microsoft -->
+        <div style="display:flex;align-items:center;gap:5px">
+          <svg width="14" height="14" viewBox="0 0 14 14" style="flex-shrink:0">
+            <rect x="0" y="0" width="6.5" height="6.5" fill="#F25022"/>
+            <rect x="7.5" y="0" width="6.5" height="6.5" fill="#7FBA00"/>
+            <rect x="0" y="7.5" width="6.5" height="6.5" fill="#00A4EF"/>
+            <rect x="7.5" y="7.5" width="6.5" height="6.5" fill="#FFB900"/>
+          </svg>
+          <span class="card-sub" id="val-ms-lat" style="font-size:11px;width:44px;flex-shrink:0;text-align:right;white-space:nowrap">— ms</span>
+          <canvas id="spark-ms" width="76" height="20" style="display:block;opacity:0.75;flex-shrink:0"></canvas>
+        </div>
+      </div>
+      <!-- Device health — single row -->
+      <div style="display:flex;align-items:center;gap:6px;margin-top:10px;padding-top:7px;border-top:1px solid #1e1e1e">
+        <span style="font-size:9px;letter-spacing:.1em;color:#3a3a3a">APS</span>
+        <span id="dot-udm"     class="outlet-dot off" title="Dream Machine"></span>
+        <span id="dot-u6pro"   class="outlet-dot off" title="U6 Pro"></span>
+        <span id="dot-u6mesh"  class="outlet-dot off" title="U6 Mesh"></span>
+        <span style="font-size:9px;letter-spacing:.1em;color:#3a3a3a;margin-left:6px">SW</span>
+        <span id="dot-uswlite" class="outlet-dot off" title="USW-Lite-8-PoE"></span>
+        <span id="dot-uswflex" class="outlet-dot off" title="USW-Flex-Mini"></span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-icon">🖨</span><span class="card-label">3D PRINTER</span></div>
+      <div id="printer-idle">
+        <span class="card-value ok" id="printer-state">Operational</span>
+        <div style="display:flex;gap:10px;margin-top:4px">
+          <span class="card-sub" id="printer-nozzle" style="font-size:11px">nozzle —°C</span>
+          <span class="card-sub" id="printer-bed" style="font-size:11px">bed —°C</span>
+        </div>
+      </div>
+      <div id="printer-printing" style="display:none">
+        <span class="card-sub" id="printer-file" style="color:#555;font-size:10px;letter-spacing:.04em;display:block;margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+        <div style="display:flex;gap:10px;margin-bottom:4px">
+          <span class="card-sub" id="printer-nozzle-p" style="font-size:11px">nozzle —°C</span>
+          <span class="card-sub" id="printer-bed-p" style="font-size:11px">bed —°C</span>
+        </div>
+        <div class="print-bar-wrap">
+          <div class="print-bar-bg"><div class="print-bar-fill" id="printer-bar" style="width:0%"></div></div>
+          <div class="print-meta">
+            <span id="printer-pct">0%</span>
+            <span id="printer-eta"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="outlets-card">
+      <div class="card-header" style="margin-bottom:6px"><span class="card-icon">⚡</span><span class="card-label">OUTLETS</span></div>
+      <div id="outlets-list"></div>
+    </div>
+  </div>
 
-    const VAULT_STATUS_TEXT = {
-      ready:   "",
-      working: "working...",
-      error:   "error",
-    };
+<script>
+// ═══════════════════════════════════════════════════════════════
+//  FIRE ENGINE
+// ═══════════════════════════════════════════════════════════════
+var FIRE = (function() {
+  var canvas = document.getElementById('fire-canvas');
+  var ctx    = canvas.getContext('2d');
 
-    let vaultLingerTimer = null;
+  var COLS = 128, ROWS = 68, CW = 8, CH = 8;
+  canvas.width  = COLS * CW;
+  canvas.height = ROWS * CH;
 
-    let lastStatus = null;
-    let lingerTimer = null;
-    let lingerResponse = null;
+  var STATES = {
+    idle:       { intensity: 165, spread: 0.08, radiusX: 0.18, pulseAmt: 0,  pulseSpd: 4 },
+    wake:       { intensity: 370, spread: 0.04, radiusX: 0.40, pulseAmt: 0,  pulseSpd: 4 },
+    listening:  { intensity: 255, spread: 0.06, radiusX: 0.28, pulseAmt: 0,  pulseSpd: 4 },
+    thinking:   { intensity: 310, spread: 0.05, radiusX: 0.32, pulseAmt: 70, pulseSpd: 4 },
+    responding: { intensity: 210, spread: 0.06, radiusX: 0.26, pulseAmt: 0,  pulseSpd: 4 },
+  };
 
-    function clearLinger() {
-      if (lingerTimer) {
-        clearTimeout(lingerTimer);
-        lingerTimer = null;
-      }
-      lingerResponse = null;
+  var G = { lerp: 0.025, lerpDown: 0.008, emberCount: 40, emberRise: 1.2, emberDrift: 0.8, decayFloor: 0 };
+
+  var currentState = 'idle';
+  var pulseT       = 0;
+  var heat         = new Float32Array(COLS * ROWS);
+  var targetI      = STATES.idle.intensity;
+  var actualI      = STATES.idle.intensity;
+  var targetR      = STATES.idle.radiusX;
+  var actualR      = STATES.idle.radiusX;
+  var targetS      = STATES.idle.spread;
+  var actualS      = STATES.idle.spread;
+  var embers       = [];
+
+  var CHARS = " .'`^\",;:Il!i><~+_-?][}{1)(|/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$";
+
+  function heatToChar(h) {
+    return CHARS[Math.max(0, Math.min(CHARS.length-1, Math.floor(h/400*(CHARS.length-1))))];
+  }
+  function heatToColor(h) {
+    if (h < 20)  return null;
+    if (h < 80)  return 'rgb('+Math.floor(h*1.5)+',0,0)';
+    if (h < 140) return 'rgb('+Math.floor(80+h)+','+Math.floor((h-80)*1.2)+',0)';
+    if (h < 200) return 'rgb(255,'+Math.floor((h-140)*2.5)+',0)';
+    return 'rgb(255,'+Math.floor(160+(h-200)*0.47)+','+Math.floor((h-200)*0.6)+')';
+  }
+
+  function spawnEmber() {
+    var cx = COLS/2, rx = actualR * COLS;
+    embers.push({
+      x: (cx + (Math.random()-0.5)*rx*1.4)*CW,
+      y: (ROWS-6)*CH,
+      vx: (Math.random()-0.5)*G.emberDrift,
+      vy: -(Math.random()*G.emberRise+0.6),
+      life: 1.0,
+      decay: Math.random()*0.018+0.007,
+      char: ["·","*","°","'"][Math.floor(Math.random()*4)],
+    });
+  }
+
+  function updateEmbers() {
+    if (embers.length < G.emberCount && Math.random() < (actualI/400)*0.5) spawnEmber();
+    for (var i=embers.length-1; i>=0; i--) {
+      var e=embers[i];
+      e.x+=e.vx; e.y+=e.vy;
+      e.vx+=(Math.random()-0.5)*0.2;
+      e.vy*=0.985;
+      e.life-=e.decay;
+      if (e.life<=0||e.y<0) embers.splice(i,1);
+    }
+  }
+
+  function drawEmbers() {
+    ctx.font = CH+"px 'Share Tech Mono',monospace";
+    for (var i=0;i<embers.length;i++) {
+      var e=embers[i];
+      var g=Math.floor(e.life*e.life*110);
+      ctx.fillStyle='rgba(255,'+g+',0,'+(e.life*0.85)+')';
+      ctx.fillText(e.char,e.x,e.y);
+    }
+  }
+
+  function update() {
+    var lerpI = actualI < targetI ? G.lerp : G.lerpDown;
+    var lerpR = actualR < targetR ? G.lerp : G.lerpDown;
+    actualI += (targetI - actualI) * lerpI;
+    actualR += (targetR - actualR) * lerpR;
+    actualS += (targetS - actualS) * G.lerp;
+
+    var s = STATES[currentState];
+    if (s.pulseAmt > 0) {
+      pulseT += s.pulseSpd * 0.01;
+      targetI = s.intensity + Math.sin(pulseT) * s.pulseAmt;
     }
 
-    function updateClock() {
-      const now = new Date();
-      const h = String(now.getHours()).padStart(2, "0");
-      const m = String(now.getMinutes()).padStart(2, "0");
-      const s = String(now.getSeconds()).padStart(2, "0");
-      $clock.textContent = `${h}:${m}:${s}`;
+    var cx = COLS/2, rx = actualR * COLS;
+    for (var x=0; x<COLS; x++) {
+      var dist = Math.abs(x-cx)/rx;
+      if (dist > 1.0) { heat[(ROWS-1)*COLS+x] *= 0.78; continue; }
+      var falloff = 1 - dist*dist;
+      var noise   = Math.random()*50-25;
+      heat[(ROWS-1)*COLS+x] = Math.max(0, Math.min(400, actualI*falloff+noise));
     }
-    setInterval(updateClock, 1000);
-    updateClock();
 
-    function applyState(data) {
-      const status = data.status || "idle";
-      const map = STATE_MAP[status] || STATE_MAP.idle;
-
-      if (status !== lastStatus) {
-        // Animate out
-        $label.style.opacity = "0";
-        $label.style.transform = "scale(0.95)";
-        setTimeout(() => {
-          $label.textContent = map.label;
-          $label.style.color = map.color;
-          // Animate in
-          $label.style.opacity = "1";
-          $label.style.transform = "scale(1)";
-        }, 150);
+    for (var y=0; y<ROWS-1; y++) {
+      for (var x=0; x<COLS; x++) {
+        var below = heat[(y+1)*COLS+x];
+        var decay = G.decayFloor + Math.random()*actualS*255;
+        var drift = Math.floor(Math.random()*3)-1;
+        var nx    = Math.max(0, Math.min(COLS-1, x+drift));
+        heat[y*COLS+nx] = Math.max(0, below-decay);
       }
+    }
+  }
 
-      $dot.style.background = map.color;
-      $statusTxt.textContent = status;
-      $statusTxt.style.color = map.color;
+  function draw() {
+    ctx.fillStyle='#000';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.font = CH+"px 'Share Tech Mono',monospace";
+    for (var y=0;y<ROWS;y++) {
+      for (var x=0;x<COLS;x++) {
+        var h=heat[y*COLS+x];
+        if (h<8) continue;
+        var color=heatToColor(h);
+        if (!color) continue;
+        ctx.fillStyle=color;
+        ctx.fillText(heatToChar(h), x*CW, (y+1)*CH);
+      }
+    }
+  }
 
-      // Transcript: show during listening / thinking / responding
-      const showTranscript = ["listening", "thinking", "responding"].includes(status);
-      $transcript.textContent = data.transcript || "";
-      $transcript.classList.toggle("hidden", !showTranscript || !data.transcript);
+  function loop() { update(); updateEmbers(); draw(); drawEmbers(); requestAnimationFrame(loop); }
+  loop();
 
-      // Response: show during responding, then linger 30s after transitioning to idle
-      const activeStatus = ["wake", "listening", "thinking", "responding"].includes(status);
-      if (activeStatus) {
-        // Any active state — clear linger and show live response
-        clearLinger();
-        $response.textContent = data.response || "";
-        $response.classList.toggle("hidden", status !== "responding" || !data.response);
+  return {
+    setState: function(name) {
+      if (!STATES[name]) return;
+      currentState=name; pulseT=0;
+      var s=STATES[name];
+      targetI=s.intensity; targetR=s.radiusX; targetS=s.spread;
+    },
+  };
+})();
+
+
+// ═══════════════════════════════════════════════════════════════
+//  SENSOR CARDS
+// ═══════════════════════════════════════════════════════════════
+function drawSparkline(canvasId, values, color) {
+  var canvas = document.getElementById(canvasId);
+  if (!canvas || !values || values.length < 2) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+  var min = Math.min.apply(null, values);
+  var max = Math.max.apply(null, values);
+  var range = max - min || 1;
+  var pad = 2;
+
+  ctx.clearRect(0, 0, W, H);
+
+  var grad = ctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, color.replace(')', ',0.40)').replace('rgb', 'rgba'));
+  grad.addColorStop(1, color.replace(')', ',0)').replace('rgb', 'rgba'));
+
+  ctx.beginPath();
+  values.forEach(function(v, i) {
+    var x = pad + (i / (values.length - 1)) * (W - pad * 2);
+    var y = H - pad - ((v - min) / range) * (H - pad * 2);
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.lineTo(pad + (W - pad * 2), H);
+  ctx.lineTo(pad, H);
+  ctx.closePath();
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  ctx.beginPath();
+  values.forEach(function(v, i) {
+    var x = pad + (i / (values.length - 1)) * (W - pad * 2);
+    var y = H - pad - ((v - min) / range) * (H - pad * 2);
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 1.5;
+  ctx.lineJoin = 'round';
+  ctx.stroke();
+
+  var lx = W - pad, ly = H - pad - ((values[values.length-1] - min) / range) * (H - pad * 2);
+  ctx.beginPath();
+  ctx.arc(lx, ly, 2.5, 0, Math.PI * 2);
+  ctx.fillStyle = color;
+  ctx.fill();
+}
+
+function applySensors(data) {
+  if (data.unifi) {
+    var u = data.unifi, unit = u.latency_unit || 'ms';
+    var cfEl   = document.getElementById('val-cf-lat');
+    var googEl = document.getElementById('val-goog-lat');
+    var msEl   = document.getElementById('val-ms-lat');
+    if (cfEl)   cfEl.textContent   = (u.cf_latency    || '—') + ' ' + unit;
+    if (googEl) googEl.textContent = (u.google_latency || '—') + ' ' + unit;
+    if (msEl)   msEl.textContent   = (u.ms_latency    || '—') + ' ' + unit;
+    var latColor = 'rgb(100,116,139)';
+    if (u.cf_history)     drawSparkline('spark-cf',   u.cf_history,     latColor);
+    if (u.google_history) drawSparkline('spark-goog', u.google_history, latColor);
+    if (u.ms_history)     drawSparkline('spark-ms',   u.ms_history,     latColor);
+    var dotUdm     = document.getElementById('dot-udm');
+    var dotU6pro   = document.getElementById('dot-u6pro');
+    var dotU6mesh  = document.getElementById('dot-u6mesh');
+    var dotUswLite = document.getElementById('dot-uswlite');
+    var dotUswFlex = document.getElementById('dot-uswflex');
+    if (dotUdm)     dotUdm.className     = 'outlet-dot ' + (u.udm      ? 'on' : 'off');
+    if (dotU6pro)   dotU6pro.className   = 'outlet-dot ' + (u.u6_pro   ? 'on' : 'off');
+    if (dotU6mesh)  dotU6mesh.className  = 'outlet-dot ' + (u.u6_mesh  ? 'on' : 'off');
+    if (dotUswLite) dotUswLite.className = 'outlet-dot ' + (u.usw_lite ? 'on' : 'off');
+    if (dotUswFlex) dotUswFlex.className = 'outlet-dot ' + (u.usw_flex ? 'on' : 'off');
+  }
+
+  if (data.power) {
+    var wattsEl = document.getElementById('val-watts');
+    if (wattsEl) {
+      var w = parseFloat(data.power.watts);
+      wattsEl.textContent = isNaN(w) ? '—' : Math.round(w) + 'W';
+      wattsEl.className = 'card-value ' + (data.power.overloaded ? 'alert' : (data.power.on ? 'ok' : 'off'));
+    }
+    drawSparkline('spark-power', data.power.history, 'rgb(234,179,8)');
+    var todayEl = document.getElementById('val-today');
+    if (todayEl) {
+      var kwh = parseFloat(data.power.today_kwh);
+      todayEl.textContent = isNaN(kwh) ? '—' : kwh.toFixed(2) + ' kWh';
+      todayEl.className = 'card-value ok';
+    }
+    var voltageEl = document.getElementById('val-voltage');
+    if (voltageEl) {
+      var v = parseFloat(data.power.voltage);
+      voltageEl.textContent = isNaN(v) ? '—' : v.toFixed(1) + 'V';
+    }
+  }
+
+  if (data.temperature) {
+    var tempVal = document.getElementById('val-temp');
+    if (tempVal) tempVal.textContent = parseFloat(data.temperature.value).toFixed(1) + data.temperature.unit;
+    drawSparkline('spark-temp', data.temperature.history, 'rgb(249,115,22)');
+  }
+
+  if (data.humidity) {
+    var humVal = document.getElementById('val-hum');
+    if (humVal) humVal.textContent = parseFloat(data.humidity.value).toFixed(0) + data.humidity.unit;
+    drawSparkline('spark-hum', data.humidity.history, 'rgb(56,189,248)');
+  }
+
+  if (data.octoprint) {
+    var octo     = data.octoprint;
+    var idle     = document.getElementById('printer-idle');
+    var printing = document.getElementById('printer-printing');
+    var stateEl  = document.getElementById('printer-state');
+
+    function formatTemp(val, elId) {
+      var el = document.getElementById(elId);
+      if (!el) return;
+      var prefix = elId.indexOf('nozzle') !== -1 ? 'nozzle ' : 'bed ';
+      if (val == null) { el.textContent = prefix + '—°C'; el.style.color = ''; return; }
+      var t = parseFloat(val);
+      el.textContent = prefix + (isNaN(t) ? '—' : t.toFixed(0)) + '°C';
+      el.style.color = (!isNaN(t) && t > 50) ? '#ef4444' : '';
+    }
+
+    if (octo.printing) {
+      idle.style.display     = 'none';
+      printing.style.display = 'block';
+      document.getElementById('printer-file').textContent = octo.file || '';
+      var pct = parseFloat(octo.job_pct) || 0;
+      document.getElementById('printer-bar').style.width = pct + '%';
+      document.getElementById('printer-pct').textContent = Math.round(pct) + '%';
+      if (octo.finish_time) {
+        var eta = new Date(octo.finish_time);
+        document.getElementById('printer-eta').textContent =
+          'ETA ' + String(eta.getHours()).padStart(2,'0') + ':' + String(eta.getMinutes()).padStart(2,'0');
       } else {
-        // Idle
-        if (lastStatus === "responding" && data.response) {
-          // Transition from responding → idle: start linger
-          lingerResponse = data.response;
-          $response.textContent = lingerResponse;
-          $response.classList.remove("hidden");
-          lingerTimer = setTimeout(() => {
-            $response.textContent = "";
-            $response.classList.add("hidden");
-            lingerResponse = null;
-            lingerTimer = null;
-          }, 30000);
-        } else if (!lingerTimer) {
-          // No linger in progress — normal idle clear
-          $response.textContent = "";
-          $response.classList.add("hidden");
-        }
-        // If lingerTimer is running, leave $response alone
+        document.getElementById('printer-eta').textContent = '';
       }
-
-      // Vault indicator
-      const vaultStatus = data.second_brain_status || "ready";
-      const vaultColor = VAULT_COLORS[vaultStatus] || VAULT_COLORS.ready;
-      $vaultDot.className = vaultStatus === "ready" ? "" : vaultStatus;
-      $vaultLabel.style.color = vaultColor;
-
-      // Status text — show while working or on error; linger 5s after returning to ready
-      if (vaultStatus !== "ready") {
-        if (vaultLingerTimer) { clearTimeout(vaultLingerTimer); vaultLingerTimer = null; }
-        $vaultStatus.textContent = VAULT_STATUS_TEXT[vaultStatus] || vaultStatus;
-        $vaultStatus.style.color = vaultColor;
-        $vaultStatus.classList.add("visible");
-      } else {
-        // Transitioned to ready — linger the "working..." text briefly so it's noticeable
-        if ($vaultStatus.classList.contains("visible") && !vaultLingerTimer) {
-          $vaultStatus.textContent = "done";
-          $vaultStatus.style.color = "#737373";
-          vaultLingerTimer = setTimeout(() => {
-            $vaultStatus.classList.remove("visible");
-            vaultLingerTimer = null;
-          }, 3000);
-        }
-      }
-
-      lastStatus = status;
+      formatTemp(octo.nozzle_temp, 'printer-nozzle-p');
+      formatTemp(octo.bed_temp,    'printer-bed-p');
+    } else {
+      idle.style.display     = 'block';
+      printing.style.display = 'none';
+      stateEl.textContent    = octo.state || 'Operational';
+      stateEl.className      = 'card-value ok';
+      formatTemp(octo.nozzle_temp, 'printer-nozzle');
+      formatTemp(octo.bed_temp,    'printer-bed');
     }
+  }
 
-    let serverWasDown = false;
-
-    async function poll() {
-      try {
-        const res = await fetch("/status");
-        if (res.ok) {
-          if (serverWasDown) {
-            // Server just came back — reload to pick up any UI changes
-            location.reload();
-            return;
-          }
-          const data = await res.json();
-          applyState(data);
-        }
-      } catch (_) {
-        serverWasDown = true;
-        // server unreachable — keep current display
-      }
+  if (data.outlets) {
+    var list = document.getElementById('outlets-list');
+    if (list) {
+      list.innerHTML = '';
+      data.outlets.forEach(function(outlet) {
+        var row = document.createElement('div');
+        row.className = 'outlet-row';
+        row.innerHTML =
+          '<div class="outlet-dot ' + (outlet.on ? 'on' : 'off') + '"></div>' +
+          '<span class="outlet-name">' + outlet.name + '</span>' +
+          '<span class="outlet-state ' + (outlet.on ? 'on' : 'off') + '">' + (outlet.on ? 'ON' : 'OFF') + '</span>';
+        list.appendChild(row);
+      });
     }
+  }
+}
 
-    setInterval(poll, 500);
-    poll();
-  </script>
+
+// ═══════════════════════════════════════════════════════════════
+//  CLOCK
+// ═══════════════════════════════════════════════════════════════
+var DAYS   = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+var MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+function updateClock() {
+  var n = new Date();
+  document.getElementById('clock').textContent =
+    String(n.getHours()).padStart(2,'0') + ':' +
+    String(n.getMinutes()).padStart(2,'0') + ':' +
+    String(n.getSeconds()).padStart(2,'0');
+  document.getElementById('date').textContent =
+    DAYS[n.getDay()] + ' · ' + MONTHS[n.getMonth()] + ' ' + n.getDate();
+}
+setInterval(updateClock, 1000); updateClock();
+
+
+// ═══════════════════════════════════════════════════════════════
+//  UI STATE MACHINE
+// ═══════════════════════════════════════════════════════════════
+var STATE_MAP = {
+  idle:       { label: 'READY',         color: '#2a2a2a' },
+  wake:       { label: 'WAKE WORD',     color: '#f97316' },
+  listening:  { label: 'LISTENING...',  color: '#22c55e' },
+  thinking:   { label: 'THINKING...',   color: '#3b82f6' },
+  responding: { label: 'RESPONDING...', color: '#f97316' },
+  vault:      { label: 'THINKING...',   color: '#3b82f6' },
+};
+
+var $label      = document.getElementById('status-label');
+var $transcript = document.getElementById('transcript');
+var $response   = document.getElementById('response');
+var $vaultDot   = document.getElementById('vault-dot');
+var $vaultText  = document.getElementById('vault-text');
+var lastStatus  = null, lingerTimer = null;
+
+function applyState(data) {
+  var status = data.status || 'idle';
+  var map    = STATE_MAP[status] || STATE_MAP.idle;
+  FIRE.setState(status === 'vault' ? 'thinking' : status);
+
+  if (status !== lastStatus) {
+    $label.style.opacity = '0'; $label.style.transform = 'scale(0.93)';
+    setTimeout(function() {
+      $label.textContent = map.label; $label.style.color = map.color;
+      $label.style.opacity = '1'; $label.style.transform = 'scale(1)';
+    }, 160);
+  }
+
+  var showTx = ['listening','thinking','responding'].indexOf(status) !== -1;
+  $transcript.textContent = data.transcript || '';
+  $transcript.className   = (showTx && data.transcript) ? 'visible' : 'hidden';
+
+  var isActive = ['wake','listening','thinking','responding'].indexOf(status) !== -1;
+  if (isActive) {
+    if (lingerTimer) { clearTimeout(lingerTimer); lingerTimer = null; }
+    $response.textContent = data.response || '';
+    $response.className   = (status === 'responding' && data.response) ? '' : 'hidden';
+  } else {
+    if (lastStatus === 'responding' && data.response) {
+      $response.textContent = data.response; $response.className = 'dim';
+      if (lingerTimer) clearTimeout(lingerTimer);
+      lingerTimer = setTimeout(function() { $response.className = 'hidden'; lingerTimer = null; }, 10000);
+    } else if (!lingerTimer) { $response.textContent = ''; $response.className = 'hidden'; }
+  }
+
+  var vs = data.second_brain_status || 'ready';
+  $vaultDot.className    = vs;
+  $vaultText.style.color = vs === 'ready' ? '#232323' : (vs === 'working' ? '#3b82f6' : '#ef4444');
+
+  lastStatus = status;
+}
+
+
+// ═══════════════════════════════════════════════════════════════
+//  LIVE POLLING
+// ═══════════════════════════════════════════════════════════════
+function pollStatus() {
+  fetch('/status')
+    .then(function(r) { return r.json(); })
+    .then(function(d) { applyState(d); })
+    .catch(function() {});
+}
+
+function pollSensors() {
+  fetch('/sensors')
+    .then(function(r) { return r.json(); })
+    .then(function(d) { applySensors(d); })
+    .catch(function() {});
+}
+
+pollStatus();
+pollSensors();
+setInterval(pollStatus,  2000);
+setInterval(pollSensors, 10000);
+</script>
 </body>
 </html>
