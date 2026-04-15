@@ -14,6 +14,8 @@ import wake_word
 import speech_to_text
 import intent_recognition
 import text_to_speech
+import forge_state
+from second_brain import classify_intent, handle as second_brain_handle
 import logging
 from config.settings import USE_DYNAMIC_RECORDING, API_ENABLED
 
@@ -32,27 +34,49 @@ async def voice_pipeline():
     else:
         transcribe = speech_to_text.transcribe_speech
 
+    forge_state.state["status"] = "idle"
+    forge_state.state["transcript"] = ""
+    forge_state.state["response"] = ""
+
     while True:
         print("Listening for wake word...")
+        forge_state.state["status"] = "idle"
         await asyncio.to_thread(wake_word.listen_for_wake_word)
 
         print("Wake word detected! Speak now...")
         logger.info("Wake word detected")
+        forge_state.state["status"] = "wake"
+        forge_state.state["transcript"] = ""
+        forge_state.state["response"] = ""
 
+        forge_state.state["status"] = "listening"
         text = await asyncio.to_thread(transcribe)
         logger.info(f"Transcribed text: {text}")
 
         if not text.strip():
             logger.info("Empty transcription, ignoring")
+            forge_state.state["status"] = "idle"
             continue
 
         print(f"You said: {text}")
         print("Thinking...")
+        forge_state.state["transcript"] = text
+        forge_state.state["response"] = ""
+        forge_state.state["status"] = "thinking"
+        await asyncio.sleep(0.2)  # yield so /status can be served before blocking Claude call
 
-        result = await intent_recognition.classify_intent(text, source="voice")
+        intent = await classify_intent(text)
+        if intent in ('CAPTURE', 'QUERY', 'PROCESS'):
+            forge_state.state['status'] = 'thinking'
+            await asyncio.sleep(0.2)
+            result = await asyncio.to_thread(second_brain_handle, text, intent)
+        else:
+            result = await intent_recognition.classify_intent(text, source="voice")
         logger.info(f"Intent recognition result: {result}")
 
         print(f'"{result}"')
+        forge_state.state["response"] = result
+        forge_state.state["status"] = "responding"
 
         # Run TTS and wake word listener concurrently so "Hey Forge, stop" can interrupt
         stop_event = threading.Event()
@@ -75,25 +99,35 @@ async def voice_pipeline():
 
             # Listen for the stop/continue command
             print("Interrupted - listening for command...")
+            forge_state.state["status"] = "listening"
             stop_text = await asyncio.to_thread(speech_to_text.transcribe_short)
             logger.info(f"Post-interrupt command: '{stop_text}'")
 
             if is_stop_command(stop_text):
                 logger.info("Stop command confirmed — returning to wake word listen")
+                forge_state.state["status"] = "idle"
                 continue
 
             # Not a stop word — treat as a new query
             if stop_text.strip():
                 print(f"New query after interrupt: {stop_text}")
+                forge_state.state["transcript"] = stop_text
+                forge_state.state["response"] = ""
+                forge_state.state["status"] = "thinking"
+                await asyncio.sleep(0.2)  # yield so /status can be served before blocking Claude call
                 new_result = await intent_recognition.classify_intent(stop_text, source="voice")
                 logger.info(f"New intent result: {new_result}")
                 print(f'"{new_result}"')
+                forge_state.state["response"] = new_result
+                forge_state.state["status"] = "responding"
                 await asyncio.to_thread(text_to_speech.speak, new_result)
         else:
             # TTS finished naturally — signal the wake word listener and wait for it to exit
             stop_event.set()
             await asyncio.gather(*pending, return_exceptions=True)
             logger.info("Response spoken")
+
+        forge_state.state["status"] = "idle"
 
 
 async def main():

@@ -26,9 +26,9 @@ import asyncio
 
 INTENT_SYSTEM_PROMPT = """\
 Classify the user's message as one of: CAPTURE, QUERY, ANSWER, or PROCESS.
-CAPTURE = the user wants to save something (task, idea, project, note) to their second brain vault
+CAPTURE = the user wants to add a quick note, task, or idea to an existing project or inbox (simple, fast append)
 QUERY = the user is asking a question about their vault contents, projects, or notes
-PROCESS = the user wants to process a file from the Ingress folder into a project note. Examples: "process the ingress file into The Forge project", "process ingress for Pocket Forge"
+PROCESS = the user wants complex multi-step vault work: creating a new project file, processing ingress files, reorganizing notes, or anything that requires reading multiple files and writing structured content
 ANSWER = general question not related to the vault
 Respond with exactly one word: CAPTURE, QUERY, ANSWER, or PROCESS."""
 

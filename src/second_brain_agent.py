@@ -271,7 +271,8 @@ def _run_agent_loop(transcript: str, intent: str) -> str:
     forge_state.state['second_brain_status'] = 'working'
     _git_pull()
 
-    messages = [{"role": "user", "content": transcript}]
+    today = datetime.now().strftime("%Y-%m-%d")
+    messages = [{"role": "user", "content": f"[Today's date: {today}]\n{transcript}"}]
 
     for round_num in range(MAX_TOOL_ROUNDS):
         response = client.messages.create(

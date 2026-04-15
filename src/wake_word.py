@@ -11,6 +11,17 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config.secrets import PORCUPINE_ACCESS_KEY
 from config.settings import WAKE_WORD_MODEL, WAKE_WORD_SENSITIVITY, AUDIO_INPUT_DEVICE, SCARLETT_SAMPLE_RATE
 
+try:
+    _devices = sd.query_devices()
+    _scarlett = next(
+        (d for d in _devices if 'Scarlett' in d['name'] and d['max_input_channels'] > 0),
+        None
+    )
+    if _scarlett:
+        AUDIO_INPUT_DEVICE = _scarlett['index']
+except Exception:
+    pass  # Fall back to settings value
+
 # Get the absolute path to the model file
 base_dir = os.path.dirname(os.path.dirname(__file__))
 model_path = os.path.join(base_dir, WAKE_WORD_MODEL)
