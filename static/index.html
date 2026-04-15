@@ -28,21 +28,21 @@
       position: absolute; top: 0; left: 0; width: 1024px; height: 60px;
       display: flex; align-items: center; padding: 0 20px;
       background: rgba(0,0,0,0.88);
-      border-bottom: 1px solid #1c1c1c;
+      border-bottom: 1px solid #2e2e2e;
       z-index: 10;
     }
-    #title { font-size: 13px; letter-spacing: 0.2em; color: #333; }
+    #title { font-size: 13px; letter-spacing: 0.2em; color: #555; }
     #clock-wrap {
       position: absolute; left: 50%; transform: translateX(-50%);
       display: flex; flex-direction: column; align-items: center;
     }
     #clock { font-size: 46px; letter-spacing: 0.06em; color: #f97316; line-height: 1; }
-    #date  { font-size: 11px; letter-spacing: 0.18em; color: #f97316; margin-top: 2px; opacity: 0.65; font-weight: bold; }
+    #date  { font-size: 11px; letter-spacing: 0.18em; color: #f97316; margin-top: 2px; opacity: 0.85; font-weight: bold; }
     #vault-wrap { display: flex; align-items: center; gap: 5px; margin-left: auto; }
-    #vault-dot  { width: 7px; height: 7px; border-radius: 50%; background: #161616; transition: background 0.3s; }
+    #vault-dot  { width: 7px; height: 7px; border-radius: 50%; background: #222; transition: background 0.3s; }
     #vault-dot.working { background: #3b82f6; animation: vaultpulse 1s ease-in-out infinite; }
     #vault-dot.error   { background: #ef4444; }
-    #vault-text { font-size: 9px; letter-spacing: 0.15em; color: #232323; transition: color 0.3s; }
+    #vault-text { font-size: 9px; letter-spacing: 0.15em; color: #484848; transition: color 0.3s; }
     @keyframes vaultpulse { 0%,100%{opacity:1} 50%{opacity:0.2} }
 
     /* ── Left/right card columns ── */
@@ -56,38 +56,38 @@
     #cards-right { right: 0; }
 
     .card {
-      background: rgba(0,0,0,0.72);
-      border: 1px solid #1e1e1e;
+      background: rgba(0,0,0,0.55);
+      border: 1px solid #2e2e2e;
       border-radius: 3px;
       padding: 10px 14px;
       display: flex; flex-direction: column; gap: 4px;
     }
     .card-header { display: flex; align-items: center; gap: 8px; }
-    .card-icon   { font-size: 14px; opacity: 0.55; }
-    .card-label  { font-size: 10px; letter-spacing: 0.18em; color: #555; text-transform: uppercase; }
+    .card-icon   { font-size: 14px; opacity: 0.75; }
+    .card-label  { font-size: 10px; letter-spacing: 0.18em; color: #777; text-transform: uppercase; }
     .card-value  { font-size: 24px; letter-spacing: 0.04em; transition: color 0.3s; padding-left: 2px; }
-    .card-value.ok  { color: #b85e08; }
+    .card-value.ok  { color: #d97010; }
     .card-value.on  { color: #22c55e; }
-    .card-value.off { color: #444; }
-    .card-sub    { font-size: 11px; letter-spacing: 0.08em; color: #4a4a4a; padding-left: 2px; }
+    .card-value.off { color: #666; }
+    .card-sub    { font-size: 11px; letter-spacing: 0.08em; color: #6e6e6e; padding-left: 2px; }
 
     /* ── Outlets card ── */
     .outlet-row { display: flex; align-items: center; gap: 7px; padding: 3px 0; }
     .outlet-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; transition: background 0.3s; }
     .outlet-dot.on  { background: #22c55e; }
-    .outlet-dot.off { background: #2a2a2a; }
-    .outlet-name { font-size: 11px; letter-spacing: 0.05em; color: #666; flex: 1;
+    .outlet-dot.off { background: #444; }
+    .outlet-name { font-size: 11px; letter-spacing: 0.05em; color: #888; flex: 1;
                    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .outlet-state { font-size: 10px; letter-spacing: 0.1em; flex-shrink: 0; transition: color 0.3s; }
     .outlet-state.on  { color: #22c55e; }
-    .outlet-state.off { color: #383838; }
+    .outlet-state.off { color: #585858; }
 
     /* ── Print progress bar ── */
     .print-bar-wrap { margin-top: 4px; }
-    .print-bar-bg   { height: 3px; background: #111; border-radius: 2px; overflow: hidden; }
+    .print-bar-bg   { height: 3px; background: #1e1e1e; border-radius: 2px; overflow: hidden; }
     .print-bar-fill { height: 100%; background: #f97316; border-radius: 2px; transition: width 0.5s; }
     .print-meta     { display: flex; justify-content: space-between; margin-top: 3px; }
-    .print-meta span { font-size: 9px; letter-spacing: 0.08em; color: #333; }
+    .print-meta span { font-size: 9px; letter-spacing: 0.08em; color: #555; }
 
     /* ── Center stage ── */
     #stage {
@@ -103,19 +103,60 @@
       text-shadow: 0 0 40px currentColor;
     }
     #transcript {
-      font-size: 14px; color: #444; text-align: center;
+      font-size: 14px; color: #666; text-align: center;
       max-width: 100%; line-height: 1.5; letter-spacing: 0.04em;
       transition: color 0.3s; min-height: 1.4em;
     }
-    #transcript.visible { color: #888; }
+    #transcript.visible { color: #aaa; }
     #response {
       font-size: 21px; color: #ddd; text-align: center;
       max-width: 100%; line-height: 1.55;
       text-shadow: 0 1px 12px rgba(0,0,0,0.9);
       transition: opacity 0.4s, color 0.4s;
     }
-    #response.dim { color: #444; }
+    #response.dim { color: #666; }
     .hidden { opacity: 0 !important; pointer-events: none; }
+
+    /* ── Fire tuning panel ── */
+    #tune-toggle {
+      position: absolute; bottom: 12px; right: 12px; z-index: 20;
+      background: rgba(0,0,0,0.88); border: 1px solid #2e2e2e;
+      color: #555; font-family: 'Share Tech Mono', monospace;
+      font-size: 11px; letter-spacing: 0.12em;
+      padding: 10px 18px; cursor: pointer;
+      min-height: 44px; display: flex; align-items: center;
+    }
+    #tune-toggle:hover { color: #f97316; border-color: #f97316; }
+    #tune-panel {
+      position: absolute; bottom: 68px; right: 12px;
+      width: 330px;
+      background: rgba(0,0,0,0.96); border: 1px solid #2e2e2e;
+      padding: 14px; z-index: 30; display: none;
+      flex-direction: column; gap: 10px;
+      max-height: 510px; overflow-y: auto;
+    }
+    #tune-panel.open { display: flex; }
+    .tune-section-title {
+      color: #f97316; font-size: 10px; letter-spacing: 0.2em;
+      border-bottom: 1px solid #222; padding-bottom: 5px; margin-top: 4px;
+    }
+    .tune-state-tabs { display: flex; gap: 5px; flex-wrap: wrap; }
+    .tune-tab {
+      background: #0a0a0a; border: 1px solid #2e2e2e;
+      color: #666; font-family: 'Share Tech Mono', monospace;
+      font-size: 10px; letter-spacing: 0.1em;
+      padding: 10px 14px; cursor: pointer; min-height: 44px;
+      display: flex; align-items: center;
+    }
+    .tune-tab:hover  { color: #f97316; border-color: #f97316; }
+    .tune-tab.active { background: #180800; color: #f97316; border-color: #f97316; }
+    .slider-row { display: flex; align-items: center; gap: 8px; }
+    .slider-lbl { color: #666; font-size: 10px; letter-spacing: 0.08em; width: 92px; flex-shrink: 0; }
+    .slider-row input[type=range] {
+      flex: 1; accent-color: #f97316; cursor: pointer;
+      height: 36px;
+    }
+    .slider-val { color: #f97316; font-size: 10px; width: 40px; text-align: right; flex-shrink: 0; }
   </style>
 </head>
 <body>
@@ -146,17 +187,17 @@
     <div class="card">
       <div class="card-header"><span class="card-icon">⚡</span><span class="card-label">POWER DRAW</span></div>
       <span class="card-value ok" id="val-watts">—</span>
-      <canvas id="spark-power" width="174" height="28" style="display:block;margin-top:6px;opacity:0.7"></canvas>
+      <canvas id="spark-power" width="174" height="28" style="display:block;margin-top:6px;opacity:0.9"></canvas>
     </div>
     <div class="card">
       <div class="card-header"><span class="card-icon">🌡</span><span class="card-label">WORKSHOP TEMP</span></div>
       <span class="card-value ok" id="val-temp">—</span>
-      <canvas id="spark-temp" width="174" height="28" style="display:block;margin-top:6px;opacity:0.7"></canvas>
+      <canvas id="spark-temp" width="174" height="28" style="display:block;margin-top:6px;opacity:0.9"></canvas>
     </div>
     <div class="card">
       <div class="card-header"><span class="card-icon">💧</span><span class="card-label">HUMIDITY</span></div>
       <span class="card-value ok" id="val-hum">—</span>
-      <canvas id="spark-hum" width="174" height="28" style="display:block;margin-top:6px;opacity:0.7"></canvas>
+      <canvas id="spark-hum" width="174" height="28" style="display:block;margin-top:6px;opacity:0.9"></canvas>
     </div>
   </div>
 
@@ -173,16 +214,16 @@
       <div class="card-header"><span class="card-icon">🌐</span><span class="card-label">NETWORK</span></div>
       <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
         <!-- Cloudflare -->
-        <div style="display:flex;align-items:center;gap:5px;border-bottom:1px solid #1e1e1e;padding-bottom:8px">
+        <div style="display:flex;align-items:center;gap:5px;border-bottom:1px solid #2e2e2e;padding-bottom:8px">
           <svg width="14" height="9" viewBox="0 0 80 54" style="flex-shrink:0">
             <path fill="#F6821F" d="M61 21.5c-1.3-6.5-7-11.5-13.9-11.5-3.5 0-6.7 1.4-9.1 3.6C36.4 9.3 31.4 6.5 25.8 6.5 16 6.5 8 14.5 8 24.5c0 .9.1 1.7.2 2.5H7C3.1 27 0 30.1 0 34s3.1 7 7 7h52c4.3 0 7.7-3.4 7.7-7.7 0-3.6-2.5-6.6-5.7-7.8z"/>
             <path fill="#FBAD41" d="M65 27.5c-.3 0-.7 0-1 .1l-.4-1.6C61.9 21.5 57.8 19 53.3 19c-3 0-5.7 1.1-7.7 2.9l-.1.1c-.4-3.5-3.4-6.2-7-6.2-3.9 0-7 3.1-7 7 0 .4 0 .8.1 1.2H31C28.2 24 26 26.2 26 29s2.2 5 5 5h34c2.8 0 5-2.2 5-5 0-2.6-2-4.7-4.5-5-.2 0-.3-.5-.5-.5z" opacity=".5"/>
           </svg>
           <span class="card-sub" id="val-cf-lat" style="font-size:11px;width:44px;flex-shrink:0;text-align:right;white-space:nowrap">— ms</span>
-          <canvas id="spark-cf" width="76" height="20" style="display:block;opacity:0.75;flex-shrink:0"></canvas>
+          <canvas id="spark-cf" width="76" height="20" style="display:block;opacity:0.9;flex-shrink:0"></canvas>
         </div>
         <!-- Google -->
-        <div style="display:flex;align-items:center;gap:5px;border-bottom:1px solid #1e1e1e;padding-bottom:8px">
+        <div style="display:flex;align-items:center;gap:5px;border-bottom:1px solid #2e2e2e;padding-bottom:8px">
           <svg width="14" height="14" viewBox="0 0 24 24" style="flex-shrink:0">
             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57C21.36 18.1 22.56 15.3 22.56 12.25z" fill="#4285F4"/>
             <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
@@ -190,7 +231,7 @@
             <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
           </svg>
           <span class="card-sub" id="val-goog-lat" style="font-size:11px;width:44px;flex-shrink:0;text-align:right;white-space:nowrap">— ms</span>
-          <canvas id="spark-goog" width="76" height="20" style="display:block;opacity:0.75;flex-shrink:0"></canvas>
+          <canvas id="spark-goog" width="76" height="20" style="display:block;opacity:0.9;flex-shrink:0"></canvas>
         </div>
         <!-- Microsoft -->
         <div style="display:flex;align-items:center;gap:5px">
@@ -201,16 +242,16 @@
             <rect x="7.5" y="7.5" width="6.5" height="6.5" fill="#FFB900"/>
           </svg>
           <span class="card-sub" id="val-ms-lat" style="font-size:11px;width:44px;flex-shrink:0;text-align:right;white-space:nowrap">— ms</span>
-          <canvas id="spark-ms" width="76" height="20" style="display:block;opacity:0.75;flex-shrink:0"></canvas>
+          <canvas id="spark-ms" width="76" height="20" style="display:block;opacity:0.9;flex-shrink:0"></canvas>
         </div>
       </div>
       <!-- Device health — single row -->
-      <div style="display:flex;align-items:center;gap:6px;margin-top:10px;padding-top:7px;border-top:1px solid #1e1e1e">
-        <span style="font-size:9px;letter-spacing:.1em;color:#3a3a3a">APS</span>
+      <div style="display:flex;align-items:center;gap:6px;margin-top:10px;padding-top:7px;border-top:1px solid #2e2e2e">
+        <span style="font-size:9px;letter-spacing:.1em;color:#5a5a5a">APS</span>
         <span id="dot-udm"     class="outlet-dot off" title="Dream Machine"></span>
         <span id="dot-u6pro"   class="outlet-dot off" title="U6 Pro"></span>
         <span id="dot-u6mesh"  class="outlet-dot off" title="U6 Mesh"></span>
-        <span style="font-size:9px;letter-spacing:.1em;color:#3a3a3a;margin-left:6px">SW</span>
+        <span style="font-size:9px;letter-spacing:.1em;color:#5a5a5a;margin-left:6px">SW</span>
         <span id="dot-uswlite" class="outlet-dot off" title="USW-Lite-8-PoE"></span>
         <span id="dot-uswflex" class="outlet-dot off" title="USW-Flex-Mini"></span>
       </div>
@@ -225,7 +266,7 @@
         </div>
       </div>
       <div id="printer-printing" style="display:none">
-        <span class="card-sub" id="printer-file" style="color:#555;font-size:10px;letter-spacing:.04em;display:block;margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+        <span class="card-sub" id="printer-file" style="color:#666;font-size:10px;letter-spacing:.04em;display:block;margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
         <div style="display:flex;gap:10px;margin-bottom:4px">
           <span class="card-sub" id="printer-nozzle-p" style="font-size:11px">nozzle —°C</span>
           <span class="card-sub" id="printer-bed-p" style="font-size:11px">bed —°C</span>
@@ -243,6 +284,63 @@
       <div class="card-header" style="margin-bottom:6px"><span class="card-icon">⚡</span><span class="card-label">OUTLETS</span></div>
       <div id="outlets-list"></div>
     </div>
+  </div>
+
+  <!-- Fire tuning toggle -->
+  <button id="tune-toggle" onclick="document.getElementById('tune-panel').classList.toggle('open')">⚙ FIRE</button>
+
+  <!-- Fire tuning panel -->
+  <div id="tune-panel">
+    <div class="tune-section-title">STATE SETTINGS</div>
+    <div class="tune-state-tabs" id="tune-tabs"></div>
+
+    <div class="slider-row"><span class="slider-lbl">INTENSITY</span>
+      <input type="range" id="t-intensity" min="0" max="400" oninput="onTuneState('intensity',this)">
+      <span class="slider-val" id="tv-intensity">—</span></div>
+
+    <div class="slider-row"><span class="slider-lbl">SPREAD</span>
+      <input type="range" id="t-spread" min="1" max="60" oninput="onTuneState('spread',this)">
+      <span class="slider-val" id="tv-spread">—</span></div>
+
+    <div class="slider-row"><span class="slider-lbl">BASE WIDTH</span>
+      <input type="range" id="t-radius" min="1" max="60" oninput="onTuneState('radius',this)">
+      <span class="slider-val" id="tv-radius">—</span></div>
+
+    <div class="slider-row"><span class="slider-lbl">PULSE AMT</span>
+      <input type="range" id="t-pulseamt" min="0" max="150" oninput="onTuneState('pulseamt',this)">
+      <span class="slider-val" id="tv-pulseamt">—</span></div>
+
+    <div class="slider-row"><span class="slider-lbl">PULSE SPEED</span>
+      <input type="range" id="t-pulsespd" min="1" max="20" oninput="onTuneState('pulsespd',this)">
+      <span class="slider-val" id="tv-pulsespd">—</span></div>
+
+    <div class="tune-section-title">GLOBAL</div>
+
+    <div class="slider-row"><span class="slider-lbl">RAMP UP</span>
+      <input type="range" id="t-lerp" min="1" max="80" oninput="onTuneGlobal('lerp',this)">
+      <span class="slider-val" id="tv-lerp">—</span></div>
+
+    <div class="slider-row"><span class="slider-lbl">COOL DOWN</span>
+      <input type="range" id="t-lerpdown" min="1" max="40" oninput="onTuneGlobal('lerpdown',this)">
+      <span class="slider-val" id="tv-lerpdown">—</span></div>
+
+    <div class="slider-row"><span class="slider-lbl">EMBER COUNT</span>
+      <input type="range" id="t-embercount" min="0" max="200" oninput="onTuneGlobal('embercount',this)">
+      <span class="slider-val" id="tv-embercount">—</span></div>
+
+    <div class="slider-row"><span class="slider-lbl">EMBER RISE</span>
+      <input type="range" id="t-emberrise" min="1" max="50" oninput="onTuneGlobal('emberrise',this)">
+      <span class="slider-val" id="tv-emberrise">—</span></div>
+
+    <div class="slider-row"><span class="slider-lbl">EMBER DRIFT</span>
+      <input type="range" id="t-emberdrift" min="0" max="40" oninput="onTuneGlobal('emberdrift',this)">
+      <span class="slider-val" id="tv-emberdrift">—</span></div>
+
+    <div class="slider-row"><span class="slider-lbl">DECAY FLOOR</span>
+      <input type="range" id="t-decayfloor" min="0" max="100" oninput="onTuneGlobal('decayfloor',this)">
+      <span class="slider-val" id="tv-decayfloor">—</span></div>
+
+    <button id="save-btn" style="margin-top:4px;background:#0a0a0a;border:1px solid #2e2e2e;color:#666;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.1em;padding:12px;cursor:pointer;width:100%;min-height:44px" onclick="saveFireSettings()">💾 SAVE SETTINGS</button>
   </div>
 
 <script>
@@ -385,8 +483,123 @@ var FIRE = (function() {
       var s=STATES[name];
       targetI=s.intensity; targetR=s.radiusX; targetS=s.spread;
     },
+    getStates:  function() { return STATES; },
+    getGlobal:  function() { return G; },
+    setStateParam: function(state, param, val) {
+      if (!STATES[state]) return;
+      if      (param==='intensity') { STATES[state].intensity=val; if(state===currentState) targetI=val; }
+      else if (param==='spread')    { STATES[state].spread=val;    if(state===currentState) targetS=val; }
+      else if (param==='radiusX')   { STATES[state].radiusX=val;   if(state===currentState) targetR=val; }
+      else if (param==='pulseAmt')  STATES[state].pulseAmt=val;
+      else if (param==='pulseSpd')  STATES[state].pulseSpd=val;
+    },
+    setGlobalParam: function(param, val) {
+      if      (param==='lerp')       G.lerp=val;
+      else if (param==='lerpDown')   G.lerpDown=val;
+      else if (param==='emberCount') G.emberCount=val;
+      else if (param==='emberRise')  G.emberRise=val;
+      else if (param==='emberDrift') G.emberDrift=val;
+      else if (param==='decayFloor') G.decayFloor=val;
+    },
   };
 })();
+
+
+// ═══════════════════════════════════════════════════════════════
+//  FIRE SETTINGS — LOAD SAVED / SAVE TO LOCALSTORAGE
+// ═══════════════════════════════════════════════════════════════
+(function loadSavedFireSettings() {
+  try {
+    var saved = localStorage.getItem('fireSettings');
+    if (!saved) return;
+    var data = JSON.parse(saved);
+    if (data.states) {
+      Object.keys(data.states).forEach(function(state) {
+        var s = data.states[state];
+        FIRE.setStateParam(state, 'intensity', s.intensity);
+        FIRE.setStateParam(state, 'spread',    s.spread);
+        FIRE.setStateParam(state, 'radiusX',   s.radiusX);
+        FIRE.setStateParam(state, 'pulseAmt',  s.pulseAmt);
+        FIRE.setStateParam(state, 'pulseSpd',  s.pulseSpd);
+      });
+    }
+    if (data.global) {
+      var G = data.global;
+      if (G.lerp       != null) FIRE.setGlobalParam('lerp',       G.lerp);
+      if (G.lerpDown   != null) FIRE.setGlobalParam('lerpDown',   G.lerpDown);
+      if (G.emberCount != null) FIRE.setGlobalParam('emberCount', G.emberCount);
+      if (G.emberRise  != null) FIRE.setGlobalParam('emberRise',  G.emberRise);
+      if (G.emberDrift != null) FIRE.setGlobalParam('emberDrift', G.emberDrift);
+      if (G.decayFloor != null) FIRE.setGlobalParam('decayFloor', G.decayFloor);
+    }
+  } catch(e) {}
+})();
+
+window.saveFireSettings = function() {
+  var S = FIRE.getStates(), G = FIRE.getGlobal();
+  localStorage.setItem('fireSettings', JSON.stringify({states: S, global: G}));
+  var btn = document.getElementById('save-btn');
+  btn.textContent = '✓ SAVED';
+  btn.style.color = '#22c55e';
+  setTimeout(function() { btn.textContent = '💾 SAVE SETTINGS'; btn.style.color = ''; }, 1800);
+};
+
+
+// ═══════════════════════════════════════════════════════════════
+//  FIRE TUNING PANEL
+// ═══════════════════════════════════════════════════════════════
+var tuneState = 'idle';
+
+(function() {
+  var tabs = document.getElementById('tune-tabs');
+  ['idle','wake','listening','thinking','responding'].forEach(function(s) {
+    var b = document.createElement('button');
+    b.className = 'tune-tab' + (s === 'idle' ? ' active' : '');
+    b.textContent = s; b.dataset.state = s;
+    b.onclick = function() {
+      tuneState = s;
+      document.querySelectorAll('.tune-tab').forEach(function(t) { t.classList.remove('active'); });
+      b.classList.add('active');
+      syncTuneSliders();
+    };
+    tabs.appendChild(b);
+  });
+})();
+
+function syncTuneSliders() {
+  var S = FIRE.getStates()[tuneState], G = FIRE.getGlobal();
+  document.getElementById('t-intensity').value = S.intensity;           document.getElementById('tv-intensity').textContent = S.intensity;
+  document.getElementById('t-spread').value    = Math.round(S.spread*100); document.getElementById('tv-spread').textContent = S.spread.toFixed(2);
+  document.getElementById('t-radius').value    = Math.round(S.radiusX*100); document.getElementById('tv-radius').textContent = S.radiusX.toFixed(2);
+  document.getElementById('t-pulseamt').value  = S.pulseAmt;            document.getElementById('tv-pulseamt').textContent = S.pulseAmt;
+  document.getElementById('t-pulsespd').value  = S.pulseSpd;            document.getElementById('tv-pulsespd').textContent = S.pulseSpd;
+  document.getElementById('t-lerp').value      = Math.round(G.lerp*1000);    document.getElementById('tv-lerp').textContent = G.lerp.toFixed(3);
+  document.getElementById('t-lerpdown').value  = Math.round(G.lerpDown*1000); document.getElementById('tv-lerpdown').textContent = G.lerpDown.toFixed(3);
+  document.getElementById('t-embercount').value = G.emberCount;         document.getElementById('tv-embercount').textContent = G.emberCount;
+  document.getElementById('t-emberrise').value  = Math.round(G.emberRise*10); document.getElementById('tv-emberrise').textContent = G.emberRise.toFixed(1);
+  document.getElementById('t-emberdrift').value = Math.round(G.emberDrift*10); document.getElementById('tv-emberdrift').textContent = G.emberDrift.toFixed(1);
+  document.getElementById('t-decayfloor').value = G.decayFloor;         document.getElementById('tv-decayfloor').textContent = G.decayFloor;
+}
+syncTuneSliders();
+
+window.onTuneState = function(param, input) {
+  var raw = parseInt(input.value);
+  if      (param==='intensity') { FIRE.setStateParam(tuneState,'intensity',raw);          document.getElementById('tv-intensity').textContent=raw; }
+  else if (param==='spread')    { var v=raw/100; FIRE.setStateParam(tuneState,'spread',v);  document.getElementById('tv-spread').textContent=v.toFixed(2); }
+  else if (param==='radius')    { var v=raw/100; FIRE.setStateParam(tuneState,'radiusX',v); document.getElementById('tv-radius').textContent=v.toFixed(2); }
+  else if (param==='pulseamt')  { FIRE.setStateParam(tuneState,'pulseAmt',raw);            document.getElementById('tv-pulseamt').textContent=raw; }
+  else if (param==='pulsespd')  { FIRE.setStateParam(tuneState,'pulseSpd',raw);            document.getElementById('tv-pulsespd').textContent=raw; }
+};
+
+window.onTuneGlobal = function(param, input) {
+  var raw = parseInt(input.value);
+  if      (param==='lerp')       { var v=raw/1000; FIRE.setGlobalParam('lerp',v);       document.getElementById('tv-lerp').textContent=v.toFixed(3); }
+  else if (param==='lerpdown')   { var v=raw/1000; FIRE.setGlobalParam('lerpDown',v);   document.getElementById('tv-lerpdown').textContent=v.toFixed(3); }
+  else if (param==='embercount') { FIRE.setGlobalParam('emberCount',raw);  document.getElementById('tv-embercount').textContent=raw; }
+  else if (param==='emberrise')  { var v=raw/10;   FIRE.setGlobalParam('emberRise',v);  document.getElementById('tv-emberrise').textContent=v.toFixed(1); }
+  else if (param==='emberdrift') { var v=raw/10;   FIRE.setGlobalParam('emberDrift',v); document.getElementById('tv-emberdrift').textContent=v.toFixed(1); }
+  else if (param==='decayfloor') { FIRE.setGlobalParam('decayFloor',raw); document.getElementById('tv-decayfloor').textContent=raw; }
+};
 
 
 // ═══════════════════════════════════════════════════════════════
@@ -577,7 +790,7 @@ setInterval(updateClock, 1000); updateClock();
 //  UI STATE MACHINE
 // ═══════════════════════════════════════════════════════════════
 var STATE_MAP = {
-  idle:       { label: 'READY',         color: '#2a2a2a' },
+  idle:       { label: 'READY',         color: '#555' },
   wake:       { label: 'WAKE WORD',     color: '#f97316' },
   listening:  { label: 'LISTENING...',  color: '#22c55e' },
   thinking:   { label: 'THINKING...',   color: '#3b82f6' },
@@ -624,7 +837,7 @@ function applyState(data) {
 
   var vs = data.second_brain_status || 'ready';
   $vaultDot.className    = vs;
-  $vaultText.style.color = vs === 'ready' ? '#232323' : (vs === 'working' ? '#3b82f6' : '#ef4444');
+  $vaultText.style.color = vs === 'ready' ? '#484848' : (vs === 'working' ? '#3b82f6' : '#ef4444');
 
   lastStatus = status;
 }
