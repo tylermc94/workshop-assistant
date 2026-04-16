@@ -38,7 +38,7 @@
     }
     #clock { font-size: 46px; letter-spacing: 0.06em; color: #f97316; line-height: 1; }
     #date  { font-size: 11px; letter-spacing: 0.18em; color: #f97316; margin-top: 2px; opacity: 0.85; font-weight: bold; }
-    #vault-wrap { display: flex; align-items: center; gap: 5px; margin-left: auto; }
+    #vault-wrap { display: flex; align-items: center; gap: 5px; margin-left: auto; margin-right: 80px; }
     #vault-dot  { width: 7px; height: 7px; border-radius: 50%; background: #222; transition: background 0.3s; }
     #vault-dot.working { background: #3b82f6; animation: vaultpulse 1s ease-in-out infinite; }
     #vault-dot.error   { background: #ef4444; }
@@ -156,8 +156,9 @@
       font-size: 22px; cursor: pointer;
       min-width: 44px; min-height: 44px;
       display: flex; align-items: center; justify-content: center;
-      margin-left: auto;
       padding: 0 8px;
+      position: absolute; top: 0; right: 8px;
+      z-index: 11;
     }
 
     /* ═══════════════════════════════════════════════════════════
@@ -397,7 +398,6 @@
   <!-- Top bar -->
   <div id="topbar">
     <span id="title">WORKSHOP FORGE</span>
-    <button id="gear-btn" onclick="openSettings()" title="Settings">⚙</button>
     <div id="clock-wrap">
       <span id="clock">00:00:00</span>
       <span id="date">WED · APR 15</span>
@@ -406,6 +406,7 @@
       <div id="vault-dot"></div>
       <span id="vault-text">VAULT</span>
     </div>
+    <button id="gear-btn" onclick="openSettings()" title="Settings">⚙</button>
   </div>
 
   <!-- ═══════════════════════════════════════════════════════════
