@@ -148,6 +148,245 @@
       height: 36px;
     }
     .slider-val { color: #f97316; font-size: 12px; width: 40px; text-align: right; flex-shrink: 0; }
+
+    /* ── Gear button in top bar ── */
+    #gear-btn {
+      background: none; border: none; color: #f97316;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 22px; cursor: pointer;
+      min-width: 44px; min-height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      margin-left: auto;
+      padding: 0 8px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       SETTINGS OVERLAY
+       ═══════════════════════════════════════════════════════════ */
+    #settings-overlay {
+      position: fixed; top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: #0f0f0f; z-index: 1000;
+      display: none; flex-direction: column;
+      font-family: 'Share Tech Mono', monospace;
+      color: #e5e5e5;
+    }
+    #settings-overlay.open { display: flex; }
+
+    #so-topbar {
+      display: flex; align-items: center;
+      padding: 0 20px; height: 56px; flex-shrink: 0;
+      border-bottom: 1px solid #2a2a2a;
+      background: #0f0f0f;
+    }
+    #so-title { color: #f97316; font-size: 16px; letter-spacing: 0.18em; }
+    #so-close {
+      margin-left: auto;
+      background: none; border: none; color: #e5e5e5;
+      font-family: 'Share Tech Mono', monospace; font-size: 22px;
+      min-width: 44px; min-height: 44px; cursor: pointer;
+    }
+
+    #so-tabs {
+      display: flex; height: 48px; flex-shrink: 0;
+      border-bottom: 1px solid #2a2a2a;
+      background: #0f0f0f;
+    }
+    .so-tab {
+      background: none; border: none;
+      font-family: 'Share Tech Mono', monospace;
+      color: #737373; font-size: 13px; letter-spacing: 0.18em;
+      padding: 0 24px; cursor: pointer;
+      min-height: 48px;
+      border-bottom: 2px solid transparent;
+    }
+    .so-tab.active { color: #f97316; border-bottom-color: #f97316; }
+
+    #so-body { flex: 1; display: flex; overflow: hidden; }
+
+    #so-sidebar {
+      width: 180px; flex-shrink: 0;
+      background: #1a1a1a; border-right: 1px solid #2a2a2a;
+      display: flex; flex-direction: column;
+      overflow-y: auto;
+    }
+    .so-nav {
+      background: none; border: none;
+      border-left: 3px solid transparent;
+      color: #737373;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 13px; letter-spacing: 0.14em;
+      text-align: left; padding: 14px 16px;
+      min-height: 48px; cursor: pointer;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .so-nav.active { border-left-color: #f97316; color: #e5e5e5; }
+    .so-nav-dot {
+      display: inline-block; width: 8px; height: 8px;
+      border-radius: 50%; background: #f97316;
+      margin-left: auto; opacity: 0; transition: opacity 0.2s;
+    }
+    .so-nav.dirty .so-nav-dot { opacity: 1; }
+
+    #so-content {
+      flex: 1; overflow-y: auto; padding: 24px 28px;
+      background: #0f0f0f; position: relative;
+    }
+    .so-section { display: none; }
+    .so-section.active { display: block; }
+    .so-section h2 {
+      color: #f97316; font-size: 14px; letter-spacing: 0.2em;
+      margin-bottom: 18px; font-weight: normal;
+    }
+    .so-field { margin-bottom: 18px; max-width: 480px; }
+    .so-field label {
+      display: block; color: #a3a3a3;
+      font-size: 12px; letter-spacing: 0.14em;
+      margin-bottom: 6px;
+    }
+    .so-field input[type="text"],
+    .so-field input[type="number"] {
+      width: 100%;
+      background: #1a1a1a; border: 1px solid #2a2a2a;
+      color: #e5e5e5;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 14px;
+      padding: 10px 12px; min-height: 44px;
+    }
+    .so-field input[type="text"]:focus,
+    .so-field input[type="number"]:focus {
+      outline: 1px solid #f97316;
+    }
+    .so-field input[type="range"] {
+      width: 100%; min-height: 44px; accent-color: #f97316;
+    }
+    .so-field input[type="checkbox"] {
+      width: 22px; height: 22px; accent-color: #f97316;
+      vertical-align: middle;
+    }
+    .so-field-note { font-size: 11px; margin-top: 4px; }
+    .so-field-note.restart { color: #737373; }
+    .so-field-note.immediate { color: #22c55e; }
+
+    .so-device-list {
+      margin-top: 12px; padding: 10px 12px;
+      background: #1a1a1a; border: 1px solid #2a2a2a;
+      font-family: 'Share Tech Mono', monospace;
+      color: #737373; font-size: 12px;
+      max-height: 180px; overflow-y: auto;
+      white-space: pre;
+    }
+
+    .so-btn {
+      background: #1a1a1a; border: 1px solid #2a2a2a;
+      color: #e5e5e5;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 13px; letter-spacing: 0.12em;
+      padding: 10px 18px; min-height: 44px;
+      cursor: pointer;
+    }
+    .so-btn:hover:not(:disabled) { border-color: #f97316; color: #f97316; }
+    .so-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .so-btn-primary {
+      background: #f97316; border-color: #f97316; color: #0f0f0f;
+    }
+    .so-btn-primary:hover:not(:disabled) { color: #0f0f0f; }
+    .so-btn-danger {
+      background: #ef4444; border-color: #ef4444; color: #fff;
+    }
+    .so-btn-danger:hover:not(:disabled) { color: #fff; border-color: #ef4444; }
+
+    .so-section-footer {
+      margin-top: 24px; padding-top: 18px;
+      border-top: 1px solid #2a2a2a;
+      display: flex; align-items: center; gap: 14px;
+    }
+    .so-save-status { color: #22c55e; font-size: 12px; letter-spacing: 0.14em; }
+
+    .so-range-row { display: flex; align-items: center; gap: 16px; }
+    .so-range-row input[type="range"] { flex: 1; }
+    .so-range-val { color: #f97316; font-size: 22px; min-width: 60px; text-align: right; }
+
+    .so-readonly-row { display: flex; gap: 16px; margin-bottom: 10px; font-size: 13px; }
+    .so-readonly-row .lbl { color: #737373; letter-spacing: 0.14em; min-width: 140px; }
+    .so-readonly-row .val { color: #e5e5e5; }
+
+    /* Budget tab */
+    #budget-section { padding: 0; }
+    #so-content.budget-active { padding: 24px 28px; }
+    .so-budget-cards {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 14px; margin-bottom: 22px;
+    }
+    .so-budget-card {
+      background: #1a1a1a; border: 1px solid #2a2a2a;
+      padding: 14px 16px;
+    }
+    .so-budget-card .lbl {
+      color: #737373; font-size: 11px; letter-spacing: 0.18em;
+      margin-bottom: 8px;
+    }
+    .so-budget-card .val { font-size: 22px; color: #e5e5e5; }
+    .so-budget-card.total .val { color: #f97316; font-size: 28px; }
+
+    .so-budget-table {
+      width: 100%; border-collapse: collapse; font-size: 13px;
+      margin-bottom: 18px;
+    }
+    .so-budget-table th, .so-budget-table td {
+      padding: 8px 10px; text-align: left;
+      border-bottom: 1px solid #2a2a2a;
+    }
+    .so-budget-table th {
+      color: #737373; font-weight: normal;
+      letter-spacing: 0.14em; font-size: 11px;
+    }
+    .so-budget-table td { color: #e5e5e5; }
+    .so-budget-table-wrap { max-height: 280px; overflow-y: auto; }
+
+    .so-budget-thresholds {
+      color: #737373; font-size: 12px; margin-bottom: 16px;
+    }
+    .so-budget-thresholds a {
+      color: #f97316; text-decoration: none; cursor: pointer;
+    }
+    .so-budget-empty {
+      text-align: center; color: #737373;
+      font-size: 14px; padding: 60px 0;
+    }
+
+    /* Modal dialog */
+    .so-modal {
+      position: fixed; top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.8);
+      z-index: 1100;
+      display: none; align-items: center; justify-content: center;
+    }
+    .so-modal.open { display: flex; }
+    .so-modal-box {
+      background: #1a1a1a; border: 1px solid #2a2a2a;
+      padding: 24px; min-width: 320px;
+      font-family: 'Share Tech Mono', monospace;
+    }
+    .so-modal-msg {
+      color: #e5e5e5; font-size: 14px;
+      letter-spacing: 0.1em; margin-bottom: 20px;
+    }
+    .so-modal-btns { display: flex; gap: 12px; justify-content: flex-end; }
+
+    /* Restart fullscreen */
+    #so-restart {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #0f0f0f;
+      display: none; align-items: center; justify-content: center;
+      flex-direction: column; gap: 16px;
+      z-index: 50;
+    }
+    #so-restart.active { display: flex; }
+    #so-restart .msg { color: #f97316; font-size: 28px; letter-spacing: 0.2em; }
+    #so-restart .sub { color: #737373; font-size: 12px; letter-spacing: 0.18em; }
   </style>
 </head>
 <body>
@@ -158,6 +397,7 @@
   <!-- Top bar -->
   <div id="topbar">
     <span id="title">WORKSHOP FORGE</span>
+    <button id="gear-btn" onclick="openSettings()" title="Settings">⚙</button>
     <div id="clock-wrap">
       <span id="clock">00:00:00</span>
       <span id="date">WED · APR 15</span>
@@ -165,6 +405,230 @@
     <div id="vault-wrap">
       <div id="vault-dot"></div>
       <span id="vault-text">VAULT</span>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SETTINGS OVERLAY
+       ═══════════════════════════════════════════════════════════ -->
+  <div id="settings-overlay">
+    <div id="so-topbar">
+      <span id="so-title">⚙ FORGE SETTINGS</span>
+      <button id="so-close" onclick="closeSettings()">✕</button>
+    </div>
+    <div id="so-tabs">
+      <button class="so-tab active" data-tab="settings" onclick="switchTab('settings')">SETTINGS</button>
+      <button class="so-tab" data-tab="budget" onclick="switchTab('budget')">BUDGET</button>
+    </div>
+
+    <div id="so-body">
+      <!-- Sidebar (only shown on settings tab) -->
+      <div id="so-sidebar">
+        <button class="so-nav active" data-sec="audio-input" onclick="switchSection('audio-input')">
+          AUDIO INPUT<span class="so-nav-dot"></span>
+        </button>
+        <button class="so-nav" data-sec="audio-output" onclick="switchSection('audio-output')">
+          AUDIO OUTPUT<span class="so-nav-dot"></span>
+        </button>
+        <button class="so-nav" data-sec="wake-word" onclick="switchSection('wake-word')">
+          WAKE WORD<span class="so-nav-dot"></span>
+        </button>
+        <button class="so-nav" data-sec="tts" onclick="switchSection('tts')">
+          TTS<span class="so-nav-dot"></span>
+        </button>
+        <button class="so-nav" data-sec="api" onclick="switchSection('api')">
+          API<span class="so-nav-dot"></span>
+        </button>
+        <button class="so-nav" data-sec="budget-limits" onclick="switchSection('budget-limits')">
+          BUDGET LIMITS<span class="so-nav-dot"></span>
+        </button>
+        <button class="so-nav" data-sec="system" onclick="switchSection('system')">
+          SYSTEM<span class="so-nav-dot"></span>
+        </button>
+      </div>
+
+      <div id="so-content">
+        <!-- AUDIO INPUT -->
+        <div class="so-section active" data-sec="audio-input">
+          <h2>AUDIO INPUT</h2>
+          <div class="so-field">
+            <label>INPUT DEVICE INDEX</label>
+            <input type="number" data-key="AUDIO_INPUT_DEVICE" oninput="onFieldChange()">
+            <div class="so-field-note restart">↺ restart required</div>
+          </div>
+          <div class="so-field">
+            <label>SAMPLE RATE (HZ)</label>
+            <input type="number" data-key="SCARLETT_SAMPLE_RATE" oninput="onFieldChange()">
+            <div class="so-field-note restart">↺ restart required</div>
+          </div>
+          <div class="so-field">
+            <label>
+              <input type="checkbox" data-key="USE_DYNAMIC_RECORDING" onchange="onFieldChange()">
+              DYNAMIC RECORDING
+            </label>
+            <div class="so-field-note immediate">✓ immediate</div>
+          </div>
+          <div class="so-device-list" id="input-devices-list">Loading devices...</div>
+          <div class="so-section-footer">
+            <button class="so-btn so-btn-primary" data-save="audio-input" onclick="saveSection('audio-input')" disabled>SAVE CHANGES</button>
+            <span class="so-save-status" data-status="audio-input"></span>
+          </div>
+        </div>
+
+        <!-- AUDIO OUTPUT -->
+        <div class="so-section" data-sec="audio-output">
+          <h2>AUDIO OUTPUT</h2>
+          <div class="so-field">
+            <label>OUTPUT DEVICE INDEX</label>
+            <input type="number" data-key="AUDIO_OUTPUT_DEVICE" oninput="onFieldChange()">
+            <div class="so-field-note restart">↺ restart required</div>
+          </div>
+          <div class="so-field">
+            <button class="so-btn" id="test-speaker-btn" onclick="testSpeaker()">▶ TEST SPEAKER</button>
+          </div>
+          <div class="so-device-list" id="output-devices-list">Loading devices...</div>
+          <div class="so-section-footer">
+            <button class="so-btn so-btn-primary" data-save="audio-output" onclick="saveSection('audio-output')" disabled>SAVE CHANGES</button>
+            <span class="so-save-status" data-status="audio-output"></span>
+          </div>
+        </div>
+
+        <!-- WAKE WORD -->
+        <div class="so-section" data-sec="wake-word">
+          <h2>WAKE WORD</h2>
+          <div class="so-field">
+            <label>SENSITIVITY</label>
+            <div class="so-range-row">
+              <input type="range" min="0" max="1" step="0.05" data-key="WAKE_WORD_SENSITIVITY" oninput="onWakeSliderInput(this)">
+              <span class="so-range-val" id="wake-sens-val">—</span>
+            </div>
+            <div class="so-field-note immediate">✓ immediate</div>
+          </div>
+          <div class="so-section-footer">
+            <button class="so-btn so-btn-primary" data-save="wake-word" onclick="saveSection('wake-word')" disabled>SAVE CHANGES</button>
+            <span class="so-save-status" data-status="wake-word"></span>
+          </div>
+        </div>
+
+        <!-- TTS -->
+        <div class="so-section" data-sec="tts">
+          <h2>TTS</h2>
+          <div class="so-field">
+            <label>MODEL PATH</label>
+            <input type="text" data-key="TTS_MODEL_PATH" readonly>
+            <div class="so-field-note restart">↺ restart required</div>
+          </div>
+          <div class="so-field-note" style="color:#737373">voice swap UI coming soon</div>
+          <div class="so-section-footer">
+            <button class="so-btn so-btn-primary" data-save="tts" onclick="saveSection('tts')" disabled>SAVE CHANGES</button>
+            <span class="so-save-status" data-status="tts"></span>
+          </div>
+        </div>
+
+        <!-- API -->
+        <div class="so-section" data-sec="api">
+          <h2>API</h2>
+          <div class="so-field">
+            <label>
+              <input type="checkbox" data-key="API_ENABLED" onchange="onFieldChange()">
+              API ENABLED
+            </label>
+            <div class="so-field-note restart">↺ restart required</div>
+          </div>
+          <div class="so-field">
+            <label>API PORT</label>
+            <input type="number" data-key="API_PORT" oninput="onFieldChange()">
+            <div class="so-field-note restart">↺ restart required</div>
+          </div>
+          <div class="so-section-footer">
+            <button class="so-btn so-btn-primary" data-save="api" onclick="saveSection('api')" disabled>SAVE CHANGES</button>
+            <span class="so-save-status" data-status="api"></span>
+          </div>
+        </div>
+
+        <!-- BUDGET LIMITS -->
+        <div class="so-section" data-sec="budget-limits">
+          <h2>BUDGET LIMITS</h2>
+          <div class="so-field">
+            <label>WARNING THRESHOLD ($)</label>
+            <input type="number" step="0.01" data-key="BUDGET_WARNING_THRESHOLD" oninput="onFieldChange()">
+            <div class="so-field-note immediate">✓ immediate</div>
+          </div>
+          <div class="so-field">
+            <label>HARD LIMIT ($)</label>
+            <input type="number" step="0.01" data-key="BUDGET_HARD_LIMIT" oninput="onFieldChange()">
+            <div class="so-field-note immediate">✓ immediate</div>
+          </div>
+          <div class="so-field">
+            <label>INPUT PRICE ($/MTOK)</label>
+            <input type="number" step="0.01" data-key="CLAUDE_INPUT_PRICE_PER_MTOK" oninput="onFieldChange()">
+            <div class="so-field-note immediate">✓ immediate</div>
+          </div>
+          <div class="so-field">
+            <label>OUTPUT PRICE ($/MTOK)</label>
+            <input type="number" step="0.01" data-key="CLAUDE_OUTPUT_PRICE_PER_MTOK" oninput="onFieldChange()">
+            <div class="so-field-note immediate">✓ immediate</div>
+          </div>
+          <div class="so-section-footer">
+            <button class="so-btn so-btn-primary" data-save="budget-limits" onclick="saveSection('budget-limits')" disabled>SAVE CHANGES</button>
+            <span class="so-save-status" data-status="budget-limits"></span>
+          </div>
+        </div>
+
+        <!-- SYSTEM -->
+        <div class="so-section" data-sec="system">
+          <h2>SYSTEM</h2>
+          <div class="so-readonly-row"><span class="lbl">HOSTNAME</span><span class="val" id="sys-hostname">—</span></div>
+          <div class="so-readonly-row"><span class="lbl">IP ADDRESS</span><span class="val" id="sys-ip">—</span></div>
+          <div class="so-readonly-row"><span class="lbl">LAST CHECKED</span><span class="val" id="sys-checked">—</span></div>
+          <div style="margin-top:24px">
+            <button class="so-btn so-btn-danger" onclick="confirmRestart()">↺ RESTART FORGE</button>
+          </div>
+        </div>
+
+        <!-- BUDGET TAB -->
+        <div class="so-section" data-sec="budget">
+          <div id="budget-inner">
+            <div class="so-budget-cards">
+              <div class="so-budget-card total"><div class="lbl">TOTAL SPEND</div><div class="val" id="bud-total">$0.00</div></div>
+              <div class="so-budget-card"><div class="lbl">INPUT TOKENS</div><div class="val" id="bud-in">0</div></div>
+              <div class="so-budget-card"><div class="lbl">OUTPUT TOKENS</div><div class="val" id="bud-out">0</div></div>
+              <div class="so-budget-card"><div class="lbl">SESSIONS</div><div class="val" id="bud-sess">0</div></div>
+            </div>
+            <div class="so-budget-table-wrap">
+              <table class="so-budget-table" id="bud-table">
+                <thead><tr><th>DATE</th><th>INPUT TOKENS</th><th>OUTPUT TOKENS</th><th>COST</th></tr></thead>
+                <tbody id="bud-tbody"></tbody>
+              </table>
+            </div>
+            <div class="so-budget-thresholds" id="bud-thresholds">
+              WARNING: $—  |  LIMIT: $—
+              &nbsp;&nbsp;<a onclick="switchTab('settings'); switchSection('budget-limits');">edit in Settings → Budget Limits</a>
+            </div>
+            <div style="margin-top:18px">
+              <button class="so-btn so-btn-danger" onclick="confirmResetBudget()">⚠ RESET BUDGET</button>
+            </div>
+          </div>
+          <div id="budget-empty" class="so-budget-empty" style="display:none">NO BUDGET DATA YET</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fullscreen restart indicator -->
+    <div id="so-restart">
+      <div class="msg">RESTARTING FORGE...</div>
+      <div class="sub" id="so-restart-sub">please wait</div>
+    </div>
+  </div>
+
+  <!-- Confirmation modal -->
+  <div id="so-modal" class="so-modal">
+    <div class="so-modal-box">
+      <div class="so-modal-msg" id="so-modal-msg">Are you sure?</div>
+      <div class="so-modal-btns">
+        <button class="so-btn" id="so-modal-cancel">CANCEL</button>
+        <button class="so-btn so-btn-danger" id="so-modal-ok">CONFIRM</button>
+      </div>
     </div>
   </div>
 
@@ -862,6 +1326,383 @@ document.getElementById('fire-canvas').addEventListener('click', function(e) {
     document.getElementById('tune-panel').classList.toggle('open');
   }
 });
+
+
+// ═══════════════════════════════════════════════════════════════
+//  SETTINGS OVERLAY
+// ═══════════════════════════════════════════════════════════════
+
+// Map each settings key to the section it belongs to.
+var SO_KEY_SECTION = {
+  AUDIO_INPUT_DEVICE: 'audio-input',
+  SCARLETT_SAMPLE_RATE: 'audio-input',
+  USE_DYNAMIC_RECORDING: 'audio-input',
+  AUDIO_OUTPUT_DEVICE: 'audio-output',
+  WAKE_WORD_SENSITIVITY: 'wake-word',
+  TTS_MODEL_PATH: 'tts',
+  API_ENABLED: 'api',
+  API_PORT: 'api',
+  BUDGET_WARNING_THRESHOLD: 'budget-limits',
+  BUDGET_HARD_LIMIT: 'budget-limits',
+  CLAUDE_INPUT_PRICE_PER_MTOK: 'budget-limits',
+  CLAUDE_OUTPUT_PRICE_PER_MTOK: 'budget-limits'
+};
+
+var SO_API_KEY = ''; // No auth needed when called from same-origin? We'll send it if available.
+// Ask for the key from URL hash or localStorage; otherwise leave empty (server may still allow same-origin).
+try {
+  var stored = localStorage.getItem('forgeApiKey');
+  if (stored) SO_API_KEY = stored;
+} catch (e) {}
+
+function soFetch(url, opts) {
+  opts = opts || {};
+  opts.headers = opts.headers || {};
+  if (SO_API_KEY) opts.headers['Authorization'] = 'Bearer ' + SO_API_KEY;
+  return fetch(url, opts);
+}
+
+var soOriginal = {};   // key -> original parsed value
+var soActiveTab = 'settings';
+var soActiveSection = 'audio-input';
+
+function openSettings() {
+  document.getElementById('settings-overlay').classList.add('open');
+  switchTab('settings');
+  switchSection('audio-input');
+  loadSettings();
+  loadDevices();
+  loadStatusForSystem();
+}
+
+function closeSettings() {
+  if (hasAnyDirty()) {
+    showModal('UNSAVED CHANGES — CLOSE ANYWAY?', function() {
+      document.getElementById('settings-overlay').classList.remove('open');
+    }, 'CLOSE', 'CANCEL');
+  } else {
+    document.getElementById('settings-overlay').classList.remove('open');
+  }
+}
+
+function switchTab(name) {
+  soActiveTab = name;
+  document.querySelectorAll('.so-tab').forEach(function(t) {
+    t.classList.toggle('active', t.dataset.tab === name);
+  });
+  var sidebar = document.getElementById('so-sidebar');
+  var content = document.getElementById('so-content');
+  if (name === 'budget') {
+    sidebar.style.display = 'none';
+    content.classList.add('budget-active');
+    document.querySelectorAll('.so-section').forEach(function(s) {
+      s.classList.toggle('active', s.dataset.sec === 'budget');
+    });
+    loadBudget();
+  } else {
+    sidebar.style.display = 'flex';
+    content.classList.remove('budget-active');
+    switchSection(soActiveSection);
+  }
+}
+
+function switchSection(name) {
+  soActiveSection = name;
+  document.querySelectorAll('.so-nav').forEach(function(n) {
+    n.classList.toggle('active', n.dataset.sec === name);
+  });
+  document.querySelectorAll('.so-section').forEach(function(s) {
+    s.classList.toggle('active', s.dataset.sec === name);
+  });
+}
+
+function loadSettings() {
+  soFetch('/settings').then(function(r) { return r.json(); }).then(function(data) {
+    soOriginal = {};
+    Object.keys(data).forEach(function(k) {
+      soOriginal[k] = data[k];
+      var el = document.querySelector('[data-key="' + k + '"]');
+      if (!el) return;
+      if (el.type === 'checkbox') {
+        el.checked = !!data[k];
+      } else {
+        el.value = data[k];
+      }
+      if (k === 'WAKE_WORD_SENSITIVITY') {
+        var v = parseFloat(data[k]);
+        document.getElementById('wake-sens-val').textContent = isNaN(v) ? '—' : v.toFixed(2);
+      }
+    });
+    refreshDirtyState();
+  }).catch(function(e) {
+    console.error('Failed to load settings:', e);
+  });
+}
+
+function loadDevices() {
+  soFetch('/devices').then(function(r) { return r.json(); }).then(function(devs) {
+    var inEl = document.getElementById('input-devices-list');
+    var outEl = document.getElementById('output-devices-list');
+    if (!Array.isArray(devs)) {
+      inEl.textContent = 'Error loading devices';
+      outEl.textContent = 'Error loading devices';
+      return;
+    }
+    var inLines = devs.filter(function(d) { return d.max_input_channels > 0; })
+      .map(function(d) { return '[' + d.index + '] ' + d.name; });
+    var outLines = devs.filter(function(d) { return d.max_output_channels > 0; })
+      .map(function(d) { return '[' + d.index + '] ' + d.name; });
+    inEl.textContent = inLines.length ? inLines.join('\n') : '(no input devices)';
+    outEl.textContent = outLines.length ? outLines.join('\n') : '(no output devices)';
+  }).catch(function() {
+    document.getElementById('input-devices-list').textContent = 'Error loading devices';
+    document.getElementById('output-devices-list').textContent = 'Error loading devices';
+  });
+}
+
+function loadStatusForSystem() {
+  soFetch('/status').then(function(r) { return r.json(); }).then(function(data) {
+    document.getElementById('sys-hostname').textContent = data.hostname || '—';
+    document.getElementById('sys-ip').textContent = data.ip || '—';
+    var n = new Date();
+    document.getElementById('sys-checked').textContent = n.toLocaleString();
+  }).catch(function() {});
+}
+
+function onWakeSliderInput(el) {
+  var v = parseFloat(el.value);
+  document.getElementById('wake-sens-val').textContent = isNaN(v) ? '—' : v.toFixed(2);
+  onFieldChange();
+}
+
+function onFieldChange() {
+  refreshDirtyState();
+}
+
+function getFieldValue(el) {
+  if (el.type === 'checkbox') return el.checked;
+  if (el.type === 'number' || el.type === 'range') {
+    var v = el.value;
+    if (v === '') return null;
+    var num = Number(v);
+    return isNaN(num) ? v : num;
+  }
+  return el.value;
+}
+
+function isDirty(key) {
+  var el = document.querySelector('[data-key="' + key + '"]');
+  if (!el) return false;
+  var cur = getFieldValue(el);
+  var orig = soOriginal[key];
+  // Loose compare for numbers
+  if (typeof orig === 'number' && typeof cur === 'number') return cur !== orig;
+  return String(cur) !== String(orig);
+}
+
+function sectionDirtyKeys(section) {
+  var keys = [];
+  Object.keys(SO_KEY_SECTION).forEach(function(k) {
+    if (SO_KEY_SECTION[k] === section && isDirty(k)) keys.push(k);
+  });
+  return keys;
+}
+
+function hasAnyDirty() {
+  return Object.keys(SO_KEY_SECTION).some(function(k) { return isDirty(k); });
+}
+
+function refreshDirtyState() {
+  // Update sidebar dots and save button enabled state per-section
+  var seen = {};
+  document.querySelectorAll('.so-nav').forEach(function(nav) {
+    var sec = nav.dataset.sec;
+    var dirtyKeys = sectionDirtyKeys(sec);
+    nav.classList.toggle('dirty', dirtyKeys.length > 0);
+    seen[sec] = dirtyKeys.length > 0;
+  });
+  document.querySelectorAll('[data-save]').forEach(function(btn) {
+    var sec = btn.dataset.save;
+    btn.disabled = !seen[sec];
+  });
+}
+
+function saveSection(section) {
+  var keys = sectionDirtyKeys(section);
+  if (keys.length === 0) return;
+  var payload = {};
+  keys.forEach(function(k) {
+    var el = document.querySelector('[data-key="' + k + '"]');
+    payload[k] = getFieldValue(el);
+  });
+  soFetch('/settings', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(payload)
+  }).then(function(r) { return r.json(); }).then(function(data) {
+    if (data.restarting) {
+      enterRestartMode();
+    } else {
+      // Update originals
+      keys.forEach(function(k) { soOriginal[k] = payload[k]; });
+      refreshDirtyState();
+      var statusEl = document.querySelector('[data-status="' + section + '"]');
+      if (statusEl) {
+        statusEl.textContent = '✓ SAVED';
+        setTimeout(function() { statusEl.textContent = ''; }, 2000);
+      }
+    }
+  }).catch(function(e) {
+    console.error('Save failed:', e);
+    var statusEl = document.querySelector('[data-status="' + section + '"]');
+    if (statusEl) {
+      statusEl.textContent = '✗ ERROR';
+      statusEl.style.color = '#ef4444';
+      setTimeout(function() { statusEl.textContent = ''; statusEl.style.color = ''; }, 3000);
+    }
+  });
+}
+
+function enterRestartMode() {
+  document.getElementById('so-restart').classList.add('active');
+  // Poll /status until it responds
+  var attempts = 0;
+  function poll() {
+    attempts++;
+    soFetch('/status').then(function(r) {
+      if (!r.ok) throw new Error('not ready');
+      return r.json();
+    }).then(function() {
+      document.getElementById('so-restart-sub').textContent = '✓ BACK ONLINE';
+      document.querySelector('#so-restart .msg').textContent = '✓ BACK ONLINE';
+      setTimeout(function() {
+        document.getElementById('so-restart').classList.remove('active');
+        document.querySelector('#so-restart .msg').textContent = 'RESTARTING FORGE...';
+        document.getElementById('so-restart-sub').textContent = 'please wait';
+        document.getElementById('settings-overlay').classList.remove('open');
+        loadSettings();
+      }, 1200);
+    }).catch(function() {
+      if (attempts < 60) setTimeout(poll, 2000);
+    });
+  }
+  // Wait a bit before first poll so the restart actually begins
+  setTimeout(poll, 2500);
+}
+
+function testSpeaker() {
+  var btn = document.getElementById('test-speaker-btn');
+  var orig = btn.textContent;
+  btn.textContent = 'TESTING...';
+  btn.disabled = true;
+  soFetch('/test-audio', {method: 'POST'}).then(function() {
+    setTimeout(function() {
+      btn.textContent = orig;
+      btn.disabled = false;
+    }, 1500);
+  }).catch(function() {
+    btn.textContent = orig;
+    btn.disabled = false;
+  });
+}
+
+function confirmRestart() {
+  showModal('RESTART FORGE NOW?', function() {
+    soFetch('/settings', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({restart: true})
+    }).then(function() {
+      enterRestartMode();
+    });
+  }, 'RESTART', 'CANCEL');
+}
+
+function confirmResetBudget() {
+  showModal('RESET BUDGET TO ZERO?', function() {
+    soFetch('/budget', {method: 'DELETE'}).then(function() {
+      loadBudget();
+    });
+  }, 'RESET', 'CANCEL');
+}
+
+// ── Budget tab ───────────────────────────────────────────────
+function loadBudget() {
+  soFetch('/budget').then(function(r) { return r.json(); }).then(function(data) {
+    var sessions = (data && data.sessions) || [];
+    var inner = document.getElementById('budget-inner');
+    var empty = document.getElementById('budget-empty');
+    if (sessions.length === 0 && (!data.total_cost || data.total_cost === 0)) {
+      inner.style.display = 'none';
+      empty.style.display = 'block';
+      return;
+    }
+    inner.style.display = 'block';
+    empty.style.display = 'none';
+
+    var totalIn = 0, totalOut = 0;
+    sessions.forEach(function(s) {
+      totalIn += (s.input_tokens || 0);
+      totalOut += (s.output_tokens || 0);
+    });
+    document.getElementById('bud-total').textContent = '$' + Number(data.total_cost || 0).toFixed(2);
+    document.getElementById('bud-in').textContent = totalIn.toLocaleString();
+    document.getElementById('bud-out').textContent = totalOut.toLocaleString();
+    document.getElementById('bud-sess').textContent = sessions.length;
+
+    var warn = parseFloat(soOriginal.BUDGET_WARNING_THRESHOLD) || 0;
+    var limit = parseFloat(soOriginal.BUDGET_HARD_LIMIT) || 0;
+
+    var tbody = document.getElementById('bud-tbody');
+    tbody.innerHTML = '';
+    var sorted = sessions.slice().reverse();
+    sorted.forEach(function(s) {
+      var tr = document.createElement('tr');
+      var cost = Number(s.cost || 0);
+      var color = '#22c55e';
+      if (limit && cost >= limit) color = '#ef4444';
+      else if (warn && cost >= warn) color = '#f97316';
+      tr.innerHTML =
+        '<td>' + (s.date || s.timestamp || '—') + '</td>' +
+        '<td>' + (s.input_tokens || 0).toLocaleString() + '</td>' +
+        '<td>' + (s.output_tokens || 0).toLocaleString() + '</td>' +
+        '<td style="color:' + color + '">$' + cost.toFixed(4) + '</td>';
+      tbody.appendChild(tr);
+    });
+
+    document.getElementById('bud-thresholds').innerHTML =
+      'WARNING: $' + warn.toFixed(2) + '  |  LIMIT: $' + limit.toFixed(2) +
+      '&nbsp;&nbsp;<a onclick="switchTab(\'settings\'); switchSection(\'budget-limits\');">edit in Settings → Budget Limits</a>';
+  }).catch(function() {
+    document.getElementById('budget-inner').style.display = 'none';
+    document.getElementById('budget-empty').style.display = 'block';
+  });
+}
+
+// ── Modal helper ─────────────────────────────────────────────
+function showModal(msg, onConfirm, okLabel, cancelLabel) {
+  var modal = document.getElementById('so-modal');
+  document.getElementById('so-modal-msg').textContent = msg;
+  var ok = document.getElementById('so-modal-ok');
+  var cancel = document.getElementById('so-modal-cancel');
+  ok.textContent = okLabel || 'OK';
+  cancel.textContent = cancelLabel || 'CANCEL';
+  modal.classList.add('open');
+  ok.onclick = function() { modal.classList.remove('open'); if (onConfirm) onConfirm(); };
+  cancel.onclick = function() { modal.classList.remove('open'); };
+}
+
+// Expose globals used by inline handlers
+window.openSettings = openSettings;
+window.closeSettings = closeSettings;
+window.switchTab = switchTab;
+window.switchSection = switchSection;
+window.onFieldChange = onFieldChange;
+window.onWakeSliderInput = onWakeSliderInput;
+window.saveSection = saveSection;
+window.testSpeaker = testSpeaker;
+window.confirmRestart = confirmRestart;
+window.confirmResetBudget = confirmResetBudget;
 </script>
 </body>
 </html>

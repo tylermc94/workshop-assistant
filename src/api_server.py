@@ -11,12 +11,18 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 import hashlib
 import hmac
+import json
 import logging
+import re
+import socket
+import threading
+import time
 from config.settings import API_KEY, API_PORT, HA_URL, HA_UNIFI_ENTITIES, HA_POWER_ENTITIES, HA_OUTLET_ENTITIES, HA_OCTOPRINT_ENTITIES
 import speech_to_text
 import intent_recognition
 import audio_utils
 import forge_state
+import text_to_speech
 from second_brain import classify_intent, handle as second_brain_handle
 import ingress_processor
 
@@ -252,7 +258,248 @@ async def get_sensors():
 @app.get("/status")
 async def get_status():
     """Return current Forge pipeline state for the UI"""
-    return forge_state.state
+    data = dict(forge_state.state)
+    try:
+        hostname = socket.gethostname()
+    except Exception:
+        hostname = ""
+    try:
+        ip = socket.gethostbyname(hostname) if hostname else ""
+    except Exception:
+        ip = ""
+    data["hostname"] = hostname
+    data["ip"] = ip
+    return data
+
+
+# ============================================================
+# SETTINGS / BUDGET / DEVICES / TEST-AUDIO ENDPOINTS
+# ============================================================
+
+_SETTINGS_PATH = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+    "config", "settings.py"
+)
+_BUDGET_PATH = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+    "logs", "budget.json"
+)
+
+_SETTINGS_KEYS = [
+    "USE_DYNAMIC_RECORDING",
+    "SCARLETT_SAMPLE_RATE",
+    "AUDIO_INPUT_DEVICE",
+    "AUDIO_OUTPUT_DEVICE",
+    "WAKE_WORD_SENSITIVITY",
+    "TTS_MODEL_PATH",
+    "API_ENABLED",
+    "API_PORT",
+    "CLAUDE_INPUT_PRICE_PER_MTOK",
+    "CLAUDE_OUTPUT_PRICE_PER_MTOK",
+    "BUDGET_WARNING_THRESHOLD",
+    "BUDGET_HARD_LIMIT",
+]
+
+_RESTART_KEYS = {
+    "AUDIO_INPUT_DEVICE",
+    "AUDIO_OUTPUT_DEVICE",
+    "SCARLETT_SAMPLE_RATE",
+    "TTS_MODEL_PATH",
+    "API_PORT",
+    "API_ENABLED",
+}
+
+
+def _coerce_value(raw: str):
+    """Convert a Python literal substring into a typed value."""
+    s = raw.strip()
+    # Strip trailing inline comment
+    # Naive but adequate for the supported settings: split on # not inside quotes
+    if s.startswith(("'", '"')):
+        # quoted string — find matching quote
+        quote = s[0]
+        end = s.find(quote, 1)
+        if end != -1:
+            return s[1:end]
+        return s.strip(quote)
+    # Strip inline comment for non-string values
+    if "#" in s:
+        s = s.split("#", 1)[0].strip()
+    if s in ("True", "False"):
+        return s == "True"
+    try:
+        if "." in s or "e" in s or "E" in s:
+            return float(s)
+        return int(s)
+    except ValueError:
+        return s
+
+
+def _read_settings_file() -> str:
+    with open(_SETTINGS_PATH, "r", encoding="utf-8") as f:
+        return f.read()
+
+
+def _write_settings_file(text: str) -> None:
+    with open(_SETTINGS_PATH, "w", encoding="utf-8") as f:
+        f.write(text)
+
+
+def _parse_settings(text: str) -> dict:
+    out = {}
+    for key in _SETTINGS_KEYS:
+        # Match: KEY = <value>   (value runs to end of line, before any trailing comment)
+        pattern = rf"^{re.escape(key)}\s*=\s*(.+?)\s*$"
+        m = re.search(pattern, text, flags=re.MULTILINE)
+        if not m:
+            continue
+        out[key] = _coerce_value(m.group(1))
+    return out
+
+
+def _format_value_for_settings(val) -> str:
+    """Render a Python literal suitable for assignment in settings.py."""
+    if isinstance(val, bool):
+        return "True" if val else "False"
+    if isinstance(val, (int, float)):
+        return str(val)
+    # String: quote with double quotes, escape embedded double quotes
+    s = str(val)
+    s = s.replace("\\", "\\\\").replace('"', '\\"')
+    return f'"{s}"'
+
+
+def _replace_setting_in_text(text: str, key: str, value) -> str:
+    new_value_str = _format_value_for_settings(value)
+    # Replace the value portion only; preserve any inline comment that follows.
+    # Pattern captures: (KEY = )(value)(optional spaces + #comment to EOL)
+    pattern = rf"(^{re.escape(key)}\s*=\s*)(.+?)(\s*(?:#.*)?)$"
+
+    def _sub(m):
+        return f"{m.group(1)}{new_value_str}{m.group(3)}"
+
+    new_text, n = re.subn(pattern, _sub, text, count=1, flags=re.MULTILINE)
+    if n == 0:
+        # Key not found — leave file unchanged
+        return text
+    return new_text
+
+
+def _restart_self_after_delay(delay_seconds: float = 1.0) -> None:
+    def _do_restart():
+        time.sleep(delay_seconds)
+        try:
+            os.execv(sys.executable, [sys.executable] + sys.argv)
+        except Exception as e:
+            logger.error(f"Restart failed: {e}")
+
+    threading.Thread(target=_do_restart, daemon=True).start()
+
+
+@app.get("/settings")
+async def get_settings(api_key: str = Depends(verify_api_key)):
+    """Read config/settings.py and return parsed values."""
+    try:
+        text = _read_settings_file()
+        return _parse_settings(text)
+    except Exception as e:
+        logger.error(f"Error reading settings: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Error reading settings: {e}")
+
+
+@app.post("/settings")
+async def post_settings(request: Request, api_key: str = Depends(verify_api_key)):
+    """Update keys in config/settings.py. Restart if any restart-trigger key was changed."""
+    try:
+        body = await request.json()
+    except Exception:
+        raise HTTPException(status_code=400, detail="Body must be JSON")
+
+    if not isinstance(body, dict):
+        raise HTTPException(status_code=400, detail="Body must be a JSON object")
+
+    explicit_restart = bool(body.pop("restart", False))
+
+    text = _read_settings_file()
+    needs_restart = explicit_restart
+
+    for key, value in body.items():
+        if key not in _SETTINGS_KEYS:
+            # Skip unknown keys silently
+            continue
+        text = _replace_setting_in_text(text, key, value)
+        if key in _RESTART_KEYS:
+            needs_restart = True
+
+    try:
+        _write_settings_file(text)
+    except Exception as e:
+        logger.error(f"Error writing settings: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Error writing settings: {e}")
+
+    if needs_restart:
+        _restart_self_after_delay(1.0)
+        return {"status": "ok", "restarting": True}
+    return {"status": "ok", "restarting": False}
+
+
+@app.get("/budget")
+async def get_budget(api_key: str = Depends(verify_api_key)):
+    """Return contents of logs/budget.json."""
+    try:
+        with open(_BUDGET_PATH, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return {"total_cost": 0, "sessions": []}
+    except Exception as e:
+        logger.error(f"Error reading budget: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Error reading budget: {e}")
+
+
+@app.delete("/budget")
+async def delete_budget(api_key: str = Depends(verify_api_key)):
+    """Reset the budget file."""
+    try:
+        os.makedirs(os.path.dirname(_BUDGET_PATH), exist_ok=True)
+        with open(_BUDGET_PATH, "w", encoding="utf-8") as f:
+            json.dump({"total_cost": 0, "sessions": []}, f)
+        return {"status": "ok"}
+    except Exception as e:
+        logger.error(f"Error resetting budget: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Error resetting budget: {e}")
+
+
+@app.get("/devices")
+async def get_devices(api_key: str = Depends(verify_api_key)):
+    """List audio devices via sounddevice."""
+    try:
+        import sounddevice as sd
+        raw = sd.query_devices()
+        out = []
+        for idx, dev in enumerate(raw):
+            out.append({
+                "index": idx,
+                "name": dev.get("name", ""),
+                "max_input_channels": dev.get("max_input_channels", 0),
+                "max_output_channels": dev.get("max_output_channels", 0),
+            })
+        return out
+    except Exception as e:
+        logger.error(f"Error querying devices: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Error querying devices: {e}")
+
+
+@app.post("/test-audio")
+async def test_audio(api_key: str = Depends(verify_api_key)):
+    """Speak a short test phrase in a background thread."""
+    def _speak():
+        try:
+            text_to_speech.speak("Forge audio test. Speaker is working.")
+        except Exception as e:
+            logger.error(f"test-audio speak failed: {e}")
+
+    threading.Thread(target=_speak, daemon=True).start()
+    return {"status": "ok"}
 
 @app.get("/")
 async def root():
