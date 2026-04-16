@@ -82,24 +82,26 @@ def _fetch_sensors_data() -> dict:
     except Exception:
         token = ''
 
-    # --- Current states ---
-    all_entities = (
+    # --- Current states (single bulk request) ---
+    all_entity_ids = set(
         ["sensor.workshop_temp_humidity_temperature", "sensor.workshop_temp_humidity_humidity"]
         + HA_UNIFI_ENTITIES
         + HA_POWER_ENTITIES
         + HA_OUTLET_ENTITIES
         + HA_OCTOPRINT_ENTITIES
     )
+    bulk = _ha_request("/api/states", token) or []
     states = {}
-    for eid in all_entities:
-        data = _ha_request(f"/api/states/{eid}", token)
-        if data:
+    for item in bulk:
+        eid = item.get("entity_id", "")
+        if eid in all_entity_ids:
             states[eid] = {
-                "state": data.get("state"),
-                "name":  data.get("attributes", {}).get("friendly_name", eid),
-                "unit":  data.get("attributes", {}).get("unit_of_measurement", ""),
+                "state": item.get("state"),
+                "name":  item.get("attributes", {}).get("friendly_name", eid),
+                "unit":  item.get("attributes", {}).get("unit_of_measurement", ""),
             }
-        else:
+    for eid in all_entity_ids:
+        if eid not in states:
             states[eid] = {"state": "unavailable", "name": eid, "unit": ""}
 
     # --- 12h history for temp, humidity, and power draw ---

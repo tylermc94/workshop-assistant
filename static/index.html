@@ -31,18 +31,18 @@
       border-bottom: 1px solid #2e2e2e;
       z-index: 10;
     }
-    #title { font-size: 13px; letter-spacing: 0.2em; color: #555; }
+    #title { font-size: 16px; letter-spacing: 0.2em; color: #555; }
     #clock-wrap {
       position: absolute; left: 50%; transform: translateX(-50%);
       display: flex; flex-direction: column; align-items: center;
     }
-    #clock { font-size: 46px; letter-spacing: 0.06em; color: #f97316; line-height: 1; }
-    #date  { font-size: 11px; letter-spacing: 0.18em; color: #f97316; margin-top: 2px; opacity: 0.85; font-weight: bold; }
+    #clock { font-size: 54px; letter-spacing: 0.06em; color: #f97316; line-height: 1; }
+    #date  { font-size: 13px; letter-spacing: 0.18em; color: #f97316; margin-top: 2px; opacity: 0.85; font-weight: bold; }
     #vault-wrap { display: flex; align-items: center; gap: 5px; margin-left: auto; }
     #vault-dot  { width: 7px; height: 7px; border-radius: 50%; background: #222; transition: background 0.3s; }
     #vault-dot.working { background: #3b82f6; animation: vaultpulse 1s ease-in-out infinite; }
     #vault-dot.error   { background: #ef4444; }
-    #vault-text { font-size: 9px; letter-spacing: 0.15em; color: #484848; transition: color 0.3s; }
+    #vault-text { font-size: 11px; letter-spacing: 0.15em; color: #484848; transition: color 0.3s; }
     @keyframes vaultpulse { 0%,100%{opacity:1} 50%{opacity:0.2} }
 
     /* ── Left/right card columns ── */
@@ -63,22 +63,22 @@
       display: flex; flex-direction: column; gap: 4px;
     }
     .card-header { display: flex; align-items: center; gap: 8px; }
-    .card-icon   { font-size: 14px; opacity: 0.75; }
-    .card-label  { font-size: 10px; letter-spacing: 0.18em; color: #777; text-transform: uppercase; }
-    .card-value  { font-size: 24px; letter-spacing: 0.04em; transition: color 0.3s; padding-left: 2px; }
+    .card-icon   { font-size: 17px; opacity: 0.75; }
+    .card-label  { font-size: 12px; letter-spacing: 0.18em; color: #777; text-transform: uppercase; }
+    .card-value  { font-size: 29px; letter-spacing: 0.04em; transition: color 0.3s; padding-left: 2px; }
     .card-value.ok  { color: #d97010; }
     .card-value.on  { color: #22c55e; }
     .card-value.off { color: #666; }
-    .card-sub    { font-size: 11px; letter-spacing: 0.08em; color: #6e6e6e; padding-left: 2px; }
+    .card-sub    { font-size: 13px; letter-spacing: 0.08em; color: #6e6e6e; padding-left: 2px; }
 
     /* ── Outlets card ── */
     .outlet-row { display: flex; align-items: center; gap: 7px; padding: 3px 0; }
     .outlet-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; transition: background 0.3s; }
     .outlet-dot.on  { background: #22c55e; }
     .outlet-dot.off { background: #444; }
-    .outlet-name { font-size: 11px; letter-spacing: 0.05em; color: #888; flex: 1;
+    .outlet-name { font-size: 13px; letter-spacing: 0.05em; color: #888; flex: 1;
                    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .outlet-state { font-size: 10px; letter-spacing: 0.1em; flex-shrink: 0; transition: color 0.3s; }
+    .outlet-state { font-size: 12px; letter-spacing: 0.1em; flex-shrink: 0; transition: color 0.3s; }
     .outlet-state.on  { color: #22c55e; }
     .outlet-state.off { color: #585858; }
 
@@ -87,7 +87,7 @@
     .print-bar-bg   { height: 3px; background: #1e1e1e; border-radius: 2px; overflow: hidden; }
     .print-bar-fill { height: 100%; background: #f97316; border-radius: 2px; transition: width 0.5s; }
     .print-meta     { display: flex; justify-content: space-between; margin-top: 3px; }
-    .print-meta span { font-size: 9px; letter-spacing: 0.08em; color: #555; }
+    .print-meta span { font-size: 11px; letter-spacing: 0.08em; color: #555; }
 
     /* ── Center stage ── */
     #stage {
@@ -98,18 +98,18 @@
       z-index: 5;
     }
     #status-label {
-      font-size: 44px; letter-spacing: 0.1em;
+      font-size: 52px; letter-spacing: 0.1em;
       transition: opacity 0.25s, transform 0.25s, color 0.25s;
       text-shadow: 0 0 40px currentColor;
     }
     #transcript {
-      font-size: 14px; color: #666; text-align: center;
+      font-size: 17px; color: #666; text-align: center;
       max-width: 100%; line-height: 1.5; letter-spacing: 0.04em;
       transition: color 0.3s; min-height: 1.4em;
     }
     #transcript.visible { color: #aaa; }
     #response {
-      font-size: 21px; color: #ddd; text-align: center;
+      font-size: 25px; color: #ddd; text-align: center;
       max-width: 100%; line-height: 1.55;
       text-shadow: 0 1px 12px rgba(0,0,0,0.9);
       transition: opacity 0.4s, color 0.4s;
@@ -122,7 +122,7 @@
       position: absolute; bottom: 12px; right: 12px; z-index: 20;
       background: rgba(0,0,0,0.88); border: 1px solid #2e2e2e;
       color: #555; font-family: 'Share Tech Mono', monospace;
-      font-size: 11px; letter-spacing: 0.12em;
+      font-size: 13px; letter-spacing: 0.12em;
       padding: 10px 18px; cursor: pointer;
       min-height: 44px; display: flex; align-items: center;
     }
@@ -137,26 +137,26 @@
     }
     #tune-panel.open { display: flex; }
     .tune-section-title {
-      color: #f97316; font-size: 10px; letter-spacing: 0.2em;
+      color: #f97316; font-size: 12px; letter-spacing: 0.2em;
       border-bottom: 1px solid #222; padding-bottom: 5px; margin-top: 4px;
     }
     .tune-state-tabs { display: flex; gap: 5px; flex-wrap: wrap; }
     .tune-tab {
       background: #0a0a0a; border: 1px solid #2e2e2e;
       color: #666; font-family: 'Share Tech Mono', monospace;
-      font-size: 10px; letter-spacing: 0.1em;
+      font-size: 12px; letter-spacing: 0.1em;
       padding: 10px 14px; cursor: pointer; min-height: 44px;
       display: flex; align-items: center;
     }
     .tune-tab:hover  { color: #f97316; border-color: #f97316; }
     .tune-tab.active { background: #180800; color: #f97316; border-color: #f97316; }
     .slider-row { display: flex; align-items: center; gap: 8px; }
-    .slider-lbl { color: #666; font-size: 10px; letter-spacing: 0.08em; width: 92px; flex-shrink: 0; }
+    .slider-lbl { color: #666; font-size: 12px; letter-spacing: 0.08em; width: 92px; flex-shrink: 0; }
     .slider-row input[type=range] {
       flex: 1; accent-color: #f97316; cursor: pointer;
       height: 36px;
     }
-    .slider-val { color: #f97316; font-size: 10px; width: 40px; text-align: right; flex-shrink: 0; }
+    .slider-val { color: #f97316; font-size: 12px; width: 40px; text-align: right; flex-shrink: 0; }
   </style>
 </head>
 <body>
@@ -219,7 +219,7 @@
             <path fill="#F6821F" d="M61 21.5c-1.3-6.5-7-11.5-13.9-11.5-3.5 0-6.7 1.4-9.1 3.6C36.4 9.3 31.4 6.5 25.8 6.5 16 6.5 8 14.5 8 24.5c0 .9.1 1.7.2 2.5H7C3.1 27 0 30.1 0 34s3.1 7 7 7h52c4.3 0 7.7-3.4 7.7-7.7 0-3.6-2.5-6.6-5.7-7.8z"/>
             <path fill="#FBAD41" d="M65 27.5c-.3 0-.7 0-1 .1l-.4-1.6C61.9 21.5 57.8 19 53.3 19c-3 0-5.7 1.1-7.7 2.9l-.1.1c-.4-3.5-3.4-6.2-7-6.2-3.9 0-7 3.1-7 7 0 .4 0 .8.1 1.2H31C28.2 24 26 26.2 26 29s2.2 5 5 5h34c2.8 0 5-2.2 5-5 0-2.6-2-4.7-4.5-5-.2 0-.3-.5-.5-.5z" opacity=".5"/>
           </svg>
-          <span class="card-sub" id="val-cf-lat" style="font-size:11px;width:44px;flex-shrink:0;text-align:right;white-space:nowrap">— ms</span>
+          <span class="card-sub" id="val-cf-lat" style="font-size:13px;width:48px;flex-shrink:0;text-align:right;white-space:nowrap">— ms</span>
           <canvas id="spark-cf" width="76" height="20" style="display:block;opacity:0.9;flex-shrink:0"></canvas>
         </div>
         <!-- Google -->
@@ -230,7 +230,7 @@
             <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
             <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
           </svg>
-          <span class="card-sub" id="val-goog-lat" style="font-size:11px;width:44px;flex-shrink:0;text-align:right;white-space:nowrap">— ms</span>
+          <span class="card-sub" id="val-goog-lat" style="font-size:13px;width:48px;flex-shrink:0;text-align:right;white-space:nowrap">— ms</span>
           <canvas id="spark-goog" width="76" height="20" style="display:block;opacity:0.9;flex-shrink:0"></canvas>
         </div>
         <!-- Microsoft -->
@@ -241,17 +241,17 @@
             <rect x="0" y="7.5" width="6.5" height="6.5" fill="#00A4EF"/>
             <rect x="7.5" y="7.5" width="6.5" height="6.5" fill="#FFB900"/>
           </svg>
-          <span class="card-sub" id="val-ms-lat" style="font-size:11px;width:44px;flex-shrink:0;text-align:right;white-space:nowrap">— ms</span>
+          <span class="card-sub" id="val-ms-lat" style="font-size:13px;width:48px;flex-shrink:0;text-align:right;white-space:nowrap">— ms</span>
           <canvas id="spark-ms" width="76" height="20" style="display:block;opacity:0.9;flex-shrink:0"></canvas>
         </div>
       </div>
       <!-- Device health — single row -->
       <div style="display:flex;align-items:center;gap:6px;margin-top:10px;padding-top:7px;border-top:1px solid #2e2e2e">
-        <span style="font-size:9px;letter-spacing:.1em;color:#5a5a5a">APS</span>
+        <span style="font-size:11px;letter-spacing:.1em;color:#5a5a5a">APS</span>
         <span id="dot-udm"     class="outlet-dot off" title="Dream Machine"></span>
         <span id="dot-u6pro"   class="outlet-dot off" title="U6 Pro"></span>
         <span id="dot-u6mesh"  class="outlet-dot off" title="U6 Mesh"></span>
-        <span style="font-size:9px;letter-spacing:.1em;color:#5a5a5a;margin-left:6px">SW</span>
+        <span style="font-size:11px;letter-spacing:.1em;color:#5a5a5a;margin-left:6px">SW</span>
         <span id="dot-uswlite" class="outlet-dot off" title="USW-Lite-8-PoE"></span>
         <span id="dot-uswflex" class="outlet-dot off" title="USW-Flex-Mini"></span>
       </div>
@@ -261,15 +261,15 @@
       <div id="printer-idle">
         <span class="card-value ok" id="printer-state">Operational</span>
         <div style="display:flex;gap:10px;margin-top:4px">
-          <span class="card-sub" id="printer-nozzle" style="font-size:11px">nozzle —°C</span>
-          <span class="card-sub" id="printer-bed" style="font-size:11px">bed —°C</span>
+          <span class="card-sub" id="printer-nozzle" style="font-size:13px">nozzle —°C</span>
+          <span class="card-sub" id="printer-bed" style="font-size:13px">bed —°C</span>
         </div>
       </div>
       <div id="printer-printing" style="display:none">
-        <span class="card-sub" id="printer-file" style="color:#666;font-size:10px;letter-spacing:.04em;display:block;margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+        <span class="card-sub" id="printer-file" style="color:#666;font-size:12px;letter-spacing:.04em;display:block;margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
         <div style="display:flex;gap:10px;margin-bottom:4px">
-          <span class="card-sub" id="printer-nozzle-p" style="font-size:11px">nozzle —°C</span>
-          <span class="card-sub" id="printer-bed-p" style="font-size:11px">bed —°C</span>
+          <span class="card-sub" id="printer-nozzle-p" style="font-size:13px">nozzle —°C</span>
+          <span class="card-sub" id="printer-bed-p" style="font-size:13px">bed —°C</span>
         </div>
         <div class="print-bar-wrap">
           <div class="print-bar-bg"><div class="print-bar-fill" id="printer-bar" style="width:0%"></div></div>
@@ -340,7 +340,7 @@
       <input type="range" id="t-decayfloor" min="0" max="100" oninput="onTuneGlobal('decayfloor',this)">
       <span class="slider-val" id="tv-decayfloor">—</span></div>
 
-    <button id="save-btn" style="margin-top:4px;background:#0a0a0a;border:1px solid #2e2e2e;color:#666;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.1em;padding:12px;cursor:pointer;width:100%;min-height:44px" onclick="saveFireSettings()">💾 SAVE SETTINGS</button>
+    <button id="save-btn" style="margin-top:4px;background:#0a0a0a;border:1px solid #2e2e2e;color:#666;font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:.1em;padding:12px;cursor:pointer;width:100%;min-height:44px" onclick="saveFireSettings()">💾 SAVE SETTINGS</button>
   </div>
 
 <script>
@@ -863,7 +863,7 @@ function pollSensors() {
 pollStatus();
 pollSensors();
 setInterval(pollStatus,  2000);
-setInterval(pollSensors, 10000);
+setInterval(pollSensors, 3000);
 </script>
 </body>
 </html>
