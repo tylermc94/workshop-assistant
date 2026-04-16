@@ -143,9 +143,9 @@ def _fetch_sensors_data() -> dict:
         if not series:
             continue
         eid = series[0].get("entity_id") or ""
-        if "temperature" in eid and "humidity" not in eid:
+        if eid == "sensor.workshop_temp_humidity_temperature":
             temp_history = sample_history(series)
-        elif "humidity" in eid:
+        elif eid == "sensor.workshop_temp_humidity_humidity":
             hum_history = sample_history(series)
         elif "current_consumption" in eid:
             power_history = sample_history(series)
