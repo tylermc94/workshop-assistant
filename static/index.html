@@ -741,7 +741,11 @@
     </div>
   </div>
 
-  <!-- Fire tuning panel (tap bottom of fire canvas to open) -->
+  <!-- Invisible tap zone at bottom of screen to open fire settings -->
+  <div id="fire-tap-zone" onclick="document.getElementById('tune-panel').classList.toggle('open')"
+    style="position:absolute;bottom:0;left:210px;right:210px;height:80px;z-index:15;cursor:pointer"></div>
+
+  <!-- Fire tuning panel -->
   <div id="tune-panel">
     <div class="tune-section-title">STATE SETTINGS</div>
     <div class="tune-state-tabs" id="tune-tabs"></div>
