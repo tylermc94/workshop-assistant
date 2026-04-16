@@ -36,8 +36,8 @@
       position: absolute; left: 50%; transform: translateX(-50%);
       display: flex; flex-direction: column; align-items: center;
     }
-    #clock { font-size: 54px; letter-spacing: 0.06em; color: #f97316; line-height: 1; }
-    #date  { font-size: 13px; letter-spacing: 0.18em; color: #f97316; margin-top: 2px; opacity: 0.85; font-weight: bold; }
+    #clock { font-size: 46px; letter-spacing: 0.06em; color: #f97316; line-height: 1; }
+    #date  { font-size: 11px; letter-spacing: 0.18em; color: #f97316; margin-top: 2px; opacity: 0.85; font-weight: bold; }
     #vault-wrap { display: flex; align-items: center; gap: 5px; margin-left: auto; }
     #vault-dot  { width: 7px; height: 7px; border-radius: 50%; background: #222; transition: background 0.3s; }
     #vault-dot.working { background: #3b82f6; animation: vaultpulse 1s ease-in-out infinite; }
@@ -65,7 +65,7 @@
     .card-header { display: flex; align-items: center; gap: 8px; }
     .card-icon   { font-size: 17px; opacity: 0.75; }
     .card-label  { font-size: 12px; letter-spacing: 0.18em; color: #777; text-transform: uppercase; }
-    .card-value  { font-size: 29px; letter-spacing: 0.04em; transition: color 0.3s; padding-left: 2px; }
+    .card-value  { font-size: 24px; letter-spacing: 0.04em; transition: color 0.3s; padding-left: 2px; }
     .card-value.ok  { color: #d97010; }
     .card-value.on  { color: #22c55e; }
     .card-value.off { color: #666; }
@@ -98,7 +98,7 @@
       z-index: 5;
     }
     #status-label {
-      font-size: 52px; letter-spacing: 0.1em;
+      font-size: 44px; letter-spacing: 0.1em;
       transition: opacity 0.25s, transform 0.25s, color 0.25s;
       text-shadow: 0 0 40px currentColor;
     }
@@ -119,7 +119,7 @@
 
     /* ── Fire tuning panel ── */
     #tune-toggle {
-      position: absolute; bottom: 12px; right: 12px; z-index: 20;
+      position: absolute; bottom: 12px; right: 222px; z-index: 20;
       background: rgba(0,0,0,0.88); border: 1px solid #2e2e2e;
       color: #555; font-family: 'Share Tech Mono', monospace;
       font-size: 13px; letter-spacing: 0.12em;
@@ -128,7 +128,7 @@
     }
     #tune-toggle:hover { color: #f97316; border-color: #f97316; }
     #tune-panel {
-      position: absolute; bottom: 68px; right: 12px;
+      position: absolute; bottom: 68px; right: 222px;
       width: 330px;
       background: rgba(0,0,0,0.96); border: 1px solid #2e2e2e;
       padding: 14px; z-index: 30; display: none;
@@ -259,7 +259,7 @@
     <div class="card">
       <div class="card-header"><span class="card-icon">🖨</span><span class="card-label">3D PRINTER</span></div>
       <div id="printer-idle">
-        <span class="card-value ok" id="printer-state">Operational</span>
+        <span class="card-value ok" id="printer-state" style="font-size:17px"></span>
         <div style="display:flex;gap:10px;margin-top:4px">
           <span class="card-sub" id="printer-nozzle" style="font-size:13px">nozzle —°C</span>
           <span class="card-sub" id="printer-bed" style="font-size:13px">bed —°C</span>
@@ -746,6 +746,7 @@ function applySensors(data) {
       printing.style.display = 'none';
       stateEl.textContent    = octo.state || 'Operational';
       stateEl.className      = 'card-value ok';
+      stateEl.style.fontSize = '17px';
       formatTemp(octo.nozzle_temp, 'printer-nozzle');
       formatTemp(octo.bed_temp,    'printer-bed');
     }
