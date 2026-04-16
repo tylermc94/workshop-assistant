@@ -79,3 +79,42 @@ CLAUDE_QUERY_LOG = "logs/claude_queries.log"
 # API Configuration
 API_ENABLED = True
 API_PORT = 8080
+
+# Home Assistant
+HA_URL = "http://homeassistant.local:8123"
+HA_UNIFI_ENTITIES = [
+    "sensor.dream_machine_cloudflare_wan_latency",
+    "sensor.dream_machine_google_wan_latency",
+    "sensor.dream_machine_microsoft_wan_latency",
+    "sensor.dream_machine_clients",
+    "sensor.dream_machine_cpu_utilization",
+    "sensor.dream_machine_uptime",
+    "sensor.dream_machine_state",
+    "sensor.u6_pro_state",
+    "sensor.u6_mesh_state",
+    "sensor.usw_lite_8_poe_state",
+    "sensor.usw_flex_mini_state",
+]
+HA_POWER_ENTITIES = [
+    "switch.workshop_power",
+    "sensor.workshop_power_current_consumption",
+    "sensor.workshop_power_today_s_consumption",
+    "sensor.workshop_power_voltage",
+    "binary_sensor.workshop_power_overloaded",
+]
+HA_OUTLET_ENTITIES = [
+    "switch.workshop_light_1",
+    "switch.workshop_light_2",
+    "switch.tp_link_power_strip_503c_exhaust_fan",
+    "switch.tp_link_power_strip_503c_plug_2",
+    "switch.tp_link_power_strip_503c_plug_3",
+]
+HA_OCTOPRINT_ENTITIES = [
+    "binary_sensor.octoprint_printing",
+    "sensor.octoprint_job_percentage",
+    "sensor.octoprint_current_state",
+    "sensor.octoprint_current_file",
+    "sensor.octoprint_estimated_finish_time",
+    "sensor.octoprint_actual_bed_temp",
+    "sensor.octoprint_actual_tool0_temp",
+]
