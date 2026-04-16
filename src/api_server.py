@@ -7,7 +7,7 @@ from fastapi import FastAPI, HTTPException, Depends, File, Request, UploadFile, 
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 import hashlib
 import hmac
@@ -270,6 +270,59 @@ async def get_status():
     data["hostname"] = hostname
     data["ip"] = ip
     return data
+
+
+@app.get("/status/stream")
+async def status_stream(request: Request):
+    """
+    Server-Sent Events stream of forge_state. The UI subscribes with EventSource
+    and receives status transitions (idle -> wake -> listening -> ...) the moment
+    the voice pipeline writes them, instead of waiting for the next poll tick.
+    Internally we re-check the in-memory state dict every 50ms; this is trivially
+    cheap and only emits over the wire when the serialized payload actually changes.
+    """
+    async def event_gen():
+        try:
+            hostname = socket.gethostname()
+        except Exception:
+            hostname = ""
+        try:
+            ip = socket.gethostbyname(hostname) if hostname else ""
+        except Exception:
+            ip = ""
+
+        last_payload = None
+        last_send = time.monotonic()
+
+        while True:
+            if await request.is_disconnected():
+                break
+
+            data = dict(forge_state.state)
+            data["hostname"] = hostname
+            data["ip"] = ip
+            payload = json.dumps(data)
+
+            if payload != last_payload:
+                yield f"data: {payload}\n\n"
+                last_payload = payload
+                last_send = time.monotonic()
+            elif time.monotonic() - last_send >= 15:
+                # Keepalive comment to prevent idle proxy/browser timeouts
+                yield ": keepalive\n\n"
+                last_send = time.monotonic()
+
+            await asyncio.sleep(0.05)
+
+    return StreamingResponse(
+        event_gen(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no",
+        },
+    )
 
 
 # ============================================================

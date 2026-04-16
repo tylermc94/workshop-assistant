@@ -1302,14 +1302,15 @@ function applyState(data) {
 
 
 // ═══════════════════════════════════════════════════════════════
-//  LIVE POLLING
+//  LIVE UPDATES
+//  /status is pushed via SSE so the UI reflects wake → listening
+//  the instant the pipeline transitions. /sensors stays on a slow
+//  poll since temperature/humidity don't need sub-second updates.
 // ═══════════════════════════════════════════════════════════════
-function pollStatus() {
-  fetch('/status')
-    .then(function(r) { return r.json(); })
-    .then(function(d) { applyState(d); })
-    .catch(function() {});
-}
+var statusSource = new EventSource('/status/stream');
+statusSource.onmessage = function(e) {
+  try { applyState(JSON.parse(e.data)); } catch (err) {}
+};
 
 function pollSensors() {
   fetch('/sensors')
@@ -1318,9 +1319,7 @@ function pollSensors() {
     .catch(function() {});
 }
 
-pollStatus();
 pollSensors();
-setInterval(pollStatus,  2000);
 setInterval(pollSensors, 3000);
 
 // Tap bottom 20% of fire canvas to toggle settings panel
