@@ -65,7 +65,7 @@ async def classify_intent(text, source="voice"):
         return result
 
     elif any(trigger in text_lower for trigger in HOME_ASSISTANT_TRIGGERS):
-        result = "Home Assistant"
+        result = await home_assistant.control_device(text)
         query_logger.log_query(text, "local_home_assistant", result, source=source)
         return result
     
