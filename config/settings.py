@@ -45,9 +45,9 @@ TTS_VOICES = {
     "alba": "models/piper/en_GB-alba-medium.onnx"     # UK Female
 }
 TTS_MODEL_PATH = TTS_VOICES[TTS_VOICE]
-TTS_SPEED = 2  # 1 = normal, <1 = faster, >1 = slower
-TTS_NOISE_SCALE = 0.667
-TTS_NOISE_W = 0.8
+# (TTS_SPEED / TTS_NOISE_SCALE / TTS_NOISE_W were declared here but never wired
+# into Piper — removed to avoid misleading dead knobs. To tune the voice later,
+# pass a piper SynthesisConfig to PiperVoice.synthesize in text_to_speech.py.)
 
 # Timer Settings
 TIMER_ALARM_SOUND = "sounds/no-problem.wav"

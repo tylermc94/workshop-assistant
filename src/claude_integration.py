@@ -25,10 +25,12 @@ _history = {"voice": [], "api": []}
 _last_exchange = {"voice": 0.0, "api": 0.0}
 
 def clear_history(source="voice"):
-    logger.info(f"[DEBUG] clear_history called for source={source!r}, history before clear: {_history[source]}")
+    # debug-level so full conversation history isn't echoed into the (now
+    # rotated, but still INFO-level) log on every clear.
+    logger.debug(f"clear_history called for source={source!r}, history before clear: {_history[source]}")
     _history[source].clear()
     _last_exchange[source] = 0.0
-    logger.info(f"[DEBUG] clear_history done, history after clear: {_history[source]}")
+    logger.debug(f"clear_history done, history after clear: {_history[source]}")
 
 def log_query(question):
     """Log Claude queries to claude_queries.log for analysis"""
@@ -57,7 +59,7 @@ def ask_claude(question, source="voice"):
     log_query(question)
 
     messages_to_send = _history[source] + [{"role": "user", "content": question}]
-    logger.info(f"[DEBUG] ask_claude source={source!r}, history_len={len(_history[source])}, messages_to_send={messages_to_send}")
+    logger.debug(f"ask_claude source={source!r}, history_len={len(_history[source])}, messages_to_send={messages_to_send}")
 
     try:
         message = client.messages.create(
