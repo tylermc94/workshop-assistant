@@ -22,8 +22,10 @@ Thumbs.db
 
 # IDE
 .vscode/
-.idea/logs/
+.idea/
 
-logs/all_queries.jsonl
+# Logs (local only — never commit)
+*.log
+logs/*.jsonl
 logs/claude_queries.log
 logs/budget.json

@@ -56,7 +56,7 @@ from config.secrets import CLAUDE_API_KEY
 from config.secrets import API_KEY
 
 # Claude API Configuration
-CLAUDE_MODEL = "claude-sonnet-4-20250514"
+CLAUDE_MODEL = "claude-sonnet-4-6"
 CLAUDE_MAX_TOKENS = 200  # Short responses for question mode
 CLAUDE_TEMPERATURE = 1.0
 
