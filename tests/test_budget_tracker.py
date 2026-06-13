@@ -36,3 +36,26 @@ def test_record_message_never_raises_on_bad_object(monkeypatch, tmp_path):
     monkeypatch.setattr(budget_tracker, "BUDGET_FILE", str(tmp_path / "budget.json"))
     # No .usage attribute — must be swallowed, not propagated into the vault flow.
     budget_tracker.record_message(object())
+
+
+def test_record_message_prices_cache_tokens(monkeypatch, tmp_path):
+    monkeypatch.setattr(budget_tracker, "BUDGET_FILE", str(tmp_path / "budget.json"))
+
+    class FakeUsage:
+        input_tokens = 100
+        output_tokens = 50
+        cache_creation_input_tokens = 2000  # priced at 1.25x input
+        cache_read_input_tokens = 1000      # priced at 0.10x input
+
+    class FakeMessage:
+        usage = FakeUsage()
+
+    budget_tracker.record_message(FakeMessage())
+
+    data = budget_tracker._load()
+    # All input-side tokens are counted.
+    assert data["total_input_tokens"] == 100 + 2000 + 1000
+    assert data["total_output_tokens"] == 50
+    # input 100*$3 + write 2000*$3*1.25 + read 1000*$3*0.10 + output 50*$15, per MTok.
+    expected = (100 * 3 + 2000 * 3 * 1.25 + 1000 * 3 * 0.10 + 50 * 15) / 1_000_000
+    assert abs(data["total_cost"] - expected) < 1e-12

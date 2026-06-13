@@ -57,19 +57,29 @@ def is_limit_reached() -> bool:
     return _load()["total_cost"] >= BUDGET_HARD_LIMIT
 
 
-def record_usage(input_tokens: int, output_tokens: int) -> dict:
+def record_usage(input_tokens: int, output_tokens: int,
+                 cache_creation_tokens: int = 0, cache_read_tokens: int = 0) -> dict:
     """
     Add token usage to the running total and persist it.
     Returns a dict with current totals and status flags.
+
+    With prompt caching, the Anthropic usage object splits input tokens three
+    ways: uncached `input_tokens` (full price), `cache_creation_input_tokens`
+    (1.25x the input price), and `cache_read_input_tokens` (0.1x). Callers
+    without caching just pass input_tokens (the cache args default to 0).
     """
     global _warning_spoken
 
     cost = (input_tokens / 1_000_000) * CLAUDE_INPUT_PRICE_PER_MTOK + \
+           (cache_creation_tokens / 1_000_000) * CLAUDE_INPUT_PRICE_PER_MTOK * 1.25 + \
+           (cache_read_tokens / 1_000_000) * CLAUDE_INPUT_PRICE_PER_MTOK * 0.10 + \
            (output_tokens / 1_000_000) * CLAUDE_OUTPUT_PRICE_PER_MTOK
 
     data = _load()
     data["total_cost"] += cost
-    data["total_input_tokens"] += input_tokens
+    # Count all input-side tokens (uncached + cache write + cache read) so the
+    # token totals reflect what was actually processed.
+    data["total_input_tokens"] += input_tokens + cache_creation_tokens + cache_read_tokens
     data["total_output_tokens"] += output_tokens
     _save(data)
 
@@ -101,6 +111,12 @@ def record_message(message) -> None:
     visibility; it deliberately does NOT enforce the limit on vault calls (a
     capture shouldn't fail mid-operation)."""
     try:
-        record_usage(message.usage.input_tokens, message.usage.output_tokens)
+        usage = message.usage
+        record_usage(
+            usage.input_tokens,
+            usage.output_tokens,
+            cache_creation_tokens=getattr(usage, "cache_creation_input_tokens", 0) or 0,
+            cache_read_tokens=getattr(usage, "cache_read_input_tokens", 0) or 0,
+        )
     except Exception as e:
         logger.warning(f"Could not record vault Claude usage: {e}")

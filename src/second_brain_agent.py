@@ -286,12 +286,25 @@ def _run_agent_loop(transcript: str, intent: str) -> str:
         response = client.messages.create(
             model=MODEL,
             max_tokens=MAX_TOKENS,
-            system=SYSTEM_PROMPT,
+            # Cache the static prefix (tools render before system, so this one
+            # breakpoint caches BOTH tools + system). They're re-sent every tool
+            # round and across ops, so rounds 2+ read the cache at ~0.1x instead
+            # of full price. Only effective because the prefix (~2.3K tok) clears
+            # Sonnet 4.6's 2048-token minimum — Opus 4.8's minimum is 4096, so if
+            # SECOND_BRAIN_MODEL ever changes, re-verify cache_read_input_tokens>0.
+            system=[{"type": "text", "text": SYSTEM_PROMPT, "cache_control": {"type": "ephemeral"}}],
             tools=TOOLS,
             messages=messages
         )
         budget_tracker.record_message(response)  # track vault spend (visibility only)
-        logger.debug(f"Agent round {round_num + 1}: stop_reason={response.stop_reason}")
+        _u = response.usage
+        logger.info(
+            f"Agent round {round_num + 1}: stop_reason={response.stop_reason} "
+            f"input={_u.input_tokens} "
+            f"cache_write={getattr(_u, 'cache_creation_input_tokens', 0)} "
+            f"cache_read={getattr(_u, 'cache_read_input_tokens', 0)} "
+            f"output={_u.output_tokens}"
+        )
 
         tool_calls = [b for b in response.content if b.type == 'tool_use']
         text_blocks = [b for b in response.content if b.type == 'text']
