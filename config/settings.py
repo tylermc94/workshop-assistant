@@ -1,7 +1,12 @@
 # Audio Configuration
-AUDIO_INPUT_DEVICE = 1  # Scarlett 2i4 USB
+# Devices are resolved BY NAME at runtime (see src/audio_devices.py) so a USB
+# re-plug / reboot that renumbers indices doesn't break capture or playback.
+# The numeric values below are fallbacks used only if the name isn't found.
+AUDIO_INPUT_DEVICE = 1  # Scarlett 2i4 USB (PortAudio index fallback)
+AUDIO_INPUT_NAME = "Scarlett"  # substring matched against capture device names
 SCARLETT_SAMPLE_RATE = 48000  # Scarlett's native sample rate
-AUDIO_OUTPUT_DEVICE = 3  # USB Audio Device for output
+AUDIO_OUTPUT_DEVICE = 3  # USB speakers (ALSA card index fallback)
+AUDIO_OUTPUT_NAME = "USB PnP Audio Device"  # substring matched against ALSA card names
 
 # Model Paths (relative to project root)
 WAKE_WORD_MODEL = 'models/Hey-Forge_en_raspberry-pi_v4_0_0.ppn' # Porcupine wake word model path

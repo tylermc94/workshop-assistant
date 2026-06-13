@@ -1,26 +1,20 @@
 import sys
 import os
+import time
+import logging
 import sounddevice as sd
 import struct
 import pvporcupine
 import numpy as np
 from scipy import signal
 
+logger = logging.getLogger(__name__)
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from config.secrets import PORCUPINE_ACCESS_KEY
-from config.settings import WAKE_WORD_MODEL, WAKE_WORD_SENSITIVITY, AUDIO_INPUT_DEVICE, SCARLETT_SAMPLE_RATE
-
-try:
-    _devices = sd.query_devices()
-    _scarlett = next(
-        (d for d in _devices if 'Scarlett' in d['name'] and d['max_input_channels'] > 0),
-        None
-    )
-    if _scarlett:
-        AUDIO_INPUT_DEVICE = _scarlett['index']
-except Exception:
-    pass  # Fall back to settings value
+from config.settings import WAKE_WORD_MODEL, WAKE_WORD_SENSITIVITY, SCARLETT_SAMPLE_RATE
+from audio_devices import resolve_input_device
 
 # Get the absolute path to the model file
 base_dir = os.path.dirname(os.path.dirname(__file__))
@@ -47,50 +41,57 @@ samples_needed = int(FRAME_LENGTH * SCARLETT_SAMPLE_RATE / SAMPLE_RATE)
 
 # Capture audio and detect wake word
 def listen_for_wake_word():
-    """Listen until wake word is detected, then return"""    
+    """Listen until wake word is detected, then return."""
+    device = resolve_input_device()
     while True:
-    # Record from Scarlett at 48000 Hz
-        audio_frame = sd.rec(
-            samples_needed,  # More samples because higher rate
-            samplerate=SCARLETT_SAMPLE_RATE,  # Scarlett's native rate
-            channels=1,
-            dtype='int16',
-            device=AUDIO_INPUT_DEVICE
-        )
-        sd.wait()
+        try:
+            with sd.InputStream(
+                samplerate=SCARLETT_SAMPLE_RATE,
+                channels=1,
+                dtype='int16',
+                device=device,
+                blocksize=samples_needed,
+            ) as stream:
+                while True:
+                    audio_frame, _ = stream.read(samples_needed)
+                    audio_resampled = signal.resample(audio_frame.flatten(), FRAME_LENGTH)
+                    keyword_index = porcupine.process(audio_resampled.astype('int16').tolist())
+                    if keyword_index >= 0:
+                        return
+        except Exception as e:
+            logger.warning(f"Wake word listener audio error: {e} — retrying in 1s")
+            time.sleep(1)
+            # Re-resolve in case a USB re-plug changed the device index.
+            device = resolve_input_device()
+            logger.warning(f"Re-resolved wake word input device to index {device} after audio error")
 
-        # Resample from 48000 to 16000 for Porcupine
-        audio_resampled = signal.resample(audio_frame.flatten(), FRAME_LENGTH)
-        audio_list = audio_resampled.astype('int16').tolist()
-    
-        # Feed to Porcupine
-        keyword_index = porcupine.process(audio_list)
-    
-        if keyword_index >= 0:
-            #print("Wake word detected!")
-            return #exit the function
 
 def listen_for_wake_word_stoppable(stop_event):
     """Listen for wake word, returning True if detected or False if stop_event is set."""
+    device = resolve_input_device()
     while not stop_event.is_set():
-        audio_frame = sd.rec(
-            samples_needed,
-            samplerate=SCARLETT_SAMPLE_RATE,
-            channels=1,
-            dtype='int16',
-            device=AUDIO_INPUT_DEVICE
-        )
-        sd.wait()
-
-        if stop_event.is_set():
-            return False
-
-        audio_resampled = signal.resample(audio_frame.flatten(), FRAME_LENGTH)
-        audio_list = audio_resampled.astype('int16').tolist()
-
-        keyword_index = porcupine.process(audio_list)
-
-        if keyword_index >= 0:
-            return True
-
+        try:
+            with sd.InputStream(
+                samplerate=SCARLETT_SAMPLE_RATE,
+                channels=1,
+                dtype='int16',
+                device=device,
+                blocksize=samples_needed,
+            ) as stream:
+                while not stop_event.is_set():
+                    audio_frame, _ = stream.read(samples_needed)
+                    if stop_event.is_set():
+                        return False
+                    audio_resampled = signal.resample(audio_frame.flatten(), FRAME_LENGTH)
+                    keyword_index = porcupine.process(audio_resampled.astype('int16').tolist())
+                    if keyword_index >= 0:
+                        return True
+        except Exception as e:
+            if stop_event.is_set():
+                return False
+            logger.warning(f"Stoppable wake word listener audio error: {e} — retrying in 1s")
+            time.sleep(1)
+            # Re-resolve in case a USB re-plug changed the device index.
+            device = resolve_input_device()
+            logger.warning(f"Re-resolved wake word input device to index {device} after audio error")
     return False

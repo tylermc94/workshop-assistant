@@ -8,9 +8,8 @@ import logging
 
 from config.settings import (
     STT_ENGINE,
-    SCARLETT_SAMPLE_RATE, 
+    SCARLETT_SAMPLE_RATE,
     RECORDING_DURATION,
-    AUDIO_INPUT_DEVICE,
     # Vosk settings
     VOSK_MODEL_PATH,
     # Whisper settings
@@ -21,6 +20,7 @@ from config.settings import (
     DYNAMIC_CHUNK_SIZE,
     DYNAMIC_ENERGY_THRESHOLD
 )
+from audio_devices import resolve_input_device
 
 logger = logging.getLogger(__name__)
 
@@ -52,14 +52,14 @@ def transcribe_speech():
     """
     logger.info("Recording audio...")
     #print("Listening...")
-    
+
     # Record audio
     audio = sd.rec(
         int(RECORDING_DURATION * SCARLETT_SAMPLE_RATE),
         samplerate=SCARLETT_SAMPLE_RATE,
         channels=1,
         dtype='int16',
-        device=AUDIO_INPUT_DEVICE
+        device=resolve_input_device()
     )
     sd.wait()
     
@@ -120,7 +120,7 @@ def transcribe_short(duration=1.5):
         samplerate=SCARLETT_SAMPLE_RATE,
         channels=1,
         dtype='int16',
-        device=AUDIO_INPUT_DEVICE
+        device=resolve_input_device()
     )
     sd.wait()
 
@@ -148,7 +148,7 @@ def transcribe_speech_dynamic():
         samplerate=SCARLETT_SAMPLE_RATE,
         channels=1,
         dtype='int16',
-        device=AUDIO_INPUT_DEVICE,
+        device=resolve_input_device(),
         blocksize=DYNAMIC_CHUNK_SIZE
     ) as stream:
         
