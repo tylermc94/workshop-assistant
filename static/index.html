@@ -742,8 +742,8 @@
     </div>
   </div>
 
-  <!-- Invisible tap zone at bottom of screen to open fire settings -->
-  <div id="fire-tap-zone" onclick="document.getElementById('tune-panel').classList.toggle('open')"
+  <!-- Long-press this bottom zone to open the fire dev panel (see handler below) -->
+  <div id="fire-tap-zone"
     style="position:absolute;bottom:0;left:210px;right:210px;height:80px;z-index:15;cursor:pointer"></div>
 
   <!-- Fire tuning panel -->
@@ -930,8 +930,17 @@ var FIRE = (function() {
     }
   }
 
-  function loop() { update(); updateEmbers(); draw(); drawEmbers(); requestAnimationFrame(loop); }
-  loop();
+  // Cap the fire animation at ~24fps. The grid sim + per-cell fillText ran every
+  // rAF tick (~60fps) forever, which is continuous CPU/heat on the fanless Pi.
+  // rAF still fires at display rate but the heavy work is gated to 24fps.
+  var FRAME_MS = 1000 / 24, lastFrame = 0;
+  function loop(ts) {
+    requestAnimationFrame(loop);
+    if (ts - lastFrame < FRAME_MS) return;
+    lastFrame = ts;
+    update(); updateEmbers(); draw(); drawEmbers();
+  }
+  requestAnimationFrame(loop);
 
   return {
     setState: function(name) {
@@ -1346,14 +1355,21 @@ function pollSensors() {
 pollSensors();
 setInterval(pollSensors, 3000);
 
-// Tap bottom 20% of fire canvas to toggle settings panel
-document.getElementById('fire-canvas').addEventListener('click', function(e) {
-  var rect = this.getBoundingClientRect();
-  var relY = (e.clientY - rect.top) / rect.height;
-  if (relY >= 0.8) {
-    document.getElementById('tune-panel').classList.toggle('open');
+// Long-press (800ms) the bottom tap-zone to open the fire dev panel. A
+// deliberate gesture so a stray bottom-edge tap no longer opens it by accident.
+(function() {
+  var zone = document.getElementById('fire-tap-zone');
+  var pressTimer = null;
+  function start() {
+    pressTimer = setTimeout(function() {
+      document.getElementById('tune-panel').classList.toggle('open');
+    }, 800);
   }
-});
+  function cancel() { if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; } }
+  zone.addEventListener('pointerdown', start);
+  zone.addEventListener('pointerup', cancel);
+  zone.addEventListener('pointerleave', cancel);
+})();
 
 
 // ═══════════════════════════════════════════════════════════════
