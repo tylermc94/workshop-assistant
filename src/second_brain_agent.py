@@ -160,8 +160,11 @@ TOOLS = [
 def _safe_path(rel_path: str) -> Path:
     """Resolve a relative vault path, rejecting traversal attempts."""
     resolved = (VAULT / rel_path).resolve()
-    if not str(resolved).startswith(str(VAULT.resolve())):
-        raise ValueError(f"Path escapes vault root: {rel_path}")
+    # Use is_relative_to, not str.startswith: a startswith check would wrongly
+    # accept a sibling like "/home/tyler/second-brain-notes" as inside the vault.
+    if not resolved.is_relative_to(VAULT.resolve()):
+        logger.warning(f"Rejected path outside vault: {rel_path}")
+        raise ValueError(f"Path must be inside the vault: {rel_path}")
     return resolved
 
 
