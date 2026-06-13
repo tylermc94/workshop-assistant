@@ -54,7 +54,9 @@ async def classify_intent(text, source="voice"):
         except ValueError as e:
             # Calculator failed, let Claude try
             logger.info(f"Calculator failed: {e}, forwarding to Claude")
-            result = claude_integration.ask_claude(text, source=source)
+            # Run the blocking Claude SDK call off the event loop so it doesn't
+            # stall the API server (/status, /status/stream, /sensors).
+            result = await asyncio.to_thread(claude_integration.ask_claude, text, source=source)
             query_logger.log_query(text, "claude_fallback_calc", result, error=str(e), source=source)
             return result
     
@@ -77,6 +79,8 @@ async def classify_intent(text, source="voice"):
     # No local skill matched - ask Claude
     else:
         logger.info(f"No local skill matched, forwarding to Claude: {text}")
-        result = claude_integration.ask_claude(text, source=source)
+        # Run the blocking Claude SDK call off the event loop so it doesn't
+        # stall the API server (/status, /status/stream, /sensors).
+        result = await asyncio.to_thread(claude_integration.ask_claude, text, source=source)
         query_logger.log_query(text, "claude", result, source=source)
         return result

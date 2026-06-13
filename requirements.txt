@@ -24,3 +24,6 @@ python-multipart>=0.0.6
 # Miscellaneous
 scipy>=1.17.0
 word2number>=1.1
+
+# Testing (dev only)
+pytest>=8.0

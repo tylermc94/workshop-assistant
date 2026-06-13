@@ -78,6 +78,7 @@ Be helpful and direct, not overly cautious.""",
         
         response = message.content[0].text
         logger.info(f"Claude response: {response}")
+        logger.info(f"Claude model used: {message.model}")
 
         _history[source].append({"role": "user", "content": question})
         _history[source].append({"role": "assistant", "content": response})
@@ -94,10 +95,28 @@ Be helpful and direct, not overly cautious.""",
 
         return response
         
+    except anthropic.AuthenticationError as e:
+        # Bad/expired API key. NEVER log the key itself — only that auth failed.
+        logger.error(f"Claude authentication failed (request_id={getattr(e, 'request_id', None)})")
+        return "I couldn't authenticate with Claude. Please check the API key."
+
+    except anthropic.NotFoundError as e:
+        # Usually a retired or mistyped model id.
+        logger.error(f"Claude model/endpoint not found (model={CLAUDE_MODEL}, request_id={getattr(e, 'request_id', None)})")
+        return "That Claude model isn't available right now."
+
+    except anthropic.RateLimitError as e:
+        logger.error(f"Claude rate limited (request_id={getattr(e, 'request_id', None)})")
+        return "Claude is busy right now. Please try again in a moment."
+
+    except anthropic.APIConnectionError as e:
+        logger.error(f"Could not connect to Claude: {e}")
+        return "I couldn't reach Claude. Please check the network connection."
+
     except anthropic.APIError as e:
-        logger.error(f"Claude API error: {e}")
+        logger.error(f"Claude API error: {e} (request_id={getattr(e, 'request_id', None)})")
         return "Sorry, I couldn't reach Claude right now. Please try again."
-    
+
     except Exception as e:
         logger.error(f"Unexpected error: {e}")
         return "Sorry, something went wrong."
