@@ -14,7 +14,10 @@ CALENDAR_TRIGGERS = ["what time is it", "what's the time", "what's the date", "w
 CALCULATOR_TRIGGERS = ["what is", "what's", "calculate", "how much is"]
 HOME_ASSISTANT_TRIGGERS = ["turn on", "turn off"]
 TIMER_TRIGGERS = ["set a timer for", "timer for", "start a timer"]
-ALARM_TRIGGERS = ["stop alarm", "stop timer", "turn off alarm"]
+ALARM_TRIGGERS = [
+    "stop alarm", "stop the alarm", "stop timer", "stop the timer",
+    "turn off alarm", "turn off the alarm", "cancel timer", "cancel the timer",
+]
 STOP_TRIGGERS = ["thank you", "thanks", "stop", "never mind", "nevermind", "that's all", "cancel"]  # Add this
 
 def strip_trigger(text, triggers):

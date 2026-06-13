@@ -25,7 +25,10 @@ def test_unmatched_query_is_forwarded_to_claude(monkeypatch):
     assert result == "CLAUDE:tell me about kerf width"
 
 
-@pytest.mark.parametrize("phrase", ["stop alarm", "please stop timer", "turn off alarm"])
+@pytest.mark.parametrize("phrase", [
+    "stop alarm", "please stop timer", "turn off alarm",
+    "stop the timer", "cancel the timer",
+])
 def test_alarm_phrases_reach_the_alarm_handler(monkeypatch, phrase):
     # Previously these were swallowed by STOP_TRIGGERS ("stop") and never ran.
     monkeypatch.setattr(query_logger, "log_query", lambda *a, **k: None)
