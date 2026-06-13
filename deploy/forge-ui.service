@@ -1,0 +1,21 @@
+[Unit]
+Description=Workshop Forge UI
+After=network.target workshop-forge.service
+# BindsTo (not just Requires): if the backend stops or restarts — e.g. on a
+# deploy via update.sh — the kiosk is stopped/restarted with it.
+BindsTo=workshop-forge.service
+
+[Service]
+User=tyler
+Environment=DISPLAY=:0
+# Readiness gate: wait for the API to actually answer /health (model loading can
+# take longer than a fixed sleep on a cold boot) before launching Chromium, so
+# the kiosk never shows a "can't connect" page. Fails after 90s so a dead backend
+# triggers Restart=on-failure instead of hanging forever.
+ExecStartPre=/bin/bash -c 'for i in $(seq 1 90); do curl -sf http://localhost:8080/health >/dev/null 2>&1 && exit 0; sleep 1; done; exit 1'
+ExecStart=chromium --kiosk --noerrdialogs --disable-infobars --no-sandbox --password-store=basic --disable-background-networking --disable-gcm --disable-gpu http://localhost:8080
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
