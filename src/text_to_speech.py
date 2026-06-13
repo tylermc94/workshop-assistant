@@ -54,7 +54,7 @@ def synthesize_to_wav(text):
     return buf.read()
 
 
-def speak(text, check_interrupt_callback=None):
+def speak(text):
     """
     Synthesize text with the pre-loaded Piper model and stream to aplay.
     Piper yields one AudioChunk per sentence, so aplay starts playing the

@@ -84,31 +84,38 @@ def _transcribe_with_whisper(audio):
     """Transcribe audio using Whisper"""
     import tempfile
     import wave
-    
-    # Whisper needs a file, so create temp WAV
-    with tempfile.NamedTemporaryFile(suffix='.wav', delete=False) as tmp:
+
+    # Whisper needs a file, so create a temp WAV. Use try/finally so the temp
+    # file is always cleaned up — previously a transcribe exception skipped the
+    # os.unlink and leaked the file. Also degrade to an empty transcript on
+    # failure (treated as "ignored" upstream) instead of crashing the loop.
+    tmp = tempfile.NamedTemporaryFile(suffix='.wav', delete=False)
+    tmp.close()
+    text = ""
+    try:
         with wave.open(tmp.name, 'wb') as wf:
             wf.setnchannels(1)
             wf.setsampwidth(2)  # 16-bit
             wf.setframerate(SCARLETT_SAMPLE_RATE)
             wf.writeframes(audio.tobytes())
-        
-        # Transcribe
+
         segments, info = whisper_model.transcribe(
-            tmp.name, 
+            tmp.name,
             beam_size=5,
             language="en"
         )
-        
-        # Combine all segments into single text
-        text = " ".join([segment.text for segment in segments]).strip()
-        
+        text = " ".join(segment.text for segment in segments).strip()
         # Remove punctuation (Whisper adds periods, commas, etc.)
         text = text.rstrip('.,!?;:')
-        
-        # Cleanup
-        os.unlink(tmp.name)
-        
+    except Exception as e:
+        logger.warning(f"Whisper transcription failed: {e}")
+        text = ""
+    finally:
+        try:
+            os.unlink(tmp.name)
+        except OSError:
+            pass
+
     logger.info(f"Whisper transcription: {text}")
     return text
 
