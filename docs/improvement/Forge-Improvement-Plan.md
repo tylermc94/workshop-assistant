@@ -81,6 +81,11 @@ assigning a single **owner** for the change and **consumers** who adapt in locks
 
 ### Phase 1 — Critical bug fixes & resilience (mostly S, high value)
 
+> ✅ **DONE** on branch `forge-improvements-phase1` (commits `e95338d`, `8085727`,
+> `1e97f9f`, `286f827`). All 8 items below implemented with a new `tests/` suite
+> (23 passing). Not merged to `main` — awaiting Tyler's review. Item 7 also fixed
+> the Phase 2 "stop logging rejected tokens" leak opportunistically.
+
 | Item | Lane | Pri/Effort | Notes |
 |------|------|-----------|-------|
 | **Run `ask_claude` off the event loop** via `await asyncio.to_thread(...)` at the two call sites in `intent_recognition.py` | Intent | 🔴 S | Today the blocking SDK call stalls `/status`, `/status/stream`, `/sensors` on the API path — including the kiosk SSE. Fixes O5. |
