@@ -122,6 +122,15 @@ assigning a single **owner** for the change and **consumers** who adapt in locks
 
 ### Phase 3 — Configuration hygiene & maintainability
 
+> ✅ **Mostly DONE** on branch `forge-improvements-phase1` (commits `4cd9971`,
+> `e33c272`, `05ccd2c`, `df3b008`): centralized `VAULT_PATH`/`SECOND_BRAIN_MODEL`,
+> `/budget` schema reconciliation + UI fix, vault spend tracking (`record_message`),
+> stop/alarm routing fix, declared vault deps, skip-pull-on-QUERY, and graceful
+> vault error handling. Tests added throughout (34 passing total).
+> **Deferred:** "make `forge_capture` importable without side effects" — that file
+> lives in the vault (`/home/tyler/second-brain`), not this repo, so its import-time
+> side effects and hardcoded model id can only be changed there.
+
 | Item | Lane | Pri/Effort | Notes |
 |------|------|-----------|-------|
 | **Centralize `VAULT_PATH` + `SECOND_BRAIN_MODEL`** into `config/settings.py`; replace the 4× hardcoded `/home/tyler/second-brain` and 4×+ hardcoded model id | Vault | 🔴 S | Single biggest decoupling from "this exact machine"; sets up the planned clean reinstall. Model id uses Intent's canonical value (O1). |
