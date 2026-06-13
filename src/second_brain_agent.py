@@ -274,7 +274,10 @@ def _git_push() -> None:
 def _run_agent_loop(transcript: str, intent: str) -> str:
     """Run the tool-use loop and return a final spoken response string."""
     forge_state.state['second_brain_status'] = 'working'
-    _git_pull()
+    # QUERY is read-only — no need to pull (saves a network round-trip per
+    # spoken question). Only sync the vault for write intents.
+    if intent != 'QUERY':
+        _git_pull()
 
     today = datetime.now().strftime("%Y-%m-%d")
     messages = [{"role": "user", "content": f"[Today's date: {today}]\n{transcript}"}]
@@ -370,6 +373,8 @@ def run(transcript: str, intent: str = None) -> str:
     CAPTURE / QUERY — runs synchronously, returns answer inline.
     PROCESS         — fires a background thread, returns "On it" immediately.
     """
+    logger.info(f"Vault {intent or 'CAPTURE'} started: {transcript[:80]}")
+
     if intent == 'PROCESS':
         threading.Thread(
             target=_run_background,
@@ -378,4 +383,14 @@ def run(transcript: str, intent: str = None) -> str:
         ).start()
         return "On it, I'll process that in the background."
 
-    return _run_agent_loop_with_push(transcript, intent or 'CAPTURE')
+    # CAPTURE / QUERY run synchronously. Wrap so a vault failure degrades to a
+    # spoken fallback (and leaves the UI on 'error', never stuck on 'working')
+    # instead of bubbling an exception into the voice pipeline.
+    try:
+        result = _run_agent_loop_with_push(transcript, intent or 'CAPTURE')
+        logger.info(f"Vault {intent or 'CAPTURE'} finished")
+        return result
+    except Exception as e:
+        forge_state.state['second_brain_status'] = 'error'
+        logger.error(f"Vault operation failed: {e}", exc_info=True)
+        return "Sorry, I had trouble reaching your vault."
