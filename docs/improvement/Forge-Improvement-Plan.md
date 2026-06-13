@@ -99,6 +99,15 @@ assigning a single **owner** for the change and **consumers** who adapt in locks
 
 ### Phase 2 — Deployment & operational reliability (Infra-led)
 
+> ✅ **Mostly DONE** on branch `forge-improvements-phase1` (commit `4c4bfb4`):
+> log rotation, both units version-controlled in `deploy/` (env drift fixed +
+> crash-loop StartLimit), `/health` readiness gate replacing `sleep 15`, BindsTo,
+> and `deploy/install.sh`+`update.sh`+`README.md`. Token-logging leak already
+> fixed in Phase 1. **Not yet applied to the live system** — run `deploy/install.sh`.
+> **Deferred:** ingress cron→systemd-timer (needs the crontab line removed in the
+> same step to avoid double-processing) and webhook fail-closed (low priority —
+> the endpoint isn't reachable, per Q1).
+
 | Item | Lane | Pri/Effort | Notes |
 |------|------|-----------|-------|
 | **Add log rotation** — `RotatingFileHandler` (~10 MB ×5) in `config/logging_config.py` | Infra | 🔴 S | Owner of O3. Truncate the live 527 MB file after a stop before/while switching. |
