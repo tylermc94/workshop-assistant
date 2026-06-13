@@ -1307,9 +1307,33 @@ function applyState(data) {
 //  the instant the pipeline transitions. /sensors stays on a slow
 //  poll since temperature/humidity don't need sub-second updates.
 // ═══════════════════════════════════════════════════════════════
+// Connection-health badge. The kiosk is unattended, so if the backend
+// re-execs (settings save) or is restarted by systemd, surface "RECONNECTING…"
+// instead of silently freezing on stale status. The server sends a fresh state
+// message on every (re)connection, so the badge clears as soon as we recover.
+var linkBadge = document.createElement('div');
+linkBadge.id = 'link-status';
+linkBadge.textContent = 'RECONNECTING…';
+linkBadge.style.cssText = 'position:fixed;top:8px;left:50%;transform:translateX(-50%);' +
+  'background:#7f1d1d;color:#fee2e2;font-size:12px;letter-spacing:1px;padding:4px 12px;' +
+  'border-radius:4px;z-index:9999;display:none;font-family:inherit;';
+document.body.appendChild(linkBadge);
+
+function setLinkLost(lost) {
+  linkBadge.style.display = lost ? 'block' : 'none';
+}
+
 var statusSource = new EventSource('/status/stream');
 statusSource.onmessage = function(e) {
+  setLinkLost(false);
   try { applyState(JSON.parse(e.data)); } catch (err) {}
+};
+statusSource.onerror = function() {
+  // EventSource auto-reconnects; show the badge while it is not OPEN.
+  if (statusSource.readyState !== EventSource.OPEN) {
+    setLinkLost(true);
+    console.warn('SSE connection lost (readyState=' + statusSource.readyState + '); reconnecting…');
+  }
 };
 
 function pollSensors() {

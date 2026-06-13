@@ -50,16 +50,48 @@ app.add_middleware(
 
 # Security scheme
 security = HTTPBearer()
+security_optional = HTTPBearer(auto_error=False)
+
+# Requests from the device itself (the kiosk Chromium on localhost) are trusted;
+# anything arriving over the LAN/internet has a non-loopback client host.
+_LOOPBACK_HOSTS = {"127.0.0.1", "::1", "localhost"}
+
+
+def _client_host(request: Request) -> str:
+    return request.client.host if request.client else "unknown"
+
 
 def verify_api_key(credentials: HTTPAuthorizationCredentials = Depends(security)):
-    """Verify the API key from Authorization header"""
+    """Verify the API key from the Authorization header (strict — for remote
+    endpoints like /query and /text)."""
     if credentials.credentials != API_KEY:
-        logger.warning(f"Invalid API key attempt: {credentials.credentials}")
+        # Never log the rejected token: it is often a valid secret typed against
+        # the wrong host. Log only that auth failed.
+        logger.warning("Rejected API request: invalid API key")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid API key"
         )
     return credentials.credentials
+
+
+def verify_local_or_api_key(
+    request: Request,
+    credentials: HTTPAuthorizationCredentials = Depends(security_optional),
+):
+    """Allow same-device (loopback) requests without a token — this is how the
+    kiosk reaches /settings, /budget, /devices, /test-audio without the key ever
+    being embedded in the served page. Any non-loopback caller still needs a
+    valid Bearer token."""
+    if _client_host(request) in _LOOPBACK_HOSTS:
+        return "local"
+    if credentials is not None and credentials.credentials == API_KEY:
+        return credentials.credentials
+    logger.warning(f"Rejected request to {request.url.path} from {_client_host(request)}: missing/invalid API key")
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Invalid or missing API key"
+    )
 
 def _ha_request(path: str, token: str):
     """Make a single HA API request, return parsed JSON or None."""
@@ -450,7 +482,7 @@ def _restart_self_after_delay(delay_seconds: float = 1.0) -> None:
 
 
 @app.get("/settings")
-async def get_settings(api_key: str = Depends(verify_api_key)):
+async def get_settings(api_key: str = Depends(verify_local_or_api_key)):
     """Read config/settings.py and return parsed values."""
     try:
         text = _read_settings_file()
@@ -461,7 +493,7 @@ async def get_settings(api_key: str = Depends(verify_api_key)):
 
 
 @app.post("/settings")
-async def post_settings(request: Request, api_key: str = Depends(verify_api_key)):
+async def post_settings(request: Request, api_key: str = Depends(verify_local_or_api_key)):
     """Update keys in config/settings.py. Restart if any restart-trigger key was changed."""
     try:
         body = await request.json()
@@ -497,7 +529,7 @@ async def post_settings(request: Request, api_key: str = Depends(verify_api_key)
 
 
 @app.get("/budget")
-async def get_budget(api_key: str = Depends(verify_api_key)):
+async def get_budget(api_key: str = Depends(verify_local_or_api_key)):
     """Return contents of logs/budget.json."""
     try:
         with open(_BUDGET_PATH, "r", encoding="utf-8") as f:
@@ -510,7 +542,7 @@ async def get_budget(api_key: str = Depends(verify_api_key)):
 
 
 @app.delete("/budget")
-async def delete_budget(api_key: str = Depends(verify_api_key)):
+async def delete_budget(api_key: str = Depends(verify_local_or_api_key)):
     """Reset the budget file."""
     try:
         os.makedirs(os.path.dirname(_BUDGET_PATH), exist_ok=True)
@@ -523,7 +555,7 @@ async def delete_budget(api_key: str = Depends(verify_api_key)):
 
 
 @app.get("/devices")
-async def get_devices(api_key: str = Depends(verify_api_key)):
+async def get_devices(api_key: str = Depends(verify_local_or_api_key)):
     """List audio devices via sounddevice."""
     try:
         import sounddevice as sd
@@ -543,7 +575,7 @@ async def get_devices(api_key: str = Depends(verify_api_key)):
 
 
 @app.post("/test-audio")
-async def test_audio(api_key: str = Depends(verify_api_key)):
+async def test_audio(api_key: str = Depends(verify_local_or_api_key)):
     """Speak a short test phrase in a background thread."""
     def _speak():
         try:
