@@ -21,6 +21,7 @@ from config.settings import API_KEY, API_PORT, HA_URL, HA_UNIFI_ENTITIES, HA_POW
 import speech_to_text
 import intent_recognition
 import audio_utils
+import budget_tracker
 import forge_state
 import text_to_speech
 from second_brain import classify_intent, handle as second_brain_handle
@@ -535,7 +536,7 @@ async def get_budget(api_key: str = Depends(verify_local_or_api_key)):
         with open(_BUDGET_PATH, "r", encoding="utf-8") as f:
             return json.load(f)
     except FileNotFoundError:
-        return {"total_cost": 0, "sessions": []}
+        return budget_tracker.empty_budget()
     except Exception as e:
         logger.error(f"Error reading budget: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Error reading budget: {e}")
@@ -547,7 +548,7 @@ async def delete_budget(api_key: str = Depends(verify_local_or_api_key)):
     try:
         os.makedirs(os.path.dirname(_BUDGET_PATH), exist_ok=True)
         with open(_BUDGET_PATH, "w", encoding="utf-8") as f:
-            json.dump({"total_cost": 0, "sessions": []}, f)
+            json.dump(budget_tracker.empty_budget(), f)
         return {"status": "ok"}
     except Exception as e:
         logger.error(f"Error resetting budget: {e}", exc_info=True)

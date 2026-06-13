@@ -24,6 +24,7 @@ import anthropic
 forge_capture.client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 
 import asyncio
+import budget_tracker
 
 INTENT_SYSTEM_PROMPT = """\
 Classify the user's message as one of: CAPTURE, QUERY, ANSWER, or PROCESS.
@@ -50,6 +51,7 @@ async def classify_intent(transcript: str) -> str:
             system=INTENT_SYSTEM_PROMPT,
             messages=[{"role": "user", "content": transcript}]
         )
+        budget_tracker.record_message(response)  # track vault spend (visibility only)
         result = response.content[0].text.strip().upper()
         if result in ('CAPTURE', 'QUERY', 'ANSWER', 'PROCESS'):
             return result

@@ -25,6 +25,14 @@ _EMPTY_BUDGET = {
 }
 
 
+def empty_budget() -> dict:
+    """Canonical empty-budget payload, matching the shape record_usage persists.
+
+    Use this instead of hand-writing a different dict (the API used to write
+    {"total_cost": 0, "sessions": []}, which never matched the tracker)."""
+    return dict(_EMPTY_BUDGET)
+
+
 def _load() -> dict:
     if not os.path.exists(BUDGET_FILE):
         return dict(_EMPTY_BUDGET)
@@ -83,3 +91,16 @@ def record_usage(input_tokens: int, output_tokens: int) -> dict:
         "warning": warning,
         "limit_reached": limit_reached,
     }
+
+
+def record_message(message) -> None:
+    """Record usage from an Anthropic Message object — best-effort, never raises.
+
+    Used by the vault modules (second_brain, second_brain_agent) whose Claude
+    calls would otherwise bypass the budget entirely. This tracks spend for
+    visibility; it deliberately does NOT enforce the limit on vault calls (a
+    capture shouldn't fail mid-operation)."""
+    try:
+        record_usage(message.usage.input_tokens, message.usage.output_tokens)
+    except Exception as e:
+        logger.warning(f"Could not record vault Claude usage: {e}")

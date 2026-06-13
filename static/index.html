@@ -1669,10 +1669,17 @@ function loadBudget() {
     empty.style.display = 'none';
 
     var totalIn = 0, totalOut = 0;
-    sessions.forEach(function(s) {
-      totalIn += (s.input_tokens || 0);
-      totalOut += (s.output_tokens || 0);
-    });
+    if (data.total_input_tokens != null || data.total_output_tokens != null) {
+      // Canonical shape written by budget_tracker (running totals, no sessions).
+      totalIn = data.total_input_tokens || 0;
+      totalOut = data.total_output_tokens || 0;
+    } else {
+      // Tolerate the old per-session shape during transition.
+      sessions.forEach(function(s) {
+        totalIn += (s.input_tokens || 0);
+        totalOut += (s.output_tokens || 0);
+      });
+    }
     document.getElementById('bud-total').textContent = '$' + Number(data.total_cost || 0).toFixed(2);
     document.getElementById('bud-in').textContent = totalIn.toLocaleString();
     document.getElementById('bud-out').textContent = totalOut.toLocaleString();

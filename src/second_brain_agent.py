@@ -17,6 +17,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config.secrets import CLAUDE_API_KEY as ANTHROPIC_API_KEY
 from config.settings import VAULT_PATH, SECOND_BRAIN_MODEL
 import forge_state
+import budget_tracker
 
 import anthropic
 
@@ -286,6 +287,7 @@ def _run_agent_loop(transcript: str, intent: str) -> str:
             tools=TOOLS,
             messages=messages
         )
+        budget_tracker.record_message(response)  # track vault spend (visibility only)
         logger.debug(f"Agent round {round_num + 1}: stop_reason={response.stop_reason}")
 
         tool_calls = [b for b in response.content if b.type == 'tool_use']
