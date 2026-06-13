@@ -145,6 +145,19 @@ assigning a single **owner** for the change and **consumers** who adapt in locks
 
 ### Phase 4 — UX polish, efficiency & remaining audio items
 
+> ✅ **Partly DONE** on branch `forge-improvements-phase1` (commits for timer,
+> audio, tts/logging, UX). **Verified live:** alarm-stop bug fixed + timer
+> cancellation (the ringing alarm is now silenceable; non-blocking playback
+> confirmed). Also done: Whisper temp-file leak fix, dead-code cleanup, removed
+> dead TTS knobs, quieted `[DEBUG]` history logs, fire-canvas 24fps cap, dev panel
+> behind a long-press.
+> **Deferred — change a working path that can't be verified without live mic/
+> speech (Tyler to test in the workshop):** dynamic energy-threshold calibration,
+> FFT→poly wake-word resample, API-path double-resample.
+> **Deferred — larger/cross-lane:** on-screen transcript RETRY/CANCEL (needs a
+> Voice re-listen hook), `index.html`/`preview.html` de-dup (M refactor), self-host
+> the web font (vendor a `.woff2`).
+
 | Item | Lane | Pri/Effort | Notes |
 |------|------|-----------|-------|
 | **On-screen transcript confirmation / RETRY-CANCEL** | UX (+Voice hook) | 🔴 M | Most common workshop friction (misheard query, no touch recovery). Needs a small Voice-owned "re-listen" backend hook — design jointly; UX won't touch audio internals. |
