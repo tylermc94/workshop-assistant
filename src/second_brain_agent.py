@@ -15,16 +15,17 @@ from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config.secrets import CLAUDE_API_KEY as ANTHROPIC_API_KEY
+from config.settings import VAULT_PATH, SECOND_BRAIN_MODEL
 import forge_state
 
 import anthropic
 
 logger = logging.getLogger(__name__)
 
-VAULT = Path('/home/tyler/second-brain')
+VAULT = Path(VAULT_PATH)
 FORGE_LOG = VAULT / 'Forge Log.md'
 AGENT_MD = VAULT / 'AGENT.md'
-MODEL = 'claude-sonnet-4-6'
+MODEL = SECOND_BRAIN_MODEL
 MAX_TOKENS = 2048
 MAX_TOOL_ROUNDS = 15
 
@@ -67,7 +68,7 @@ def _load_system_prompt() -> str:
             pass
 
     # Correct the vault path — CLAUDE.md references Windows paths, Pi path overrides them
-    parts.append("## Path Override (this device)\nVault root on this device: /home/tyler/second-brain/")
+    parts.append(f"## Path Override (this device)\nVault root on this device: {VAULT}/")
 
     return '\n\n'.join(parts)
 

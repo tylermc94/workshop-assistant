@@ -65,6 +65,14 @@ CLAUDE_MODEL = "claude-sonnet-4-6"
 CLAUDE_MAX_TOKENS = 200  # Short responses for question mode
 CLAUDE_TEMPERATURE = 1.0
 
+# Second Brain / Vault
+# Centralized here so the path and model aren't duplicated across the vault
+# modules (second_brain.py, second_brain_agent.py, ingress_processor.py).
+# NOTE: forge_capture.py lives in the vault itself and is not part of this repo,
+# so its own hardcoded model id can only be changed there.
+VAULT_PATH = "/home/tyler/second-brain"
+SECOND_BRAIN_MODEL = "claude-sonnet-4-6"
+
 # Budget Settings
 BUDGET_WARNING_THRESHOLD = 15.00  # USD
 BUDGET_HARD_LIMIT = 20.00  # USD

@@ -3,13 +3,14 @@ import sys
 sys.stdout.reconfigure(encoding='utf-8')
 sys.stderr.reconfigure(encoding='utf-8')
 from config.secrets import CLAUDE_API_KEY as ANTHROPIC_API_KEY
+from config.settings import VAULT_PATH, SECOND_BRAIN_MODEL
 os.environ['ANTHROPIC_API_KEY'] = ANTHROPIC_API_KEY  # must be before forge_capture import
-sys.path.insert(0, '/home/tyler/second-brain')
+sys.path.insert(0, VAULT_PATH)
 import forge_capture
 from pathlib import Path
 
 # Override Windows vault path with Pi path
-forge_capture.VAULT = Path('/home/tyler/second-brain')
+forge_capture.VAULT = Path(VAULT_PATH)
 forge_capture.PROJECTS_DIR = forge_capture.VAULT / "Projects"
 forge_capture.ACTIVE_DIR   = forge_capture.VAULT / "Projects" / "Active"
 forge_capture.SOMEDAY_DIR  = forge_capture.VAULT / "Projects" / "Someday"
@@ -44,7 +45,7 @@ async def classify_intent(transcript: str) -> str:
     try:
         response = await asyncio.to_thread(
             forge_capture.client.messages.create,
-            model="claude-sonnet-4-6",
+            model=SECOND_BRAIN_MODEL,
             max_tokens=10,
             system=INTENT_SYSTEM_PROMPT,
             messages=[{"role": "user", "content": transcript}]

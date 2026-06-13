@@ -11,9 +11,10 @@ from datetime import datetime
 from pathlib import Path
 
 from config.secrets import CLAUDE_API_KEY as ANTHROPIC_API_KEY
+from config.settings import VAULT_PATH
 os.environ['ANTHROPIC_API_KEY'] = ANTHROPIC_API_KEY
 
-sys.path.insert(0, '/home/tyler/second-brain')
+sys.path.insert(0, VAULT_PATH)
 import forge_capture
 import anthropic
 
@@ -22,7 +23,7 @@ setup_logging()
 import logging
 logger = logging.getLogger(__name__)
 
-forge_capture.VAULT = Path('/home/tyler/second-brain')
+forge_capture.VAULT = Path(VAULT_PATH)
 forge_capture.PROJECTS_DIR = forge_capture.VAULT / "Projects"
 forge_capture.ACTIVE_DIR = forge_capture.VAULT / "Projects" / "Active"
 forge_capture.SOMEDAY_DIR = forge_capture.VAULT / "Projects" / "Someday"

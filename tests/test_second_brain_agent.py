@@ -7,6 +7,13 @@ check wrongly accepted it; is_relative_to correctly rejects it.
 import pytest
 
 import second_brain_agent as agent
+from config import settings
+
+
+def test_vault_path_and_model_come_from_settings():
+    # Guards against re-introducing hardcoded copies of the path / model id.
+    assert str(agent.VAULT) == settings.VAULT_PATH
+    assert agent.MODEL == settings.SECOND_BRAIN_MODEL
 
 
 def test_safe_path_accepts_paths_inside_the_vault():
