@@ -67,15 +67,17 @@ assigning a single **owner** for the change and **consumers** who adapt in locks
 
 ## 3. The plan, in incremental phases
 
-### Phase 0 — Time-critical (do this week, before 2026-06-15)
+### Phase 0 — Time-critical — ✅ DONE (committed `13178e8`, 2026-06-13)
 
-| Item | Lane | Pri/Effort | Notes |
-|------|------|-----------|-------|
-| **Swap `CLAUDE_MODEL` → `claude-sonnet-4-6`** (`config/settings.py:59`) | Intent | 🔴 S | The deployed model retires **2026-06-15**; after that every voice/API answer fails into the generic error branch. Pricing constants ($3/$15) and `temperature=1.0` stay valid → one-line change. Adopt the canonical value here (O1). |
-| **Stop tracking log files in git; fix `.gitignore`** | Infra | 🔴 S | `git ls-files logs/` shows `workshop_assistant.log` (527 MB) **and** `all_queries.jsonl` are tracked and currently show as modified — one `git add -A` from committing a half-GB blob. `git rm --cached` them (keep on disk), add `*.log` + `logs/*.jsonl`, fix the malformed `.idea/logs/` line. *(Already-pushed history is a separate decision — Q7.)* |
+| Item | Lane | Pri/Effort | Status |
+|------|------|-----------|--------|
+| **Swap `CLAUDE_MODEL` → `claude-sonnet-4-6`** (`config/settings.py:59`) | Intent | 🔴 S | ✅ Done. Model retired 2026-06-15 avoided; pricing/temperature unchanged. **⚠️ Running service still on old model until `sudo systemctl restart workshop-forge` — see Phase 2.** |
+| **Stop tracking log files in git; fix `.gitignore`** | Infra | 🔴 S | ✅ Done. `git rm --cached`'d the logs (kept on disk); `.gitignore` now covers `*.log` + `logs/*.jsonl`; malformed `.idea/logs/` fixed to `.idea/`. |
 
-> **Convergence note:** This very Phase-C commit must itself avoid `git add -A`. Stage only
-> `docs/improvement/` — the tracked logs are exactly the risk Infra flagged.
+> **Resolved finding (Q7):** the 527 MB log was **never committed** — its largest committed
+> version in all history is 0.1 MB, so no history rewrite is needed. The real ~268 MB of repo
+> weight is committed **model binaries** (4 Piper voices @ 60 MB, only `alba` used, + Vosk ~67 MB).
+> **Decision: leave models as-is for now; revisit at the clean-reinstall project** (see §5).
 
 ### Phase 1 — Critical bug fixes & resilience (mostly S, high value)
 
@@ -83,7 +85,7 @@ assigning a single **owner** for the change and **consumers** who adapt in locks
 |------|------|-----------|-------|
 | **Run `ask_claude` off the event loop** via `await asyncio.to_thread(...)` at the two call sites in `intent_recognition.py` | Intent | 🔴 S | Today the blocking SDK call stalls `/status`, `/status/stream`, `/sensors` on the API path — including the kiosk SSE. Fixes O5. |
 | **Typed error branches in `ask_claude`** (`AuthenticationError`/`NotFoundError`/`RateLimitError`/`APIConnectionError`) with distinct spoken messages + `request_id` logging | Intent | 🔴 S | 🔑 The auth branch must **never** log `CLAUDE_API_KEY`. |
-| **Fix `route_content` broken signatures** (`ingress_processor.py:130,133,143`) | Vault | 🔴 S | Webhook ingress crashes on every routed file today. Start with surgical Option A; Option B is Q2. |
+| **Fix `route_content` broken signatures** (`ingress_processor.py:130,133,143`) | Vault | 🔴 S | **Decision (Q2): Option A — surgical patch** (rewrite the 3 call sites to the real arg shapes). **This is more important than it first looked: the webhook is *not* externally reachable (Q1), so the every-10-min cron job is the *only* working ingress trigger — and it calls this same broken `route_content`. The fix restores your only live ingress path.** Option B (route through the agent) logged as a future consolidation task. |
 | **Harden `_safe_path`** → `resolved.is_relative_to(VAULT.resolve())` (`second_brain_agent.py:163`) | Vault | 🔴 S | `startswith` lets a sibling like `/home/tyler/second-brain-notes` pass; real traversal-guard bug on a write-capable tool. |
 | **Centralize name-based audio device resolution** into one `src/audio_devices.py` used by wake word, STT, and TTS | Voice | 🔴 M | The top fragility: `wake_word.py`'s input auto-detect never reaches `speech_to_text.py`, and output (`aplay plughw:3`) isn't detected at all. **Document the ALSA-card-index vs PortAudio-index distinction** and prefer `plughw:CARD=<name>` for output. |
 | **Re-resolve device index on wake-word stream-open failure** | Voice | 🔴 S | A USB replug currently retries the stale index forever → Forge goes deaf until manual restart. |
@@ -99,10 +101,10 @@ assigning a single **owner** for the change and **consumers** who adapt in locks
 | **`deploy/install.sh` + `deploy/update.sh`** (idempotent, `set -euo pipefail`) | Infra | 🔴 S | `update.sh` does `git pull --ff-only` **then** `systemctl restart` — closes the "pull doesn't restart" gap. |
 | **Crash-loop protection** — `StartLimitIntervalSec=300`, `StartLimitBurst=5` on `workshop-forge.service` | Infra | 🟡 S | `Restart=always` currently reloads Whisper/Piper/Porcupine forever on a hard failure. |
 | **Readiness gate** — replace `forge-ui`'s blind `sleep 15` with a `curl -sf localhost:8080/health` poll (capped); consider `BindsTo=` | Infra | 🟡 M | Stops the kiosk showing a blank/"can't connect" page on a slow cold boot. |
-| **Webhook fail-closed** — `/webhook/ingress` returns 503 if `GITHUB_WEBHOOK_SECRET` is unset, instead of accepting any POST | Intent (per Infra spec) | 🟡 S | 🔑 O4. Currently fail-open. Log "signature missing/invalid from \<ip\>" at WARNING — never the signature/body. |
+| **Webhook fail-closed** — `/webhook/ingress` returns 503 if `GITHUB_WEBHOOK_SECRET` is unset, instead of accepting any POST | Intent (per Infra spec) | 🟢 S | 🔑 O4. Currently fail-open. **Demoted from 🟡: the endpoint isn't externally reachable today (Q1), so this is hardening for when it eventually is.** Log "signature missing/invalid from \<ip\>" at WARNING — never the signature/body. |
 | **Stop logging rejected tokens** (`api_server.py:57`) — log only "auth failed + source IP" | Intent (per Infra spec) | 🟡 S | 🔑 Rejected bearers are often valid secrets typed at the wrong host, currently written to the unbounded log. |
-| **Ingress cron → systemd timer** (`forge-ingress.service` + `.timer`, `OnUnitActiveSec=10min`) | Infra | 🟢 S | Moves the undocumented every-10-min run into the journal and into version control. |
-| **Decide & document the remote-access path** (Cloudflare Tunnel recommended) | Infra | 🟡 M | Q1. Until then, narrow the `0.0.0.0:8080` bind / add a firewall rule. CORS tightening rides on this. |
+| **Ingress cron → systemd timer** (`forge-ingress.service` + `.timer`, `OnUnitActiveSec=10min`) | Infra | 🟡 S | **Promoted from 🟢: the cron job is the only live ingress driver (Q1), so it deserves journal visibility + version control rather than silent cron mail.** |
+| **Remote access — DECISION (Q1): stay LAN-only for now** | Infra | — | **No tunnel today; the Pi is not externally reachable and that's a fine secure default.** Cloudflare Tunnel deferred until **Pocket Forge (Phase 6-7)** needs external reach. CORS tightening rides on this and is likewise deferred. |
 
 ### Phase 3 — Configuration hygiene & maintainability
 
@@ -112,6 +114,7 @@ assigning a single **owner** for the change and **consumers** who adapt in locks
 | **Make `forge_capture` importable without side effects** — lazy `get_client()`, default `VAULT` from settings | Vault | 🟡 M | 🔑 It currently `KeyError`s on import without `ANTHROPIC_API_KEY` and reads a separate vault `.env`. Don't log env contents. |
 | **Reduce redundant git ops; skip `git pull` on QUERY** — pick one git mechanism (framework vs agent tools), not both | Vault | 🟡 S | Removes network latency from read-only spoken questions. |
 | **Budget schema reconciliation** — `budget_tracker.empty_budget()` helper (Intent) + `loadBudget` reads `total_*` and tolerates both shapes (UX) | Intent + UX | 🟡 S | O2. Fix writer and consumer in lockstep. |
+| **Track vault Claude spend** — call `budget_tracker.record_usage` at the vault call sites (`second_brain.py`, `second_brain_agent.py`, `forge_capture.py`) | Vault + Intent | 🟡 M | **Decision (Q3): track for visibility only — do NOT enforce the limit on vault calls** (a capture shouldn't fail mid-run). The agent loops up to 15 rounds/op, so this is the bulk of currently-invisible spend. |
 | **Surface vault errors / always reset `second_brain_status`** even on exception paths | Vault | 🟡 M | Wrap `run()` in try/except returning a friendly spoken fallback; UX consumes the `ready/working/error` states. |
 | **Surface audio-device health** to `forge_state` (`audio_status`) | Voice (+UX render) | 🟡 S | O6. Voice writes; UX renders. |
 | **Correct stop/alarm trigger ordering** — check `ALARM_TRIGGERS` before `STOP_TRIGGERS` (or drop bare `"stop"` from stop) | Intent | 🟡 S | Routing-only fix; the alarm branch is currently unreachable for any phrase containing "stop". |
@@ -124,7 +127,7 @@ assigning a single **owner** for the change and **consumers** who adapt in locks
 | **On-screen transcript confirmation / RETRY-CANCEL** | UX (+Voice hook) | 🔴 M | Most common workshop friction (misheard query, no touch recovery). Needs a small Voice-owned "re-listen" backend hook — design jointly; UX won't touch audio internals. |
 | **Throttle/pause the fire canvas** (~20–24 fps cap; idle freeze) | UX | 🟡 S | Continuous full-grid `requestAnimationFrame` redraw burns CPU/heat on a fanless Pi even when idle. |
 | **De-duplicate `index.html`/`preview.html`** into shared `forge.css`/`forge.js` | UX | 🟡 M | Two ~1000-line files drift today; extract incrementally, no bundler. |
-| **Fix `skills/timer.py` alarm-stop bug** (`alarm_process` never set) | *unowned — see Q5* | 🟡 S | Distinct from the routing fix above. |
+| **Fix `skills/timer.py` alarm-stop bug + add timer cancellation** | Voice/skills | 🟡 M | **Decision (Q5): fix the bug AND add cancellation.** `start_timer` plays the alarm with blocking `subprocess.run` and never stores `alarm_process`, so `stop_alarm` can't silence a ringing alarm (and the blocking call freezes the event loop). Fix: non-blocking subprocess + stored handle + interruptible repeat loop; also track the timer task so a pending timer can be cancelled before it rings. Distinct from Intent's routing fix above. |
 | **Fix Whisper temp-file leak + drop double 48k↔16k resample** (pass numpy array to faster-whisper) | Voice | 🟢 S | O8 — coordinate with Intent on the shared `/query` path. |
 | **Calibrate dynamic-recording energy threshold** to the noise floor | Voice | 🟢 S | Fixed `500` lets a loud workshop defeat the silence cutoff (every utterance runs to the 30s max). |
 | **Wire or delete the TTS tuning knobs** (`TTS_SPEED`/noise) | Voice (+UX knobs) | 🟢 S | O7 — half-wired today; pick one. |
@@ -140,7 +143,7 @@ assigning a single **owner** for the change and **consumers** who adapt in locks
 |------|------|-----------|-------|
 | **Stand up `tests/` + `pytest`** with pure-logic unit tests | Voice + Vault + Intent | 🟢 M | O9. No tests exist anywhere. Start with pure functions (vault: `build_task_line`/`upsert_section`/`_safe_path`; audio: device resolver/silence helper/`wav_bytes_to_numpy`; intent: trigger routing table). 🔑 Tests must not import `config.secrets` or hit the network — guard Porcupine/model creation so pure helpers import in isolation. |
 | **Replace keyword `classify_intent`** with a small ordered match table + word-boundary matching | Intent | 🟢 M | Fixes substring collisions ("turn one screw" → HA) and greedy `"what is"`. Do only after the 🔴 items. |
-| **Opt-in `web_search` tool** on the ANSWER path (`web_search_20260209`, `WEB_SEARCH_ENABLED` flag, `pause_turn` loop with a cap) | Intent | 🟢 M | Q6 — adds latency/cost on the Pi; keep flag-gated and budget-aware. |
+| **Opt-in `web_search` tool** on the ANSWER path (`web_search_20260209`, `WEB_SEARCH_ENABLED` flag, `pause_turn` loop with a cap) | Intent | 🟢 M | **Decision (Q6): build it, default OFF.** Tyler flips `WEB_SEARCH_ENABLED` on after measuring cost/latency. Keep the continuation cap so it can't loop and blow the $20 budget. |
 | **Pocket Forge reference client + client-UX spec** (record WAV → `POST /query` → play base64 audio) | UX | 🟢 M | 🔑 Client reads its bearer key from local config/env, never hardcoded. De-risks Phases 6-7. |
 | **Spec/code drift cleanup** (`second-brain-agent.md` vs implemented tool signatures) | Vault | 🟢 S | Docs-only; code is source of truth. |
 | **Document one git credential method** (fine-grained PAT or deploy key, stored 600) | Infra | 🟡 M | 🔑 O10 — makes deploys reproducible after a reimage. |
@@ -165,23 +168,24 @@ Every item that touches secrets is marked 🔑 above. Pulled together for one re
 
 ---
 
-## 5. Open questions for Tyler (please decide before the affected item)
+## 5. Decisions made with Tyler (2026-06-13) — all open questions resolved
 
-1. **Remote access (Q1, Phase 2):** Is anything *outside* the Pi currently exposing port 8080
-   (router port-forward, an existing tunnel)? The repo/device show none. Adopt **Cloudflare Tunnel**
-   as the front door? This also gates CORS tightening.
-2. **Ingress routing (Q2, Phase 1):** Fix `route_content`'s signatures surgically (Option A, ships
-   now) **or** retire it and route ingress through the existing agent like the voice/API PROCESS
-   path (Option B, cleaner but larger and contradicts the spec's "leave webhook as-is" note)?
-3. **Vault budget accounting (Q3, Phase 3):** Should the vault's direct Claude calls
-   (`second_brain.py`, `second_brain_agent.py`, `forge_capture.py`) record usage into
-   `budget_tracker`? Today they bypass it, so total spend is undercounted.
-4. **Log history (Q7, Phase 0):** A large log blob may already be in *pushed* git history. Leave it,
-   or do a one-time history rewrite (destructive, rewrites shared history)?
-5. **Alarm-stop bug (Q5, Phase 4):** Confirm the intended behavior for stopping a sounding alarm,
-   and which lane owns the `skills/timer.py` fix (currently unclaimed by both Voice and Intent).
-6. **Web search (Q6, Phase 5):** Do you want Forge to answer time-sensitive questions via the
-   server-side `web_search` tool? It adds latency and cost on the Pi (flag-gated, budget-aware).
+| Q | Topic | Decision |
+|---|-------|----------|
+| Phase 0 | Model swap + untrack logs | **Both done now** — committed `13178e8`. |
+| Q1 | Remote access | **Stay LAN-only for now.** Nothing currently exposes the Pi externally (so the webhook isn't firing; cron drives ingress). Cloudflare Tunnel deferred to Pocket Forge (Phase 6-7). CORS hardening deferred with it. |
+| Q2 | Ingress fix | **Option A — surgical patch** to `route_content`. Option B (route through the agent) logged as a future consolidation task. |
+| Q3 | Vault budget | **Track vault spend for visibility** (call `record_usage`); **do not enforce** the limit on vault calls. |
+| Q5 | Alarm-stop bug | **Fix the bug AND add timer cancellation** (Effort M). Owned by the Voice/skills lane in implementation. |
+| Q6 | Web search | **Build it, default OFF** (`WEB_SEARCH_ENABLED`), with a `pause_turn` cap. |
+| Q7 | Log/history bloat | **No history rewrite** (the big log was never committed). **Leave model binaries as-is**; revisit the ~268 MB of model files at the clean-reinstall project. |
+
+### Still worth a future look (not blocking)
+- **Option B ingress consolidation** — route the webhook/cron ingress through `second_brain_agent`
+  instead of the bespoke `route_content` dispatch, once the surgical fix has settled.
+- **Cloudflare Tunnel + CORS tightening + Forge `API_KEY` rotation** — revisit together when
+  Pocket Forge needs external reach.
+- **Models out of git + download script** — natural fit for the clean-reinstall project.
 
 ---
 
