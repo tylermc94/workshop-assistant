@@ -21,10 +21,10 @@ WAKE_WORD_SENSITIVITY = 0.9  # 0.0 to 1.0, higher = more sensitive
 #STT Settings
 # Dynamic Recording Settings
 USE_DYNAMIC_RECORDING = True  # Toggle between fixed and dynamic
-DYNAMIC_SILENCE_THRESHOLD = 1.5  # Seconds of silence before stopping
+DYNAMIC_SILENCE_THRESHOLD = 2.5  # Seconds of silence before stopping (raise = more pause tolerance, less laggy when lower)
 DYNAMIC_MAX_DURATION = 30  # Maximum recording time (safety)
 DYNAMIC_CHUNK_SIZE = 4800  # Samples per chunk (~0.1 sec at 48kHz)
-DYNAMIC_ENERGY_THRESHOLD = 500  # Audio energy level to detect speech vs silence
+DYNAMIC_ENERGY_THRESHOLD = 350  # Below this a chunk counts as silence. Lower = quieter speech still counts as talking (less early cutoff); too low and background noise prevents it ever stopping.
 RECORDING_DURATION = 5  # seconds to record after wake word detected
 STT_ENGINE = "whisper"  # Options: "vosk" or "whisper"
 VOSK_MODEL_PATH = "models/vosk-model-small-en-us-0.15"
