@@ -469,6 +469,16 @@
             </label>
             <div class="so-field-note immediate">✓ immediate</div>
           </div>
+          <div class="so-field">
+            <label>MIC DETECTION THRESHOLD</label>
+            <input type="number" min="0" step="50" data-key="DYNAMIC_ENERGY_THRESHOLD" oninput="onFieldChange()">
+            <div class="so-field-note">Lower = picks up quieter speech (less likely to cut you off). Too low and background noise stops it from ever ending. <span class="restart">↺ restart required</span></div>
+          </div>
+          <div class="so-field">
+            <label>SILENCE TIMEOUT (S)</label>
+            <input type="number" min="0.3" step="0.1" data-key="DYNAMIC_SILENCE_THRESHOLD" oninput="onFieldChange()">
+            <div class="so-field-note">Seconds of silence before it stops listening. Raise for more pause tolerance. <span class="restart">↺ restart required</span></div>
+          </div>
           <div class="so-device-list" id="input-devices-list">Loading devices...</div>
           <div class="so-section-footer">
             <button class="so-btn so-btn-primary" data-save="audio-input" onclick="saveSection('audio-input')" disabled>SAVE CHANGES</button>
@@ -1389,6 +1399,8 @@ var SO_KEY_SECTION = {
   AUDIO_INPUT_DEVICE: 'audio-input',
   SCARLETT_SAMPLE_RATE: 'audio-input',
   USE_DYNAMIC_RECORDING: 'audio-input',
+  DYNAMIC_ENERGY_THRESHOLD: 'audio-input',
+  DYNAMIC_SILENCE_THRESHOLD: 'audio-input',
   AUDIO_OUTPUT_DEVICE: 'audio-output',
   WAKE_WORD_SENSITIVITY: 'wake-word',
   TTS_MODEL_PATH: 'tts',

@@ -379,6 +379,8 @@ _BUDGET_PATH = os.path.join(
 
 _SETTINGS_KEYS = [
     "USE_DYNAMIC_RECORDING",
+    "DYNAMIC_ENERGY_THRESHOLD",
+    "DYNAMIC_SILENCE_THRESHOLD",
     "SCARLETT_SAMPLE_RATE",
     "AUDIO_INPUT_DEVICE",
     "AUDIO_OUTPUT_DEVICE",
@@ -399,6 +401,9 @@ _RESTART_KEYS = {
     "TTS_MODEL_PATH",
     "API_PORT",
     "API_ENABLED",
+    # speech_to_text binds these at import, so a change needs a re-exec to apply.
+    "DYNAMIC_ENERGY_THRESHOLD",
+    "DYNAMIC_SILENCE_THRESHOLD",
 }
 
 
