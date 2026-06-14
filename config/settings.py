@@ -101,26 +101,19 @@ API_PORT = 8080
 
 # Home Assistant
 HA_URL = "http://homeassistant.local:8123"
-HA_UNIFI_ENTITIES = [
-    "sensor.dream_machine_cloudflare_wan_latency",
-    "sensor.dream_machine_google_wan_latency",
-    "sensor.dream_machine_microsoft_wan_latency",
-    "sensor.dream_machine_clients",
-    "sensor.dream_machine_cpu_utilization",
-    "sensor.dream_machine_uptime",
-    "sensor.dream_machine_state",
-    "sensor.u6_pro_state",
-    "sensor.u6_mesh_state",
-    "sensor.usw_lite_8_poe_state",
-    "sensor.usw_flex_mini_state",
-]
-HA_POWER_ENTITIES = [
-    "switch.workshop_power",
-    "sensor.workshop_power_current_consumption",
-    "sensor.workshop_power_today_s_consumption",
-    "sensor.workshop_power_voltage",
-    "binary_sensor.workshop_power_overloaded",
-]
+# Network card — the old UniFi/Dream Machine entities were removed from HA
+# (migrated to OPNsense, which isn't integrated into HA yet). Empty = the NETWORK
+# card is hidden. When OPNsense/Grafana is wired into HA, list its WAN latency /
+# clients / device-state entities here and the card comes back automatically.
+HA_UNIFI_ENTITIES = []
+# Power card — the old `workshop_power` device no longer exists in HA. Empty =
+# the ENERGY/POWER cards are hidden. To re-enable, fill in a power-metered
+# device's entities, e.g. for the `network_power` plug:
+#   "switch.network_power", "sensor.network_power_power",
+#   "sensor.network_power_summation_delivered", "sensor.network_power_voltage",
+#   "binary_sensor.<device>_overloaded"
+# (and update the hardcoded ids in api_server._fetch_sensors_data to match).
+HA_POWER_ENTITIES = []
 HA_OUTLET_ENTITIES = [
     "switch.workshop_light_1",
     "switch.workshop_light_2",

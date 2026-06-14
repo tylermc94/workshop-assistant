@@ -145,13 +145,11 @@ def _fetch_sensors_data() -> dict:
 
     # --- 12h history for temp, humidity, and power draw ---
     start = (datetime.now(timezone.utc) - timedelta(hours=12)).strftime("%Y-%m-%dT%H:%M:%S+00:00")
+    # Only request history for the live sensors. The UniFi/power history entities
+    # were removed from HA; re-add them here if those cards are re-enabled.
     history_entities = ",".join([
         "sensor.workshop_temp_humidity_temperature",
         "sensor.workshop_temp_humidity_humidity",
-        "sensor.workshop_power_current_consumption",
-        "sensor.dream_machine_cloudflare_wan_latency",
-        "sensor.dream_machine_google_wan_latency",
-        "sensor.dream_machine_microsoft_wan_latency",
     ])
     history_data = _ha_request(
         f"/api/history/period/{start}?filter_entity_id={history_entities}"
@@ -243,8 +241,26 @@ def _fetch_sensors_data() -> dict:
     pwr_voltage  = states.get("sensor.workshop_power_voltage", {})
     pwr_overload = states.get("binary_sensor.workshop_power_overloaded", {}).get("state") == "on"
 
-    return {
-        "unifi": {
+    result = {
+        "temperature": {"value": temp.get("state", "—"), "unit": temp.get("unit", "°F"), "history": temp_history},
+        "humidity":    {"value": hum.get("state",  "—"), "unit": hum.get("unit",  "%"),  "history": hum_history},
+        "octoprint": {
+            "printing":     octo_printing,
+            "state":        octo_state,
+            "job_pct":      octo_pct,
+            "file":         octo_file,
+            "finish_time":  None if octo_finish in (None, "unknown") else octo_finish,
+            "bed_temp":     None if octo_bed_temp in (None, "unknown", "unavailable") else octo_bed_temp,
+            "nozzle_temp":  None if octo_nozzle_temp in (None, "unknown", "unavailable") else octo_nozzle_temp,
+        },
+        "outlets": outlets,
+    }
+
+    # Only include the network/power groups when their entities are configured.
+    # Empty lists (e.g. UniFi removed, no workshop power meter) omit the key so
+    # the UI hides those cards instead of showing "unavailable".
+    if HA_UNIFI_ENTITIES:
+        result["unifi"] = {
             "cf_latency":     unifi_cf_lat.get("state", "—"),
             "cf_history":     cf_history,
             "google_latency": unifi_google_lat.get("state", "—"),
@@ -258,28 +274,18 @@ def _fetch_sensors_data() -> dict:
             "u6_mesh":        u6_mesh_state == "connected",
             "usw_lite":       usw_lite_state == "connected",
             "usw_flex":       usw_flex_state == "connected",
-        },
-        "temperature": {"value": temp.get("state", "—"), "unit": temp.get("unit", "°F"), "history": temp_history},
-        "humidity":    {"value": hum.get("state",  "—"), "unit": hum.get("unit",  "%"),  "history": hum_history},
-        "power": {
+        }
+    if HA_POWER_ENTITIES:
+        result["power"] = {
             "on":       pwr_on,
             "watts":    pwr_watts.get("state", "—"),
             "today_kwh": pwr_today.get("state", "—"),
             "voltage":  pwr_voltage.get("state", "—"),
             "overloaded": pwr_overload,
             "history":  power_history,
-        },
-        "octoprint": {
-            "printing":     octo_printing,
-            "state":        octo_state,
-            "job_pct":      octo_pct,
-            "file":         octo_file,
-            "finish_time":  None if octo_finish in (None, "unknown") else octo_finish,
-            "bed_temp":     None if octo_bed_temp in (None, "unknown", "unavailable") else octo_bed_temp,
-            "nozzle_temp":  None if octo_nozzle_temp in (None, "unknown", "unavailable") else octo_nozzle_temp,
-        },
-        "outlets": outlets,
-    }
+        }
+
+    return result
 
 
 @app.get("/sensors")

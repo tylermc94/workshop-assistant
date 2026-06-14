@@ -635,12 +635,12 @@
 
   <!-- Left cards -->
   <div id="cards-left">
-    <div class="card">
+    <div class="card" id="card-energy">
       <div class="card-header"><svg class="card-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.75;flex-shrink:0"><rect x="2" y="7" width="20" height="11" rx="2"/><path d="M16 7V5a2 2 0 0 0-4 0v2M8 7V5a2 2 0 0 0-4 0v2M12 12v3"/></svg><span class="card-label">ENERGY TODAY</span></div>
       <span class="card-value ok" id="val-today">—</span>
       <span class="card-sub" id="val-voltage">—V</span>
     </div>
-    <div class="card">
+    <div class="card" id="card-power">
       <div class="card-header"><span class="card-icon">⚡</span><span class="card-label">POWER DRAW</span></div>
       <span class="card-value ok" id="val-watts">—</span>
       <canvas id="spark-power" width="174" height="28" style="display:block;margin-top:6px;opacity:0.9"></canvas>
@@ -666,7 +666,7 @@
 
   <!-- Right cards -->
   <div id="cards-right">
-    <div class="card">
+    <div class="card" id="card-network">
       <div class="card-header"><span class="card-icon">🌐</span><span class="card-label">NETWORK</span></div>
       <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
         <!-- Cloudflare -->
@@ -1118,6 +1118,14 @@ function drawSparkline(canvasId, values, color) {
 }
 
 function applySensors(data) {
+  // Hide cards whose data group the backend omitted (entity list empty in
+  // settings — e.g. UniFi removed, no workshop power meter). Auto-shows again
+  // when the entities are reconfigured.
+  function showCard(id, on) { var el = document.getElementById(id); if (el) el.style.display = on ? '' : 'none'; }
+  showCard('card-network', !!data.unifi);
+  showCard('card-energy', !!data.power);
+  showCard('card-power', !!data.power);
+
   if (data.unifi) {
     var u = data.unifi, unit = u.latency_unit || 'ms';
     var cfEl   = document.getElementById('val-cf-lat');
