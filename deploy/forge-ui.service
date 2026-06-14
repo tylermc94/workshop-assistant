@@ -4,6 +4,8 @@ After=network.target workshop-forge.service
 # BindsTo (not just Requires): if the backend stops or restarts — e.g. on a
 # deploy via update.sh — the kiosk is stopped/restarted with it.
 BindsTo=workshop-forge.service
+# Record a persistent note if the kiosk itself fails.
+OnFailure=forge-notify@%n.service
 
 [Service]
 User=tyler

@@ -8,6 +8,11 @@ Version-controlled systemd units and helper scripts for the Lab Pi appliance.
 - `forge-ui.service` — the Chromium kiosk. Waits for the API's `/health` to answer
   before launching (instead of a blind sleep), and is `BindsTo` the backend so it
   restarts with it.
+- `forge-notify@.service` — a template triggered by `OnFailure=` on the two main
+  units. When a unit enters the failed state (e.g. after the crash-loop cap) it
+  records a timestamped line to `logs/forge-failures.log` and an ERR journal entry
+  (`journalctl -t forge-notify`). Edit it to push to Home Assistant if you want a
+  phone alert. Installed but not enabled (it runs on demand).
 - `install.sh` — copy both units into `/etc/systemd/system/`, reload systemd, and
   enable + start them. Idempotent; re-execs itself with sudo if needed.
 - `update.sh` — `git pull --ff-only` then restart the backend (the UI restarts with

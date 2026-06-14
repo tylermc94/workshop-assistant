@@ -7,6 +7,8 @@ Wants=network-online.target
 # enter `failed` instead of hammering the CPU re-loading the models forever.
 StartLimitIntervalSec=300
 StartLimitBurst=5
+# Record a persistent note when the unit fails (e.g. after the crash-loop cap).
+OnFailure=forge-notify@%n.service
 
 [Service]
 Type=simple
