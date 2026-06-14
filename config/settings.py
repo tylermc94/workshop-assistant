@@ -65,6 +65,12 @@ CLAUDE_MODEL = "claude-sonnet-4-6"
 CLAUDE_MAX_TOKENS = 200  # Short responses for question mode
 CLAUDE_TEMPERATURE = 1.0
 
+# Web search (server-side tool) for time-sensitive questions on the ANSWER path.
+# OFF by default — it adds latency and a per-search fee on top of token cost.
+# Flip to True to let Forge look things up (current events, prices, versions).
+WEB_SEARCH_ENABLED = False
+WEB_SEARCH_MAX_CONTINUATIONS = 3  # cap server-tool pause_turn loops so cost can't run away
+
 # Second Brain / Vault
 # Centralized here so the path and model aren't duplicated across the vault
 # modules (second_brain.py, second_brain_agent.py, ingress_processor.py).
