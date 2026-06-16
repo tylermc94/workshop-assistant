@@ -28,7 +28,7 @@ def is_stop_command(text):
     return any(cmd in text_lower for cmd in STOP_COMMANDS)
 
 async def voice_pipeline():
-    """Main voice pipeline loop"""
+    """Main voice pipeline loop — restarts automatically on unexpected errors."""
     if USE_DYNAMIC_RECORDING:
         transcribe = speech_to_text.transcribe_speech_dynamic
     else:
@@ -38,6 +38,19 @@ async def voice_pipeline():
     forge_state.state["transcript"] = ""
     forge_state.state["response"] = ""
 
+    while True:
+      try:
+        await _voice_pipeline_inner(transcribe)
+      except Exception as e:
+        logger.error(f"Voice pipeline crashed: {e}", exc_info=True)
+        forge_state.state["status"] = "idle"
+        forge_state.state["transcript"] = ""
+        forge_state.state["response"] = ""
+        await asyncio.sleep(2)
+
+
+async def _voice_pipeline_inner(transcribe):
+    """Single iteration loop of the voice pipeline."""
     while True:
         print("Listening for wake word...")
         forge_state.state["status"] = "idle"
