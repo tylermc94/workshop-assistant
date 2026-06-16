@@ -8,7 +8,8 @@ import io
 import wave
 import numpy as np
 from piper import PiperVoice
-from config.settings import TTS_MODEL_PATH, AUDIO_OUTPUT_DEVICE
+from config.settings import TTS_MODEL_PATH
+from audio_devices import resolve_output_device
 from tts_formatter import format_for_speech
 
 logger = logging.getLogger(__name__)
@@ -53,7 +54,7 @@ def synthesize_to_wav(text):
     return buf.read()
 
 
-def speak(text, check_interrupt_callback=None):
+def speak(text):
     """
     Synthesize text with the pre-loaded Piper model and stream to aplay.
     Piper yields one AudioChunk per sentence, so aplay starts playing the
@@ -69,9 +70,10 @@ def speak(text, check_interrupt_callback=None):
 
     sample_rate = _voice.config.sample_rate
 
+    output_device = resolve_output_device()
     _audio_process = subprocess.Popen(
         ['aplay', '-r', str(sample_rate), '-f', 'S16_LE', '-t', 'raw',
-         '-D', f'plughw:{AUDIO_OUTPUT_DEVICE},0'],
+         '-D', output_device],
         stdin=subprocess.PIPE,
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL

@@ -8,9 +8,8 @@ import logging
 
 from config.settings import (
     STT_ENGINE,
-    SCARLETT_SAMPLE_RATE, 
+    SCARLETT_SAMPLE_RATE,
     RECORDING_DURATION,
-    AUDIO_INPUT_DEVICE,
     # Vosk settings
     VOSK_MODEL_PATH,
     # Whisper settings
@@ -21,6 +20,7 @@ from config.settings import (
     DYNAMIC_CHUNK_SIZE,
     DYNAMIC_ENERGY_THRESHOLD
 )
+from audio_devices import resolve_input_device
 
 logger = logging.getLogger(__name__)
 
@@ -52,14 +52,14 @@ def transcribe_speech():
     """
     logger.info("Recording audio...")
     #print("Listening...")
-    
+
     # Record audio
     audio = sd.rec(
         int(RECORDING_DURATION * SCARLETT_SAMPLE_RATE),
         samplerate=SCARLETT_SAMPLE_RATE,
         channels=1,
         dtype='int16',
-        device=AUDIO_INPUT_DEVICE
+        device=resolve_input_device()
     )
     sd.wait()
     
@@ -84,31 +84,38 @@ def _transcribe_with_whisper(audio):
     """Transcribe audio using Whisper"""
     import tempfile
     import wave
-    
-    # Whisper needs a file, so create temp WAV
-    with tempfile.NamedTemporaryFile(suffix='.wav', delete=False) as tmp:
+
+    # Whisper needs a file, so create a temp WAV. Use try/finally so the temp
+    # file is always cleaned up — previously a transcribe exception skipped the
+    # os.unlink and leaked the file. Also degrade to an empty transcript on
+    # failure (treated as "ignored" upstream) instead of crashing the loop.
+    tmp = tempfile.NamedTemporaryFile(suffix='.wav', delete=False)
+    tmp.close()
+    text = ""
+    try:
         with wave.open(tmp.name, 'wb') as wf:
             wf.setnchannels(1)
             wf.setsampwidth(2)  # 16-bit
             wf.setframerate(SCARLETT_SAMPLE_RATE)
             wf.writeframes(audio.tobytes())
-        
-        # Transcribe
+
         segments, info = whisper_model.transcribe(
-            tmp.name, 
+            tmp.name,
             beam_size=5,
             language="en"
         )
-        
-        # Combine all segments into single text
-        text = " ".join([segment.text for segment in segments]).strip()
-        
+        text = " ".join(segment.text for segment in segments).strip()
         # Remove punctuation (Whisper adds periods, commas, etc.)
         text = text.rstrip('.,!?;:')
-        
-        # Cleanup
-        os.unlink(tmp.name)
-        
+    except Exception as e:
+        logger.warning(f"Whisper transcription failed: {e}")
+        text = ""
+    finally:
+        try:
+            os.unlink(tmp.name)
+        except OSError:
+            pass
+
     logger.info(f"Whisper transcription: {text}")
     return text
 
@@ -120,7 +127,7 @@ def transcribe_short(duration=1.5):
         samplerate=SCARLETT_SAMPLE_RATE,
         channels=1,
         dtype='int16',
-        device=AUDIO_INPUT_DEVICE
+        device=resolve_input_device()
     )
     sd.wait()
 
@@ -148,7 +155,7 @@ def transcribe_speech_dynamic():
         samplerate=SCARLETT_SAMPLE_RATE,
         channels=1,
         dtype='int16',
-        device=AUDIO_INPUT_DEVICE,
+        device=resolve_input_device(),
         blocksize=DYNAMIC_CHUNK_SIZE
     ) as stream:
         

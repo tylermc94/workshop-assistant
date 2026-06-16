@@ -15,16 +15,18 @@ from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config.secrets import CLAUDE_API_KEY as ANTHROPIC_API_KEY
+from config.settings import VAULT_PATH, SECOND_BRAIN_MODEL
 import forge_state
+import budget_tracker
 
 import anthropic
 
 logger = logging.getLogger(__name__)
 
-VAULT = Path('/home/tyler/second-brain')
+VAULT = Path(VAULT_PATH)
 FORGE_LOG = VAULT / 'Forge Log.md'
 AGENT_MD = VAULT / 'AGENT.md'
-MODEL = 'claude-sonnet-4-6'
+MODEL = SECOND_BRAIN_MODEL
 MAX_TOKENS = 2048
 MAX_TOOL_ROUNDS = 15
 
@@ -67,7 +69,7 @@ def _load_system_prompt() -> str:
             pass
 
     # Correct the vault path — CLAUDE.md references Windows paths, Pi path overrides them
-    parts.append("## Path Override (this device)\nVault root on this device: /home/tyler/second-brain/")
+    parts.append(f"## Path Override (this device)\nVault root on this device: {VAULT}/")
 
     return '\n\n'.join(parts)
 
@@ -160,8 +162,11 @@ TOOLS = [
 def _safe_path(rel_path: str) -> Path:
     """Resolve a relative vault path, rejecting traversal attempts."""
     resolved = (VAULT / rel_path).resolve()
-    if not str(resolved).startswith(str(VAULT.resolve())):
-        raise ValueError(f"Path escapes vault root: {rel_path}")
+    # Use is_relative_to, not str.startswith: a startswith check would wrongly
+    # accept a sibling like "/home/tyler/second-brain-notes" as inside the vault.
+    if not resolved.is_relative_to(VAULT.resolve()):
+        logger.warning(f"Rejected path outside vault: {rel_path}")
+        raise ValueError(f"Path must be inside the vault: {rel_path}")
     return resolved
 
 
@@ -269,7 +274,10 @@ def _git_push() -> None:
 def _run_agent_loop(transcript: str, intent: str) -> str:
     """Run the tool-use loop and return a final spoken response string."""
     forge_state.state['second_brain_status'] = 'working'
-    _git_pull()
+    # QUERY is read-only — no need to pull (saves a network round-trip per
+    # spoken question). Only sync the vault for write intents.
+    if intent != 'QUERY':
+        _git_pull()
 
     today = datetime.now().strftime("%Y-%m-%d")
     messages = [{"role": "user", "content": f"[Today's date: {today}]\n{transcript}"}]
@@ -278,11 +286,25 @@ def _run_agent_loop(transcript: str, intent: str) -> str:
         response = client.messages.create(
             model=MODEL,
             max_tokens=MAX_TOKENS,
-            system=SYSTEM_PROMPT,
+            # Cache the static prefix (tools render before system, so this one
+            # breakpoint caches BOTH tools + system). They're re-sent every tool
+            # round and across ops, so rounds 2+ read the cache at ~0.1x instead
+            # of full price. Only effective because the prefix (~2.3K tok) clears
+            # Sonnet 4.6's 2048-token minimum — Opus 4.8's minimum is 4096, so if
+            # SECOND_BRAIN_MODEL ever changes, re-verify cache_read_input_tokens>0.
+            system=[{"type": "text", "text": SYSTEM_PROMPT, "cache_control": {"type": "ephemeral"}}],
             tools=TOOLS,
             messages=messages
         )
-        logger.debug(f"Agent round {round_num + 1}: stop_reason={response.stop_reason}")
+        budget_tracker.record_message(response)  # track vault spend (visibility only)
+        _u = response.usage
+        logger.info(
+            f"Agent round {round_num + 1}: stop_reason={response.stop_reason} "
+            f"input={_u.input_tokens} "
+            f"cache_write={getattr(_u, 'cache_creation_input_tokens', 0)} "
+            f"cache_read={getattr(_u, 'cache_read_input_tokens', 0)} "
+            f"output={_u.output_tokens}"
+        )
 
         tool_calls = [b for b in response.content if b.type == 'tool_use']
         text_blocks = [b for b in response.content if b.type == 'text']
@@ -364,6 +386,8 @@ def run(transcript: str, intent: str = None) -> str:
     CAPTURE / QUERY — runs synchronously, returns answer inline.
     PROCESS         — fires a background thread, returns "On it" immediately.
     """
+    logger.info(f"Vault {intent or 'CAPTURE'} started: {transcript[:80]}")
+
     if intent == 'PROCESS':
         threading.Thread(
             target=_run_background,
@@ -372,4 +396,14 @@ def run(transcript: str, intent: str = None) -> str:
         ).start()
         return "On it, I'll process that in the background."
 
-    return _run_agent_loop_with_push(transcript, intent or 'CAPTURE')
+    # CAPTURE / QUERY run synchronously. Wrap so a vault failure degrades to a
+    # spoken fallback (and leaves the UI on 'error', never stuck on 'working')
+    # instead of bubbling an exception into the voice pipeline.
+    try:
+        result = _run_agent_loop_with_push(transcript, intent or 'CAPTURE')
+        logger.info(f"Vault {intent or 'CAPTURE'} finished")
+        return result
+    except Exception as e:
+        forge_state.state['second_brain_status'] = 'error'
+        logger.error(f"Vault operation failed: {e}", exc_info=True)
+        return "Sorry, I had trouble reaching your vault."

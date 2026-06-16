@@ -3,42 +3,78 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 import asyncio
 from word2number import w2n
-import subprocess
-from config.settings import TIMER_ALARM_SOUND, AUDIO_OUTPUT_DEVICE, TIMER_ALARM_REPEATS
+from config.settings import TIMER_ALARM_SOUND, TIMER_ALARM_REPEATS
+from audio_devices import resolve_output_device
 
 from config.logging_config import setup_logging
 setup_logging()
 import logging
 logger = logging.getLogger(__name__)
 
-# Global to track alarm process
-alarm_process = None
+# Module state. Only one timer/alarm is tracked at a time (matches prior behavior).
+_alarm_process = None   # the running aplay subprocess while the alarm is sounding
+_alarm_stop = False     # set by stop_alarm() to break the repeat loop
+_timer_task = None      # the pending asyncio timer task (before it rings)
+
 
 async def start_timer(duration_seconds):
-    """Run a timer for the specified duration"""
+    """Wait the duration, then sound the alarm.
+
+    Both phases are interruptible by stop_alarm(): a pending timer can be
+    cancelled before it rings, and a sounding alarm can be silenced. Playback
+    uses a non-blocking subprocess so it never freezes the event loop (the old
+    blocking subprocess.run inside this async task did).
+    """
+    global _alarm_process, _alarm_stop, _timer_task
     logger.info(f"Timer started for {duration_seconds} seconds")
-    await asyncio.sleep(duration_seconds)
-    logger.info("Timer finished!")
-    
-    # Play alarm multiple times (suppress output)
-    for _ in range(TIMER_ALARM_REPEATS):
-        subprocess.run([
-            'aplay', 
-            '-D', f'plughw:{AUDIO_OUTPUT_DEVICE},0',
-            TIMER_ALARM_SOUND
-        ], stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
+    try:
+        await asyncio.sleep(duration_seconds)
+    except asyncio.CancelledError:
+        logger.info("Timer cancelled before it rang")
+        raise
+
+    logger.info("Timer finished — sounding alarm")
+    _alarm_stop = False
+    output_device = resolve_output_device()
+    try:
+        for _ in range(TIMER_ALARM_REPEATS):
+            if _alarm_stop:
+                break
+            proc = await asyncio.create_subprocess_exec(
+                'aplay', '-D', output_device, TIMER_ALARM_SOUND,
+                stdout=asyncio.subprocess.DEVNULL,
+                stderr=asyncio.subprocess.DEVNULL,
+            )
+            _alarm_process = proc  # exposed so stop_alarm() can terminate it
+            await proc.wait()      # await the local handle, not the global
+    except asyncio.CancelledError:
+        logger.info("Alarm playback cancelled")
+    finally:
+        _alarm_process = None
+        _timer_task = None
+
 
 def stop_alarm():
-    """Stop the alarm if it's playing"""
-    global alarm_process
-    
-    if alarm_process is not None:
-        alarm_process.terminate()  # Stop the process
-        alarm_process = None
+    """Silence a ringing alarm, or cancel a pending timer if it hasn't rung yet."""
+    global _alarm_process, _alarm_stop, _timer_task
+
+    if _alarm_process is not None:
+        _alarm_stop = True  # break the repeat loop so it doesn't re-arm
+        try:
+            _alarm_process.terminate()
+        except ProcessLookupError:
+            pass  # already finished
+        _alarm_process = None
         logger.info("Alarm stopped")
-        return "Alarm stopped"
-    else:
-        return "No alarm is playing"
+        return "Alarm stopped."
+
+    if _timer_task is not None and not _timer_task.done():
+        _timer_task.cancel()
+        _timer_task = None
+        logger.info("Timer cancelled")
+        return "Timer cancelled."
+
+    return "No timer or alarm is active."
 
 def parse_time_expression(expression):
     """
@@ -113,9 +149,11 @@ def format_seconds_to_readable(seconds):
     return ' and '.join(result) if result else '0 seconds'
 
 async def set_timer(text):
+    global _timer_task
     duration_seconds = parse_time_expression(text)
     if duration_seconds > 0:
-        asyncio.create_task(start_timer(duration_seconds))
+        # Track the task so stop_alarm() can cancel a pending timer.
+        _timer_task = asyncio.create_task(start_timer(duration_seconds))
         readable_time = format_seconds_to_readable(duration_seconds)
         return f"Timer set for {readable_time}."
     else:

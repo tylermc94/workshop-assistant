@@ -15,20 +15,34 @@ from config.settings import (
     CONVERSATION_TIMEOUT,
     CONVERSATION_MAX_TURNS,
     CLAUDE_QUERY_LOG,
+    WEB_SEARCH_ENABLED,
+    WEB_SEARCH_MAX_CONTINUATIONS,
 )
 import budget_tracker
 
 logger = logging.getLogger(__name__)
 client = anthropic.Anthropic(api_key=CLAUDE_API_KEY)
 
+ANSWER_SYSTEM_PROMPT = """You are Forge, a helpful workshop assistant. Be conversational and friendly like a helpful colleague, not robotic.
+
+Give concise, practical answers - just the key info needed, skip disclaimers and caveats unless critical. Respond in 1-2 sentences for simple questions, 2-3 for complex ones.
+
+Examples:
+- "What's the best temperature for PLA?" → "200 to 210 degrees Celsius works great for most PLA filaments."
+- "Who won the Super Bowl?" → "The Chiefs beat the 49ers 25-22 in overtime at Super Bowl 58."
+
+Be helpful and direct, not overly cautious."""
+
 _history = {"voice": [], "api": []}
 _last_exchange = {"voice": 0.0, "api": 0.0}
 
 def clear_history(source="voice"):
-    logger.info(f"[DEBUG] clear_history called for source={source!r}, history before clear: {_history[source]}")
+    # debug-level so full conversation history isn't echoed into the (now
+    # rotated, but still INFO-level) log on every clear.
+    logger.debug(f"clear_history called for source={source!r}, history before clear: {_history[source]}")
     _history[source].clear()
     _last_exchange[source] = 0.0
-    logger.info(f"[DEBUG] clear_history done, history after clear: {_history[source]}")
+    logger.debug(f"clear_history done, history after clear: {_history[source]}")
 
 def log_query(question):
     """Log Claude queries to claude_queries.log for analysis"""
@@ -57,27 +71,44 @@ def ask_claude(question, source="voice"):
     log_query(question)
 
     messages_to_send = _history[source] + [{"role": "user", "content": question}]
-    logger.info(f"[DEBUG] ask_claude source={source!r}, history_len={len(_history[source])}, messages_to_send={messages_to_send}")
+    logger.debug(f"ask_claude source={source!r}, history_len={len(_history[source])}, messages_to_send={messages_to_send}")
+
+    create_kwargs = dict(
+        model=CLAUDE_MODEL,
+        max_tokens=CLAUDE_MAX_TOKENS,
+        temperature=CLAUDE_TEMPERATURE,
+        system=ANSWER_SYSTEM_PROMPT,
+        messages=messages_to_send,
+    )
+    if WEB_SEARCH_ENABLED:
+        # Server-side tool; no beta header needed. Lets Claude look up
+        # time-sensitive facts. Adds latency + a per-search fee (the per-search
+        # fee is NOT captured by the token-based budget tracker).
+        create_kwargs["tools"] = [{"type": "web_search_20260209", "name": "web_search"}]
 
     try:
-        message = client.messages.create(
-            model=CLAUDE_MODEL,
-            max_tokens=CLAUDE_MAX_TOKENS,
-            temperature=CLAUDE_TEMPERATURE,
-            system="""You are Forge, a helpful workshop assistant. Be conversational and friendly like a helpful colleague, not robotic.
+        message = client.messages.create(**create_kwargs)
 
-Give concise, practical answers - just the key info needed, skip disclaimers and caveats unless critical. Respond in 1-2 sentences for simple questions, 2-3 for complex ones.
+        # The web_search server loop can return stop_reason="pause_turn" when it
+        # hits its internal iteration limit; re-send to resume, capped so a
+        # runaway loop can't blow the budget. Accumulate usage across all calls.
+        in_tok = out_tok = 0
+        continuations = 0
+        while True:
+            in_tok += message.usage.input_tokens
+            out_tok += message.usage.output_tokens
+            if message.stop_reason != "pause_turn" or continuations >= WEB_SEARCH_MAX_CONTINUATIONS:
+                break
+            continuations += 1
+            create_kwargs["messages"] = messages_to_send + [{"role": "assistant", "content": message.content}]
+            message = client.messages.create(**create_kwargs)
 
-Examples:
-- "What's the best temperature for PLA?" → "200 to 210 degrees Celsius works great for most PLA filaments."
-- "Who won the Super Bowl?" → "The Chiefs beat the 49ers 25-22 in overtime at Super Bowl 58."
-
-Be helpful and direct, not overly cautious.""",
-            messages=messages_to_send,
-        )
-        
-        response = message.content[0].text
+        # Take the last text block — with web_search the response may include
+        # tool-use/result blocks; the final answer is the last text block.
+        text_blocks = [b.text for b in message.content if b.type == "text"]
+        response = text_blocks[-1] if text_blocks else "Sorry, I didn't get an answer."
         logger.info(f"Claude response: {response}")
+        logger.info(f"Claude model used: {message.model}")
 
         _history[source].append({"role": "user", "content": question})
         _history[source].append({"role": "assistant", "content": response})
@@ -85,19 +116,35 @@ Be helpful and direct, not overly cautious.""",
             del _history[source][:2]
         _last_exchange[source] = time.monotonic()
 
-        input_tokens = message.usage.input_tokens
-        output_tokens = message.usage.output_tokens
-        budget = budget_tracker.record_usage(input_tokens, output_tokens)
+        budget = budget_tracker.record_usage(in_tok, out_tok)
 
         if budget["warning"]:
             response += " Heads up — the Claude API budget is getting low."
 
         return response
-        
+
+    except anthropic.AuthenticationError as e:
+        # Bad/expired API key. NEVER log the key itself — only that auth failed.
+        logger.error(f"Claude authentication failed (request_id={getattr(e, 'request_id', None)})")
+        return "I couldn't authenticate with Claude. Please check the API key."
+
+    except anthropic.NotFoundError as e:
+        # Usually a retired or mistyped model id.
+        logger.error(f"Claude model/endpoint not found (model={CLAUDE_MODEL}, request_id={getattr(e, 'request_id', None)})")
+        return "That Claude model isn't available right now."
+
+    except anthropic.RateLimitError as e:
+        logger.error(f"Claude rate limited (request_id={getattr(e, 'request_id', None)})")
+        return "Claude is busy right now. Please try again in a moment."
+
+    except anthropic.APIConnectionError as e:
+        logger.error(f"Could not connect to Claude: {e}")
+        return "I couldn't reach Claude. Please check the network connection."
+
     except anthropic.APIError as e:
-        logger.error(f"Claude API error: {e}")
+        logger.error(f"Claude API error: {e} (request_id={getattr(e, 'request_id', None)})")
         return "Sorry, I couldn't reach Claude right now. Please try again."
-    
+
     except Exception as e:
         logger.error(f"Unexpected error: {e}")
         return "Sorry, something went wrong."

@@ -21,6 +21,7 @@ from config.settings import API_KEY, API_PORT, HA_URL, HA_UNIFI_ENTITIES, HA_POW
 import speech_to_text
 import intent_recognition
 import audio_utils
+import budget_tracker
 import forge_state
 import text_to_speech
 from second_brain import classify_intent, handle as second_brain_handle
@@ -50,16 +51,48 @@ app.add_middleware(
 
 # Security scheme
 security = HTTPBearer()
+security_optional = HTTPBearer(auto_error=False)
+
+# Requests from the device itself (the kiosk Chromium on localhost) are trusted;
+# anything arriving over the LAN/internet has a non-loopback client host.
+_LOOPBACK_HOSTS = {"127.0.0.1", "::1", "localhost"}
+
+
+def _client_host(request: Request) -> str:
+    return request.client.host if request.client else "unknown"
+
 
 def verify_api_key(credentials: HTTPAuthorizationCredentials = Depends(security)):
-    """Verify the API key from Authorization header"""
+    """Verify the API key from the Authorization header (strict — for remote
+    endpoints like /query and /text)."""
     if credentials.credentials != API_KEY:
-        logger.warning(f"Invalid API key attempt: {credentials.credentials}")
+        # Never log the rejected token: it is often a valid secret typed against
+        # the wrong host. Log only that auth failed.
+        logger.warning("Rejected API request: invalid API key")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid API key"
         )
     return credentials.credentials
+
+
+def verify_local_or_api_key(
+    request: Request,
+    credentials: HTTPAuthorizationCredentials = Depends(security_optional),
+):
+    """Allow same-device (loopback) requests without a token — this is how the
+    kiosk reaches /settings, /budget, /devices, /test-audio without the key ever
+    being embedded in the served page. Any non-loopback caller still needs a
+    valid Bearer token."""
+    if _client_host(request) in _LOOPBACK_HOSTS:
+        return "local"
+    if credentials is not None and credentials.credentials == API_KEY:
+        return credentials.credentials
+    logger.warning(f"Rejected request to {request.url.path} from {_client_host(request)}: missing/invalid API key")
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Invalid or missing API key"
+    )
 
 def _ha_request(path: str, token: str):
     """Make a single HA API request, return parsed JSON or None."""
@@ -112,13 +145,11 @@ def _fetch_sensors_data() -> dict:
 
     # --- 12h history for temp, humidity, and power draw ---
     start = (datetime.now(timezone.utc) - timedelta(hours=12)).strftime("%Y-%m-%dT%H:%M:%S+00:00")
+    # Only request history for the live sensors. The UniFi/power history entities
+    # were removed from HA; re-add them here if those cards are re-enabled.
     history_entities = ",".join([
         "sensor.workshop_temp_humidity_temperature",
         "sensor.workshop_temp_humidity_humidity",
-        "sensor.workshop_power_current_consumption",
-        "sensor.dream_machine_cloudflare_wan_latency",
-        "sensor.dream_machine_google_wan_latency",
-        "sensor.dream_machine_microsoft_wan_latency",
     ])
     history_data = _ha_request(
         f"/api/history/period/{start}?filter_entity_id={history_entities}"
@@ -210,8 +241,26 @@ def _fetch_sensors_data() -> dict:
     pwr_voltage  = states.get("sensor.workshop_power_voltage", {})
     pwr_overload = states.get("binary_sensor.workshop_power_overloaded", {}).get("state") == "on"
 
-    return {
-        "unifi": {
+    result = {
+        "temperature": {"value": temp.get("state", "—"), "unit": temp.get("unit", "°F"), "history": temp_history},
+        "humidity":    {"value": hum.get("state",  "—"), "unit": hum.get("unit",  "%"),  "history": hum_history},
+        "octoprint": {
+            "printing":     octo_printing,
+            "state":        octo_state,
+            "job_pct":      octo_pct,
+            "file":         octo_file,
+            "finish_time":  None if octo_finish in (None, "unknown") else octo_finish,
+            "bed_temp":     None if octo_bed_temp in (None, "unknown", "unavailable") else octo_bed_temp,
+            "nozzle_temp":  None if octo_nozzle_temp in (None, "unknown", "unavailable") else octo_nozzle_temp,
+        },
+        "outlets": outlets,
+    }
+
+    # Only include the network/power groups when their entities are configured.
+    # Empty lists (e.g. UniFi removed, no workshop power meter) omit the key so
+    # the UI hides those cards instead of showing "unavailable".
+    if HA_UNIFI_ENTITIES:
+        result["unifi"] = {
             "cf_latency":     unifi_cf_lat.get("state", "—"),
             "cf_history":     cf_history,
             "google_latency": unifi_google_lat.get("state", "—"),
@@ -225,28 +274,18 @@ def _fetch_sensors_data() -> dict:
             "u6_mesh":        u6_mesh_state == "connected",
             "usw_lite":       usw_lite_state == "connected",
             "usw_flex":       usw_flex_state == "connected",
-        },
-        "temperature": {"value": temp.get("state", "—"), "unit": temp.get("unit", "°F"), "history": temp_history},
-        "humidity":    {"value": hum.get("state",  "—"), "unit": hum.get("unit",  "%"),  "history": hum_history},
-        "power": {
+        }
+    if HA_POWER_ENTITIES:
+        result["power"] = {
             "on":       pwr_on,
             "watts":    pwr_watts.get("state", "—"),
             "today_kwh": pwr_today.get("state", "—"),
             "voltage":  pwr_voltage.get("state", "—"),
             "overloaded": pwr_overload,
             "history":  power_history,
-        },
-        "octoprint": {
-            "printing":     octo_printing,
-            "state":        octo_state,
-            "job_pct":      octo_pct,
-            "file":         octo_file,
-            "finish_time":  None if octo_finish in (None, "unknown") else octo_finish,
-            "bed_temp":     None if octo_bed_temp in (None, "unknown", "unavailable") else octo_bed_temp,
-            "nozzle_temp":  None if octo_nozzle_temp in (None, "unknown", "unavailable") else octo_nozzle_temp,
-        },
-        "outlets": outlets,
-    }
+        }
+
+    return result
 
 
 @app.get("/sensors")
@@ -340,6 +379,8 @@ _BUDGET_PATH = os.path.join(
 
 _SETTINGS_KEYS = [
     "USE_DYNAMIC_RECORDING",
+    "DYNAMIC_ENERGY_THRESHOLD",
+    "DYNAMIC_SILENCE_THRESHOLD",
     "SCARLETT_SAMPLE_RATE",
     "AUDIO_INPUT_DEVICE",
     "AUDIO_OUTPUT_DEVICE",
@@ -360,6 +401,9 @@ _RESTART_KEYS = {
     "TTS_MODEL_PATH",
     "API_PORT",
     "API_ENABLED",
+    # speech_to_text binds these at import, so a change needs a re-exec to apply.
+    "DYNAMIC_ENERGY_THRESHOLD",
+    "DYNAMIC_SILENCE_THRESHOLD",
 }
 
 
@@ -450,7 +494,7 @@ def _restart_self_after_delay(delay_seconds: float = 1.0) -> None:
 
 
 @app.get("/settings")
-async def get_settings(api_key: str = Depends(verify_api_key)):
+async def get_settings(api_key: str = Depends(verify_local_or_api_key)):
     """Read config/settings.py and return parsed values."""
     try:
         text = _read_settings_file()
@@ -461,7 +505,7 @@ async def get_settings(api_key: str = Depends(verify_api_key)):
 
 
 @app.post("/settings")
-async def post_settings(request: Request, api_key: str = Depends(verify_api_key)):
+async def post_settings(request: Request, api_key: str = Depends(verify_local_or_api_key)):
     """Update keys in config/settings.py. Restart if any restart-trigger key was changed."""
     try:
         body = await request.json()
@@ -497,25 +541,25 @@ async def post_settings(request: Request, api_key: str = Depends(verify_api_key)
 
 
 @app.get("/budget")
-async def get_budget(api_key: str = Depends(verify_api_key)):
+async def get_budget(api_key: str = Depends(verify_local_or_api_key)):
     """Return contents of logs/budget.json."""
     try:
         with open(_BUDGET_PATH, "r", encoding="utf-8") as f:
             return json.load(f)
     except FileNotFoundError:
-        return {"total_cost": 0, "sessions": []}
+        return budget_tracker.empty_budget()
     except Exception as e:
         logger.error(f"Error reading budget: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Error reading budget: {e}")
 
 
 @app.delete("/budget")
-async def delete_budget(api_key: str = Depends(verify_api_key)):
+async def delete_budget(api_key: str = Depends(verify_local_or_api_key)):
     """Reset the budget file."""
     try:
         os.makedirs(os.path.dirname(_BUDGET_PATH), exist_ok=True)
         with open(_BUDGET_PATH, "w", encoding="utf-8") as f:
-            json.dump({"total_cost": 0, "sessions": []}, f)
+            json.dump(budget_tracker.empty_budget(), f)
         return {"status": "ok"}
     except Exception as e:
         logger.error(f"Error resetting budget: {e}", exc_info=True)
@@ -523,7 +567,7 @@ async def delete_budget(api_key: str = Depends(verify_api_key)):
 
 
 @app.get("/devices")
-async def get_devices(api_key: str = Depends(verify_api_key)):
+async def get_devices(api_key: str = Depends(verify_local_or_api_key)):
     """List audio devices via sounddevice."""
     try:
         import sounddevice as sd
@@ -543,7 +587,7 @@ async def get_devices(api_key: str = Depends(verify_api_key)):
 
 
 @app.post("/test-audio")
-async def test_audio(api_key: str = Depends(verify_api_key)):
+async def test_audio(api_key: str = Depends(verify_local_or_api_key)):
     """Speak a short test phrase in a background thread."""
     def _speak():
         try:

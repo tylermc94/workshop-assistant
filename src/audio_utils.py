@@ -8,7 +8,6 @@ import io
 import base64
 import logging
 import text_to_speech
-from tts_formatter import format_for_speech
 
 logger = logging.getLogger(__name__)
 

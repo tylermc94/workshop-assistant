@@ -1,0 +1,14 @@
+[Unit]
+Description=Forge failure notifier for %i
+
+[Service]
+Type=oneshot
+User=tyler
+Group=tyler
+WorkingDirectory=/home/tyler/projects/workshop-assistant
+# Triggered by OnFailure=forge-notify@%n.service on the main units, so %i is the
+# failed unit's name. Records a persistent, timestamped line (logs/forge-failures.log,
+# git-ignored) and an ERR-priority journal entry. To also push to your phone,
+# replace the body with a curl to your Home Assistant notify service (HA_TOKEN
+# already exists in config/secrets.py) once you know your notify entity name.
+ExecStart=/usr/bin/bash -c 'echo "$(date -Is) FAILURE: unit %i entered the failed state" | tee -a logs/forge-failures.log | systemd-cat -t forge-notify -p err'

@@ -14,7 +14,10 @@ CALENDAR_TRIGGERS = ["what time is it", "what's the time", "what's the date", "w
 CALCULATOR_TRIGGERS = ["what is", "what's", "calculate", "how much is"]
 HOME_ASSISTANT_TRIGGERS = ["turn on", "turn off"]
 TIMER_TRIGGERS = ["set a timer for", "timer for", "start a timer"]
-ALARM_TRIGGERS = ["stop alarm", "stop timer", "turn off alarm", "stop"]
+ALARM_TRIGGERS = [
+    "stop alarm", "stop the alarm", "stop timer", "stop the timer",
+    "turn off alarm", "turn off the alarm", "cancel timer", "cancel the timer",
+]
 STOP_TRIGGERS = ["thank you", "thanks", "stop", "never mind", "nevermind", "that's all", "cancel"]  # Add this
 
 def strip_trigger(text, triggers):
@@ -29,7 +32,15 @@ def strip_trigger(text, triggers):
 async def classify_intent(text, source="voice"):
     text_lower = text.lower()
 
-    # Check for stop/acknowledgment commands first (highest priority)
+    # Alarm/timer stop must be checked BEFORE the generic stop/ack below, because
+    # "stop alarm" / "stop timer" also contain the bare "stop" trigger and would
+    # otherwise be swallowed by STOP_TRIGGERS (which left the alarm unreachable).
+    if any(trigger in text_lower for trigger in ALARM_TRIGGERS):
+        result = timer.stop_alarm()
+        query_logger.log_query(text, "local_alarm", result, source=source)
+        return result
+
+    # Check for stop/acknowledgment commands (clears conversation history)
     if any(trigger in text_lower for trigger in STOP_TRIGGERS):
         result = "Got it."
         claude_integration.clear_history(source)
@@ -54,7 +65,9 @@ async def classify_intent(text, source="voice"):
         except ValueError as e:
             # Calculator failed, let Claude try
             logger.info(f"Calculator failed: {e}, forwarding to Claude")
-            result = claude_integration.ask_claude(text, source=source)
+            # Run the blocking Claude SDK call off the event loop so it doesn't
+            # stall the API server (/status, /status/stream, /sensors).
+            result = await asyncio.to_thread(claude_integration.ask_claude, text, source=source)
             query_logger.log_query(text, "claude_fallback_calc", result, error=str(e), source=source)
             return result
     
@@ -68,15 +81,12 @@ async def classify_intent(text, source="voice"):
         result = await home_assistant.control_device(text)
         query_logger.log_query(text, "local_home_assistant", result, source=source)
         return result
-    
-    elif any(trigger in text_lower for trigger in ALARM_TRIGGERS):
-        result = timer.stop_alarm()
-        query_logger.log_query(text, "local_alarm", result, source=source)
-        return result
-    
+
     # No local skill matched - ask Claude
     else:
         logger.info(f"No local skill matched, forwarding to Claude: {text}")
-        result = claude_integration.ask_claude(text, source=source)
+        # Run the blocking Claude SDK call off the event loop so it doesn't
+        # stall the API server (/status, /status/stream, /sensors).
+        result = await asyncio.to_thread(claude_integration.ask_claude, text, source=source)
         query_logger.log_query(text, "claude", result, source=source)
         return result

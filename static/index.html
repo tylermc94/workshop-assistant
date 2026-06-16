@@ -469,6 +469,16 @@
             </label>
             <div class="so-field-note immediate">✓ immediate</div>
           </div>
+          <div class="so-field">
+            <label>MIC DETECTION THRESHOLD</label>
+            <input type="number" min="0" step="50" data-key="DYNAMIC_ENERGY_THRESHOLD" oninput="onFieldChange()">
+            <div class="so-field-note">Lower = picks up quieter speech (less likely to cut you off). Too low and background noise stops it from ever ending. <span class="restart">↺ restart required</span></div>
+          </div>
+          <div class="so-field">
+            <label>SILENCE TIMEOUT (S)</label>
+            <input type="number" min="0.3" step="0.1" data-key="DYNAMIC_SILENCE_THRESHOLD" oninput="onFieldChange()">
+            <div class="so-field-note">Seconds of silence before it stops listening. Raise for more pause tolerance. <span class="restart">↺ restart required</span></div>
+          </div>
           <div class="so-device-list" id="input-devices-list">Loading devices...</div>
           <div class="so-section-footer">
             <button class="so-btn so-btn-primary" data-save="audio-input" onclick="saveSection('audio-input')" disabled>SAVE CHANGES</button>
@@ -635,12 +645,12 @@
 
   <!-- Left cards -->
   <div id="cards-left">
-    <div class="card">
+    <div class="card" id="card-energy">
       <div class="card-header"><svg class="card-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.75;flex-shrink:0"><rect x="2" y="7" width="20" height="11" rx="2"/><path d="M16 7V5a2 2 0 0 0-4 0v2M8 7V5a2 2 0 0 0-4 0v2M12 12v3"/></svg><span class="card-label">ENERGY TODAY</span></div>
       <span class="card-value ok" id="val-today">—</span>
       <span class="card-sub" id="val-voltage">—V</span>
     </div>
-    <div class="card">
+    <div class="card" id="card-power">
       <div class="card-header"><span class="card-icon">⚡</span><span class="card-label">POWER DRAW</span></div>
       <span class="card-value ok" id="val-watts">—</span>
       <canvas id="spark-power" width="174" height="28" style="display:block;margin-top:6px;opacity:0.9"></canvas>
@@ -666,7 +676,7 @@
 
   <!-- Right cards -->
   <div id="cards-right">
-    <div class="card">
+    <div class="card" id="card-network">
       <div class="card-header"><span class="card-icon">🌐</span><span class="card-label">NETWORK</span></div>
       <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
         <!-- Cloudflare -->
@@ -742,8 +752,8 @@
     </div>
   </div>
 
-  <!-- Invisible tap zone at bottom of screen to open fire settings -->
-  <div id="fire-tap-zone" onclick="document.getElementById('tune-panel').classList.toggle('open')"
+  <!-- Long-press this bottom zone to open the fire dev panel (see handler below) -->
+  <div id="fire-tap-zone"
     style="position:absolute;bottom:0;left:210px;right:210px;height:80px;z-index:15;cursor:pointer"></div>
 
   <!-- Fire tuning panel -->
@@ -930,8 +940,17 @@ var FIRE = (function() {
     }
   }
 
-  function loop() { update(); updateEmbers(); draw(); drawEmbers(); requestAnimationFrame(loop); }
-  loop();
+  // Cap the fire animation at ~24fps. The grid sim + per-cell fillText ran every
+  // rAF tick (~60fps) forever, which is continuous CPU/heat on the fanless Pi.
+  // rAF still fires at display rate but the heavy work is gated to 24fps.
+  var FRAME_MS = 1000 / 24, lastFrame = 0;
+  function loop(ts) {
+    requestAnimationFrame(loop);
+    if (ts - lastFrame < FRAME_MS) return;
+    lastFrame = ts;
+    update(); updateEmbers(); draw(); drawEmbers();
+  }
+  requestAnimationFrame(loop);
 
   return {
     setState: function(name) {
@@ -1109,6 +1128,14 @@ function drawSparkline(canvasId, values, color) {
 }
 
 function applySensors(data) {
+  // Hide cards whose data group the backend omitted (entity list empty in
+  // settings — e.g. UniFi removed, no workshop power meter). Auto-shows again
+  // when the entities are reconfigured.
+  function showCard(id, on) { var el = document.getElementById(id); if (el) el.style.display = on ? '' : 'none'; }
+  showCard('card-network', !!data.unifi);
+  showCard('card-energy', !!data.power);
+  showCard('card-power', !!data.power);
+
   if (data.unifi) {
     var u = data.unifi, unit = u.latency_unit || 'ms';
     var cfEl   = document.getElementById('val-cf-lat');
@@ -1307,9 +1334,33 @@ function applyState(data) {
 //  the instant the pipeline transitions. /sensors stays on a slow
 //  poll since temperature/humidity don't need sub-second updates.
 // ═══════════════════════════════════════════════════════════════
+// Connection-health badge. The kiosk is unattended, so if the backend
+// re-execs (settings save) or is restarted by systemd, surface "RECONNECTING…"
+// instead of silently freezing on stale status. The server sends a fresh state
+// message on every (re)connection, so the badge clears as soon as we recover.
+var linkBadge = document.createElement('div');
+linkBadge.id = 'link-status';
+linkBadge.textContent = 'RECONNECTING…';
+linkBadge.style.cssText = 'position:fixed;top:8px;left:50%;transform:translateX(-50%);' +
+  'background:#7f1d1d;color:#fee2e2;font-size:12px;letter-spacing:1px;padding:4px 12px;' +
+  'border-radius:4px;z-index:9999;display:none;font-family:inherit;';
+document.body.appendChild(linkBadge);
+
+function setLinkLost(lost) {
+  linkBadge.style.display = lost ? 'block' : 'none';
+}
+
 var statusSource = new EventSource('/status/stream');
 statusSource.onmessage = function(e) {
+  setLinkLost(false);
   try { applyState(JSON.parse(e.data)); } catch (err) {}
+};
+statusSource.onerror = function() {
+  // EventSource auto-reconnects; show the badge while it is not OPEN.
+  if (statusSource.readyState !== EventSource.OPEN) {
+    setLinkLost(true);
+    console.warn('SSE connection lost (readyState=' + statusSource.readyState + '); reconnecting…');
+  }
 };
 
 function pollSensors() {
@@ -1322,14 +1373,21 @@ function pollSensors() {
 pollSensors();
 setInterval(pollSensors, 3000);
 
-// Tap bottom 20% of fire canvas to toggle settings panel
-document.getElementById('fire-canvas').addEventListener('click', function(e) {
-  var rect = this.getBoundingClientRect();
-  var relY = (e.clientY - rect.top) / rect.height;
-  if (relY >= 0.8) {
-    document.getElementById('tune-panel').classList.toggle('open');
+// Long-press (800ms) the bottom tap-zone to open the fire dev panel. A
+// deliberate gesture so a stray bottom-edge tap no longer opens it by accident.
+(function() {
+  var zone = document.getElementById('fire-tap-zone');
+  var pressTimer = null;
+  function start() {
+    pressTimer = setTimeout(function() {
+      document.getElementById('tune-panel').classList.toggle('open');
+    }, 800);
   }
-});
+  function cancel() { if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; } }
+  zone.addEventListener('pointerdown', start);
+  zone.addEventListener('pointerup', cancel);
+  zone.addEventListener('pointerleave', cancel);
+})();
 
 
 // ═══════════════════════════════════════════════════════════════
@@ -1341,6 +1399,8 @@ var SO_KEY_SECTION = {
   AUDIO_INPUT_DEVICE: 'audio-input',
   SCARLETT_SAMPLE_RATE: 'audio-input',
   USE_DYNAMIC_RECORDING: 'audio-input',
+  DYNAMIC_ENERGY_THRESHOLD: 'audio-input',
+  DYNAMIC_SILENCE_THRESHOLD: 'audio-input',
   AUDIO_OUTPUT_DEVICE: 'audio-output',
   WAKE_WORD_SENSITIVITY: 'wake-word',
   TTS_MODEL_PATH: 'tts',
@@ -1645,10 +1705,17 @@ function loadBudget() {
     empty.style.display = 'none';
 
     var totalIn = 0, totalOut = 0;
-    sessions.forEach(function(s) {
-      totalIn += (s.input_tokens || 0);
-      totalOut += (s.output_tokens || 0);
-    });
+    if (data.total_input_tokens != null || data.total_output_tokens != null) {
+      // Canonical shape written by budget_tracker (running totals, no sessions).
+      totalIn = data.total_input_tokens || 0;
+      totalOut = data.total_output_tokens || 0;
+    } else {
+      // Tolerate the old per-session shape during transition.
+      sessions.forEach(function(s) {
+        totalIn += (s.input_tokens || 0);
+        totalOut += (s.output_tokens || 0);
+      });
+    }
     document.getElementById('bud-total').textContent = '$' + Number(data.total_cost || 0).toFixed(2);
     document.getElementById('bud-in').textContent = totalIn.toLocaleString();
     document.getElementById('bud-out').textContent = totalOut.toLocaleString();

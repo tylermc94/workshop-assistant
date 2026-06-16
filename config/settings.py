@@ -1,7 +1,12 @@
 # Audio Configuration
-AUDIO_INPUT_DEVICE = 1  # Scarlett 2i4 USB
+# Devices are resolved BY NAME at runtime (see src/audio_devices.py) so a USB
+# re-plug / reboot that renumbers indices doesn't break capture or playback.
+# The numeric values below are fallbacks used only if the name isn't found.
+AUDIO_INPUT_DEVICE = 1  # Scarlett 2i4 USB (PortAudio index fallback)
+AUDIO_INPUT_NAME = "Scarlett"  # substring matched against capture device names
 SCARLETT_SAMPLE_RATE = 48000  # Scarlett's native sample rate
-AUDIO_OUTPUT_DEVICE = 3  # USB Audio Device for output
+AUDIO_OUTPUT_DEVICE = 3  # USB speakers (ALSA card index fallback)
+AUDIO_OUTPUT_NAME = "USB PnP Audio Device"  # substring matched against ALSA card names
 
 # Model Paths (relative to project root)
 WAKE_WORD_MODEL = 'models/Hey-Forge_en_raspberry-pi_v4_0_0.ppn' # Porcupine wake word model path
@@ -40,9 +45,9 @@ TTS_VOICES = {
     "alba": "models/piper/en_GB-alba-medium.onnx"     # UK Female
 }
 TTS_MODEL_PATH = TTS_VOICES[TTS_VOICE]
-TTS_SPEED = 2  # 1 = normal, <1 = faster, >1 = slower
-TTS_NOISE_SCALE = 0.667
-TTS_NOISE_W = 0.8
+# (TTS_SPEED / TTS_NOISE_SCALE / TTS_NOISE_W were declared here but never wired
+# into Piper — removed to avoid misleading dead knobs. To tune the voice later,
+# pass a piper SynthesisConfig to PiperVoice.synthesize in text_to_speech.py.)
 
 # Timer Settings
 TIMER_ALARM_SOUND = "sounds/no-problem.wav"
@@ -56,9 +61,23 @@ from config.secrets import CLAUDE_API_KEY
 from config.secrets import API_KEY
 
 # Claude API Configuration
-CLAUDE_MODEL = "claude-sonnet-4-20250514"
+CLAUDE_MODEL = "claude-sonnet-4-6"
 CLAUDE_MAX_TOKENS = 200  # Short responses for question mode
 CLAUDE_TEMPERATURE = 1.0
+
+# Web search (server-side tool) for time-sensitive questions on the ANSWER path.
+# OFF by default — it adds latency and a per-search fee on top of token cost.
+# Flip to True to let Forge look things up (current events, prices, versions).
+WEB_SEARCH_ENABLED = False
+WEB_SEARCH_MAX_CONTINUATIONS = 3  # cap server-tool pause_turn loops so cost can't run away
+
+# Second Brain / Vault
+# Centralized here so the path and model aren't duplicated across the vault
+# modules (second_brain.py, second_brain_agent.py, ingress_processor.py).
+# NOTE: forge_capture.py lives in the vault itself and is not part of this repo,
+# so its own hardcoded model id can only be changed there.
+VAULT_PATH = "/home/tyler/second-brain"
+SECOND_BRAIN_MODEL = "claude-sonnet-4-6"
 
 # Budget Settings
 BUDGET_WARNING_THRESHOLD = 15.00  # USD
@@ -82,26 +101,19 @@ API_PORT = 8080
 
 # Home Assistant
 HA_URL = "http://homeassistant.local:8123"
-HA_UNIFI_ENTITIES = [
-    "sensor.dream_machine_cloudflare_wan_latency",
-    "sensor.dream_machine_google_wan_latency",
-    "sensor.dream_machine_microsoft_wan_latency",
-    "sensor.dream_machine_clients",
-    "sensor.dream_machine_cpu_utilization",
-    "sensor.dream_machine_uptime",
-    "sensor.dream_machine_state",
-    "sensor.u6_pro_state",
-    "sensor.u6_mesh_state",
-    "sensor.usw_lite_8_poe_state",
-    "sensor.usw_flex_mini_state",
-]
-HA_POWER_ENTITIES = [
-    "switch.workshop_power",
-    "sensor.workshop_power_current_consumption",
-    "sensor.workshop_power_today_s_consumption",
-    "sensor.workshop_power_voltage",
-    "binary_sensor.workshop_power_overloaded",
-]
+# Network card — the old UniFi/Dream Machine entities were removed from HA
+# (migrated to OPNsense, which isn't integrated into HA yet). Empty = the NETWORK
+# card is hidden. When OPNsense/Grafana is wired into HA, list its WAN latency /
+# clients / device-state entities here and the card comes back automatically.
+HA_UNIFI_ENTITIES = []
+# Power card — the old `workshop_power` device no longer exists in HA. Empty =
+# the ENERGY/POWER cards are hidden. To re-enable, fill in a power-metered
+# device's entities, e.g. for the `network_power` plug:
+#   "switch.network_power", "sensor.network_power_power",
+#   "sensor.network_power_summation_delivered", "sensor.network_power_voltage",
+#   "binary_sensor.<device>_overloaded"
+# (and update the hardcoded ids in api_server._fetch_sensors_data to match).
+HA_POWER_ENTITIES = []
 HA_OUTLET_ENTITIES = [
     "switch.workshop_light_1",
     "switch.workshop_light_2",

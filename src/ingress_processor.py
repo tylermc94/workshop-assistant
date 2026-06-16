@@ -11,13 +11,19 @@ from datetime import datetime
 from pathlib import Path
 
 from config.secrets import CLAUDE_API_KEY as ANTHROPIC_API_KEY
+from config.settings import VAULT_PATH
 os.environ['ANTHROPIC_API_KEY'] = ANTHROPIC_API_KEY
 
-sys.path.insert(0, '/home/tyler/second-brain')
+sys.path.insert(0, VAULT_PATH)
 import forge_capture
 import anthropic
 
-forge_capture.VAULT = Path('/home/tyler/second-brain')
+from config.logging_config import setup_logging
+setup_logging()
+import logging
+logger = logging.getLogger(__name__)
+
+forge_capture.VAULT = Path(VAULT_PATH)
 forge_capture.PROJECTS_DIR = forge_capture.VAULT / "Projects"
 forge_capture.ACTIVE_DIR = forge_capture.VAULT / "Projects" / "Active"
 forge_capture.SOMEDAY_DIR = forge_capture.VAULT / "Projects" / "Someday"
@@ -94,6 +100,23 @@ def detect_target(filepath: Path, projects: list[str], areas: list[str]) -> tupl
     return None, "unknown"
 
 
+def _resolve_target_path(target: str, areas: list[str]) -> Path:
+    """Resolve a target project/area *name* to its markdown file Path.
+
+    upsert_section needs a Path, not the bare name. Prefer an existing project
+    file, then an existing Area file, else default to a new Active project file
+    (upsert_section creates the file if it doesn't exist).
+    """
+    project_file = forge_capture.find_project_file(target)
+    if project_file is not None:
+        return project_file
+    match = next((a for a in areas if a.lower() == target.lower()), target)
+    area_file = forge_capture.AREAS_DIR / f"{match}.md"
+    if area_file.exists():
+        return area_file
+    return forge_capture.ACTIVE_DIR / f"{target}.md"
+
+
 def route_content(filepath: Path, content: str, target: str, projects: list[str], areas: list[str]) -> tuple[str, Path]:
     """
     Call Claude to decide how to integrate the content, then execute the action.
@@ -127,10 +150,13 @@ def route_content(filepath: Path, content: str, target: str, projects: list[str]
     target_filepath = None
 
     if action == 'append_research':
-        target_filepath = forge_capture.upsert_section(target, f"## Research: {stem}", content)
+        target_filepath = _resolve_target_path(target, areas)
+        forge_capture.upsert_section(target_filepath, f"## Research: {stem}", content)
         action_desc = f"append_research in {target}"
     elif action == 'create_subproject':
-        target_filepath = forge_capture.write_new_project(target, body=content, is_future=False)
+        target_filepath = forge_capture.write_new_project(
+            {"title": stem, "content": content, "is_future": False}
+        )
         action_desc = f"create_subproject under {target}"
     elif action == 'add_tasks':
         task_lines = [
@@ -140,12 +166,17 @@ def route_content(filepath: Path, content: str, target: str, projects: list[str]
         ]
         task_lines = [t for t in task_lines if t]
         for task in task_lines:
-            forge_capture.write_project_task(target, task)
+            forge_capture.write_project_task(
+                {"target": target, "folder": "Projects", "title": task},
+                projects,
+                areas,
+            )
         target_filepath = forge_capture.find_project_file(target) if task_lines else None
         action_desc = f"add_tasks to {target} ({len(task_lines)} tasks)"
     else:
         # append_note (default)
-        target_filepath = forge_capture.upsert_section(target, f"## Note: {stem}", content)
+        target_filepath = _resolve_target_path(target, areas)
+        forge_capture.upsert_section(target_filepath, f"## Note: {stem}", content)
         action_desc = f"append_note in {target}"
 
     return action_desc, target_filepath
@@ -241,6 +272,9 @@ def process_ingress() -> list[str]:
                 log_lines.append(log_line)
 
         except Exception as e:
+            # Log the full traceback — previously this was discarded, which is
+            # how the route_content signature bug stayed hidden for so long.
+            logger.exception(f"Error processing ingress file {filepath.name}")
             log_lines.append(f"❌ Error processing `{filepath.name}` — {e}")
             continue
 

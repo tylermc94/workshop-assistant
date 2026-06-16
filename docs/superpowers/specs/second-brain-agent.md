@@ -50,12 +50,13 @@ def run(transcript: str, intent: str) -> str:
 
 ### System Prompt
 
-Loaded at module init from two sources:
-1. `/home/tyler/second-brain/AGENT.md` — vault structure reference (to be created):
-   - Vault layout: Projects/Active, Projects/Someday, Areas, Inbox, Ingress, Resources
-   - Conventions: how projects are structured, what frontmatter looks like
-   - Forge Log location: `Forge Log.md`
-2. Behavioral instructions: concise spoken responses, git commit after writes, pull before push
+Built at module init (`_load_system_prompt`) by concatenating, in order:
+1. `_BASE_SYSTEM` — behavioral instructions (concise spoken responses, git commit after writes, pull before push).
+2. The vault's `CLAUDE.md` (if present) — the primary vault reference: full conventions, task format, project structure.
+3. The vault's `AGENT.md` (if present) — Forge-specific additions (Forge Log location, spoken response style).
+4. A path-override note pinning the vault root to this device's path (the vault `CLAUDE.md` references Windows paths).
+
+Read failures for the vault files are non-fatal — the agent still runs with the base prompt.
 
 ### Tools
 
@@ -65,9 +66,9 @@ Loaded at module init from two sources:
 | `write_file(path, content)` | Write or overwrite a file in the vault. |
 | `append_file(path, content)` | Append content to a file (creates if missing). |
 | `list_directory(path)` | List files/folders at a vault path. |
-| `run_command(command, args)` | Run an allowlisted git command in the vault directory. |
+| `run_command(command, message)` | Run an allowlisted git command. `command` is an enum (not a raw string); `message` is required for `git_commit`. |
 
-**git allowlist**: `git pull --rebase`, `git add -A`, `git commit -m <msg>`, `git push`
+**git allowlist** (enum → command): `git_pull` → `git pull --rebase`, `git_add_all` → `git add -A`, `git_commit` → `git commit -m <message>`, `git_push` → `git push`
 
 All paths are relative to `/home/tyler/second-brain/`. The tool implementations validate that paths stay within the vault root (no `../` escapes).
 
@@ -164,8 +165,19 @@ No changes to `main.py`, `api_server.py`, `ingress_processor.py`, or `intent_rec
 
 ---
 
-## Out of Scope
+## Out of Scope (at original design time)
 
 - Conversation mode (multi-turn memory across queries) — separate pending feature
-- Budget tracking — separate pending feature
 - Replacing `ingress_processor.py` webhook path — leave that as-is
+
+---
+
+## Subsequent changes (post-original-spec)
+
+The agent has since gained the following (see `docs/improvement/Forge-Improvement-Plan.md`):
+
+- **Budget tracking** of its Claude calls via `budget_tracker.record_message` (was out of scope here).
+- **Prompt caching** of the static tools+system prefix via a `cache_control` breakpoint on the system block.
+- **Graceful error handling** in `run()` — returns a spoken fallback and resets `second_brain_status` on failure, so `handle()` is no longer a bare thin wrapper.
+- **Skip `git pull` on read-only QUERY** intents (only CAPTURE/PROCESS sync the vault first).
+- The vault path and model id now come from `config/settings.py` (`VAULT_PATH`, `SECOND_BRAIN_MODEL`) instead of hardcoded literals.
